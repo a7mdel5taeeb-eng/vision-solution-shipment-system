@@ -31,7 +31,7 @@ Repository: [a7mdel5taeeb-eng/vision-solution-shipment-system](https://github.co
 
 The home Phase 3B checkout recovered the exact school checkpoint, local and remote `f290bfe0ae47126da1d56d08d56ff50c1a59291d`, with no local work overwritten. There were no stashes or extra worktrees before this maintenance checkout was created. The original desktop checkout remains on the Phase 3B branch; a separate managed worktree holds maintenance changes. Local main was intentionally not changed during recovery.
 
-Verified maintenance publication: `c208dc55f675a3af085ba94d9632101ba1ded9b0` was pushed to the separate chore branch and its remote hash matched. PR #6 was then opened. The school source checkpoint remains unchanged as recorded above. For the workflow commit that contains this file, use `git rev-parse HEAD` and compare `git ls-remote --heads origin <active-branch>`; a file cannot embed its own eventual commit hash. Record each **previous verified** checkpoint in the next session update and report the new hash externally after pushing.
+Verified maintenance publication: `ae830ae02ed744b6a3cc00f7529045cbf7cc91bf` was pushed to the separate chore branch and its remote hash matched. PR #6 was then opened. The school source checkpoint remains unchanged as recorded above. For the workflow commit that contains this file, use `git rev-parse HEAD` and compare `git ls-remote --heads origin <active-branch>`; a file cannot embed its own eventual commit hash. Record each **previous verified** checkpoint in the next session update and report the new hash externally after pushing.
 
 School recovery instructions: [computer-switch checkpoint](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/blob/f290bfe0ae47126da1d56d08d56ff50c1a59291d/docs/computer-switch-checkpoint-2026-10-27.md). Database details: [Phase 3B runbook](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/blob/f290bfe0ae47126da1d56d08d56ff50c1a59291d/docs/phase-3b-database-foundation.md). They live on the unmerged database branch and are intentionally not copied into this maintenance tree.
 
@@ -51,7 +51,7 @@ School recovery instructions: [computer-switch checkpoint](https://github.com/a7
 | Linux Docker engine               | Recovered through supported Docker Desktop CLI start; visible Engine running, local desktop-linux endpoint, Linux/x86_64 engine 29.9.2. Launcher registration anomaly remains documented     |
 | Local PostgreSQL / migrations     | HOME PostgreSQL 17.11 healthy; both Phase 3B migrations recorded; migration-up found nothing pending; all eight tables enable and force RLS; no reset                                        |
 | HOME database suite               | Fresh npm run test:db: 20/20 passed, zero failures/skips. Local db lint returned no errors/warnings. All test fixtures cleaned up                                                            |
-| Impeccable                        | Pinned skill 4.8.0 / engine 0.1.18 installed with setup script; `-CheckOnly` passed                                                                                                          |
+| Impeccable                        | Pinned skill 4.8.0 / engine 0.1.18 installed and CheckOnly passed in both application and active maintenance checkouts; runtime catalog refresh/hook execution still unverified              |
 | Codex hooks                       | Project manifest and local consent created; configuration verified. Active hook execution after reopening Codex is not yet independently proven; approve any separate trust prompt yourself  |
 | Frontend check, Phase 3B checkout | Fresh post-reboot npm run check passed: formatting, Oxlint, 36/36 tests, strict TypeScript and production build; application source unchanged                                                |
 | ESLint                            | Not configured; the committed lint command uses Oxlint. Do not introduce an unrelated linter for this task                                                                                   |
@@ -64,9 +64,13 @@ Earlier browser recovery checks verified the Arabic/English entry and dashboards
 
 **School-only historical evidence:** Phase 3B runbook records 20/20 real PostgreSQL integration tests on PostgreSQL 17.11, both migrations replayed, and no local database lint warnings. These are not new HOME results and do not certify the HOME database.
 
+## Final Phase 3B verification
+
+A fresh requested HOME run again passed 20/20 database tests followed by 36/36 application tests and the full check command. All eight tables have forced RLS; both migrations match; REST/Auth readiness returned HTTP 200. See [final verification report](phase-3b-final-home-verification-2026-10-27.md) for exact evidence, Impeccable availability limits, PR review and outstanding local network hardening. Phase 3B is ready for approval review; no merge or Phase 3C start is authorized.
+
 ## Outstanding tasks / known issues
 
-1. Review the published maintenance PR #6; its scripts and status remain isolated until explicit integration approval. Do not merge either PR automatically.
+1. Resolve/approve the local development network boundary before real data or broader Auth work: API/database ports are currently published on wildcard host addresses, with firewall containment unverified. See the final verification report. Review the published maintenance PR #6; its scripts and status remain isolated until explicit integration approval. Do not merge either PR automatically.
 2. Docker is currently operational, but the original per-user launcher registry error has no proven permanent registration fix. See [HOME Docker diagnosis](docker-startup-diagnosis-2026-10-27.md). Use supported startup and investigate recurrence before any approved repair; preserve the now-created disks and project volumes.
 3. HOME Docker/WSL and dedicated Supabase services are verified running. Future software agreements, separate hook-trust requests, system changes or restarts still require appropriate approval. Active Codex hook execution remains unproven.
 4. HOME migration state, 20 database integration tests, schema lint and fixture cleanup are now verified. Preserve the dedicated local database and rerun relevant checks for future approved changes; never reset or delete volumes to resolve errors.
