@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { randomBytes, randomUUID } from 'node:crypto'
+import { createPrivateKey, randomBytes, randomUUID, type JsonWebKey } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { validLocalApi } from '../../src/app/auth/config.ts'
 
@@ -37,6 +37,29 @@ export function localAuthContext() {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
   })
   return { url: new URL(url).origin, publicKey, admin, jwtSecret: status.JWT_SECRET ?? '' }
+}
+
+/** Read the existing local signer in memory for expiry fixtures; never log/export it. */
+export function localSigningKey(kid: string) {
+  try {
+    const env = JSON.parse(
+      execFileSync(
+        'docker',
+        ['inspect', 'supabase_auth_vision-solution-local', '--format', '{{json .Config.Env}}'],
+        { encoding: 'utf8', timeout: 15000, stdio: ['pipe', 'pipe', 'pipe'] },
+      ),
+    ) as string[]
+    const raw = env.find((value) => value.startsWith('GOTRUE_JWT_KEYS='))
+    if (!raw) throw new Error('Missing signer')
+    const parsed = JSON.parse(raw.slice(raw.indexOf('=') + 1)) as
+      Array<JsonWebKey & { kid?: string }> | { keys: Array<JsonWebKey & { kid?: string }> }
+    const keys = Array.isArray(parsed) ? parsed : parsed.keys
+    const key = keys.find((value) => value.kid === kid && value.kty === 'EC' && value.d)
+    if (!key) throw new Error('Missing matching private EC key')
+    return createPrivateKey({ key, format: 'jwk' })
+  } catch {
+    throw new Error('Existing local Auth signing key unavailable to server-side test fixture')
+  }
 }
 
 export async function createFictionalFixture(

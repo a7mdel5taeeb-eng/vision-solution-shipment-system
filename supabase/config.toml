@@ -37,7 +37,9 @@ enable_signup = false
 enable_anonymous_sign_ins = false
 
 [auth.email]
-enable_signup = false
+# The CLI maps this provider flag to GOTRUE_EXTERNAL_EMAIL_ENABLED.
+# Global auth.enable_signup=false above still denies all public registration.
+enable_signup = true
 double_confirm_changes = true
 enable_confirmations = true
 

@@ -1,8 +1,8 @@
 import test, { before, after, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
-import { createHmac } from 'node:crypto'
+import { createHmac, randomUUID, sign } from 'node:crypto'
 import type { Session, SupportedStorage } from '@supabase/supabase-js'
-import { localAuthContext, createFictionalFixture } from './local-context.ts'
+import { localAuthContext, createFictionalFixture, localSigningKey } from './local-context.ts'
 import { AUTH_STORAGE_KEY } from '../../src/app/auth/config.ts'
 import { clearAuthStorage, createLocalAuthClient } from '../../src/app/auth/client.ts'
 import { AuthSessionStore } from '../../src/app/auth/session-store.ts'
@@ -63,11 +63,15 @@ before(async () => {
   const response = await fetch(`${context.url}/auth/v1/settings`, {
     headers: { apikey: context.publicKey },
   })
-  const settings = (await response.json()) as { external?: { email?: boolean } }
+  const settings = (await response.json()) as {
+    external?: { email?: boolean }
+    disable_signup?: boolean
+  }
   if (!response.ok || settings.external?.email !== true)
     throw new Error(
       'Local email/password provider is disabled. An owner-approved Auth-only configuration fix is required; no containers were changed by the suite.',
     )
+  assert.equal(settings.disable_signup, true, 'Public signup must remain disabled')
   fixture = await createFictionalFixture(context, 'integration')
 })
 afterEach(stopAll)
@@ -86,6 +90,21 @@ test('real local password sign-in verifies the user and never trusts forged admi
   assert.equal('role' in connection.store.getSnapshot().user!, false)
   assert.equal(connection.saved.values.get('vs.demo.v1'), 'unchanged-demo')
   assert.equal(connection.saved.values.get('vs.demo-entry.v1'), 'demo-admin')
+})
+test('public signup and anonymous sign-in remain disabled', async () => {
+  const connection = connect()
+  await state(connection.store, 'anonymous')
+  const email = `denied-signup-${randomUUID()}@example.invalid`
+  const result = await connection.client.auth.signUp({ email, password: randomUUID() })
+  if (result.data.user?.email === email)
+    await context.admin.auth.admin.deleteUser(result.data.user.id)
+  assert.equal(result.error?.code, 'signup_disabled', 'Global public signup must be denied')
+  const anonymous = await connection.client.auth.signInAnonymously()
+  assert.equal(
+    anonymous.error?.code,
+    'anonymous_provider_disabled',
+    'Anonymous authentication must be denied',
+  )
 })
 test('incorrect credentials are denied by real Auth without creating an authenticated UI state', async () => {
   const connection = connect()
@@ -153,26 +172,38 @@ test('tampered persisted access tokens never authenticate even with a forged use
   assert.equal(saved.values.has(AUTH_STORAGE_KEY), false)
 })
 test('an actually expired signed JWT is rejected despite future forged storage timestamps', async () => {
-  assert.ok(context.jwtSecret, 'Local signing secret is available to server-side tests only')
   const first = connect()
   await login(first)
   const session = savedSession(first)
   const saved = first.saved
   stopAll()
   const [header, encoded] = session.access_token.split('.')
-  assert.equal(
-    JSON.parse(Buffer.from(header!, 'base64url').toString()).alg,
-    'HS256',
-    'Expired-token fixture requires the existing local HS256 signer',
+  const jwtHeader = JSON.parse(Buffer.from(header!, 'base64url').toString()) as {
+    alg: string
+    kid?: string
+  }
+  assert.ok(
+    ['HS256', 'ES256'].includes(jwtHeader.alg),
+    'Use only the existing local Auth signing algorithm',
   )
   const payload = JSON.parse(Buffer.from(encoded!, 'base64url').toString()) as Record<
     string,
     unknown
   >
+  const key = jwtHeader.alg === 'ES256' ? localSigningKey(jwtHeader.kid ?? '') : null
+  function tokenFor(claims: Record<string, unknown>) {
+    const data = `${header}.${Buffer.from(JSON.stringify(claims)).toString('base64url')}`
+    const signature = key
+      ? sign('sha256', Buffer.from(data), { key, dsaEncoding: 'ieee-p1363' }).toString('base64url')
+      : createHmac('sha256', context.jwtSecret).update(data).digest('base64url')
+    return `${data}.${signature}`
+  }
+  // Prove the fixture signer is accepted before changing only expiry/issued-at claims.
+  const valid = await first.client.auth.getUser(tokenFor(payload))
+  assert.equal(valid.data.user?.id, fixture.id, 'Fixture signature must be accepted by real Auth')
   payload.exp = Math.floor(Date.now() / 1000) - 60
   payload.iat = Math.floor(Date.now() / 1000) - 3660
-  const data = `${header}.${Buffer.from(JSON.stringify(payload)).toString('base64url')}`
-  const token = `${data}.${createHmac('sha256', context.jwtSecret).update(data).digest('base64url')}`
+  const token = tokenFor(payload)
   saved.values.set(
     AUTH_STORAGE_KEY,
     JSON.stringify({
