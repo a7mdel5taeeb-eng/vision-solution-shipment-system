@@ -8,7 +8,7 @@ A bilingual, responsive shipment operations workspace built on the existing Phas
 
 The application is a separate project from the company's public marketing website. The future product address is `system.vsolutions.co`; it has not been deployed.
 
-For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The workflow maintenance branch contains no unmerged Phase 3B database implementation.
+For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow is approved and merged through PR #6. This feature branch combines that workflow with the still-unmerged Phase 3B database candidate; the frontend remains browser-local.
 
 ## Technology stack
 
@@ -210,17 +210,20 @@ Extend domain rules in `features/shipments/model.ts`, not only in UI event handl
 
 ## Commands and verification
 
-| Command                | Purpose                                                    |
-| ---------------------- | ---------------------------------------------------------- |
-| `npm run dev`          | Local Vite development server                              |
-| `npm run typecheck`    | Strict TypeScript checks for application, config and tests |
-| `npm run lint`         | Oxlint and React hooks checks                              |
-| `npm test`             | 36 tests using Node's built-in test runner                 |
-| `npm run build`        | Type-check and produce the local bundle                    |
-| `npm run preview`      | Serve the built bundle locally                             |
-| `npm run format`       | Format source and documentation                            |
-| `npm run format:check` | Verify formatting                                          |
-| `npm run check`        | Formatting, lint, tests and production build               |
+| Command                | Purpose                                                           |
+| ---------------------- | ----------------------------------------------------------------- |
+| `npm run dev`          | Local Vite development server                                     |
+| `npm run typecheck`    | Strict TypeScript checks for application, config and tests        |
+| `npm run lint`         | Oxlint and React hooks checks                                     |
+| `npm test`             | 36 tests using Node's built-in test runner                        |
+| `npm run build`        | Type-check and produce the local bundle                           |
+| `npm run preview`      | Serve the built bundle locally                                    |
+| `npm run format`       | Format source and documentation                                   |
+| `npm run format:check` | Verify formatting                                                 |
+| `npm run check`        | Formatting, lint, tests and production build                      |
+| `npm run db:start`     | Fresh-stack bootstrap only; read the existing-stack warning below |
+| `npm run db:stop`      | CLI stack stop; do not use on the repaired HOME stack             |
+| `npm run test:db`      | 20 separate real PostgreSQL integration tests                     |
 
 See [Phase 2.9 accessibility verification](docs/phase-2.9-verification.md), [Phase 2.8 portability and audit](docs/phase-2.8-verification.md), [Phase 2.6 verification](docs/phase-2.6-verification.md), [brand analysis](docs/phase-2.6-brand-analysis.md), [supplied specification](docs/phase-2.6-specification.md), and [Phase 3 readiness recommendations](docs/phase-3-readiness.md). Earlier phase reports remain historical records. References to `artifacts/` in those reports describe local verification outputs and source snapshots; that directory is intentionally excluded from Git and is not required to run or test the application.
 
@@ -228,13 +231,15 @@ See [Phase 2.9 accessibility verification](docs/phase-2.9-verification.md), [Pha
 
 **Current:** Phase 2.9 is approved and merged into `main` through [PR #3](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/pull/3), merge commit `d593ab7ae27651409430746b9817a794e31c7d55`. Its branding, Admin/Employee entry and dashboards, bilingual workflows, Impeccable configuration and accessibility improvements form the preserved frontend baseline. All 36 automated tests pass. The application still uses browser-local persistence.
 
-The [Phase 3A architecture proposal](docs/phase-3a-architecture-proposal.md) recommends Supabase PostgreSQL/Auth, ownership and RLS, private invoices, transactional audit, concurrency protection, recovery and operating costs while retaining React/TypeScript/Vite/Tailwind. It is documentation for review only; no backend implementation or production provisioning is authorized. The earlier readiness report remains historical context.
+The [Phase 3A architecture](docs/phase-3a-architecture-proposal.md) was approved and merged through PR #4 as `7fb40c9bfde944a6f7c3cee57da822a164801890`. The [Phase 3B database foundation](docs/phase-3b-database-foundation.md) prepares eight tables, protected roles/RLS, transactional shipment commands and a separate local integration suite on `feature/phase-3b-database-foundation`. It preserves React/TypeScript/Vite/Tailwind and the approved UI. The approved HOME/SCHOOL workflow was merged as `9224acc3be9d9bbc2b2f5c0d7329ef10b5d235cb` through PR #6 and is integrated into this candidate branch. PR #5 still awaits separate merge approval. Production provisioning and connecting the application are not authorized. The earlier readiness report remains historical context.
+
+The existing HOME database environment is verified and does not need installation or bootstrap repeated. Follow the [verified HOME restart procedure](docs/home-localhost-repair-2026-10-27.md) for existing-container Docker start/stop. Do not run generic CLI stop/start, stack recreation or project-label cleanup on that repaired stack: these can restore wildcard port publication or remove retained rollback containers. With services already healthy, run `npm run test:db`, local schema lint and `npm run check`. For a fresh computer/project, read the Phase 3B runbook and verify the dedicated existing data and localhost bindings before bootstrap or migration work. Supabase CLI **2.122.0** remains pinned; no hosted login/link, paid project or production connection is needed. Git transfers source and migrations, not Docker volumes, tool installations or browser-local data.
 
 1. **Phase 3, after approval:** production authentication, server-verified roles, PostgreSQL persistence, API validation, row-level security, private invoice storage, transactional audit events and durable daily-email scheduling.
 2. **Production readiness:** authorization and storage integration tests, concurrent numbering/edit protection, backup/restore validation, accessibility and browser/device coverage, monitoring and recovery procedures.
 3. **Controlled release:** staging validation, business acceptance and a separately authorized production deployment. Hosting, domain and production-service configuration remain future work.
 
-See the [technical readiness report](docs/phase-3-readiness.md) for the proposed data model and integration boundaries. Phase 3 implementation has not started.
+See the [Phase 3B runbook](docs/phase-3b-database-foundation.md) for the implemented local foundation, test coverage, boundaries and unresolved production decisions. The frontend still uses its original demo persistence; no browser-to-database adapter has been connected.
 
 ## Constraints and limitations
 
@@ -242,4 +247,4 @@ There is no real authentication/authorization, application backend, production d
 
 The print action delegates to the browser. Use a normal browser's Print → Save as PDF. Native print-preview automation was blocked during testing; the print stylesheet was reviewed, but no PDF file was generated or visually certified. Real-device touch testing, Safari/Firefox and an exhaustive accessibility audit remain outside this verification run.
 
-The company website and its repository are unchanged. No deployment, DNS changes, production database connection or external email configuration has been performed. This private application repository is the authorized source repository for future development. Phase 3 requires explicit approval.
+The company website and its repository are unchanged. No deployment, DNS changes, production database connection or external email configuration has been performed. This private application repository is the authorized source repository for future development. Further integration and production work require explicit approval.

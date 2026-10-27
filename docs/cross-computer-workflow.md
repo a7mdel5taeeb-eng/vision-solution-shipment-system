@@ -24,7 +24,7 @@ The script verifies the exact application origin, branch and upstream; displays 
 
 If synchronization stops, preserve the work and inspect it. Do not run reset/clean, force a checkout or automatically stash. A branch without tracking requires deliberate selection of its matching origin branch. Main updates and feature merges require separate approval. When a branch switch is needed, first verify a clean tree and use `git switch --no-overwrite-ignore <approved-branch>`; review ignored-file collisions rather than overwriting them.
 
-Until this maintenance PR is reviewed and integrated, the Phase 3B branch does not contain these new scripts/status files. Do not copy database code into the maintenance branch or merge PR #5 to get workflow tooling. Use the school checkpoint's manual Git inspection/fetch/safe-switch/fast-forward steps on Phase 3B, then integrate reviewed workflow files later under explicit approval. Read tools/scripts from the checkout they belong to; they target their own repository root.
+Workflow PR #6 is approved and merged into main as `9224acc3be9d9bbc2b2f5c0d7329ef10b5d235cb`. The user authorized integrating that verified main into the existing Phase 3B branch; both branches now contain the workflow tooling, while Phase 3B itself still awaits separate merge approval. Do not copy unapproved database code into unrelated maintenance branches. Read tools/scripts from the checkout they belong to; they target their own repository root.
 
 ## End every approved session
 
@@ -59,7 +59,7 @@ The HOME environment and localhost repair are complete. Do not repeat installati
 
 Do not run `npm run db:stop`, `supabase stop`, `npm run db:start`, stack recreation or project-label cleanup on the repaired HOME stack as a generic setup step. The pinned CLI can recreate wildcard publication or remove retained rollback containers. Never start a rollback PostgreSQL container while its replacement uses the same volume. The failed bridge-default setting is not the active security mechanism; explicit loopback publishing is.
 
-Run database checks from the approved database branch (`feature/phase-3b-database-foundation`, verified checkpoint `f290bfe0ae47126da1d56d08d56ff50c1a59291d` until approved integration). Use its existing pinned dependencies and dedicated local Linux Docker context. With the existing stack already healthy:
+Run database checks from the approved database branch (`feature/phase-3b-database-foundation`, original school checkpoint `f290bfe0ae47126da1d56d08d56ff50c1a59291d`, now integrating approved main; use PROJECT_STATUS and the verified PR #5 head for the current revision). Use its existing pinned dependencies and dedicated local Linux Docker context. With the existing stack already healthy:
 
 ```powershell
 npx --no-install supabase migration list --local
@@ -84,4 +84,4 @@ The harness uses new disposable bare repositories and Windows PowerShell 5.1. It
 
 Docker volumes and PostgreSQL data, browser localStorage, environment secrets, local tool installations, generated Impeccable files/hook consent, running development servers and Codex conversation history remain on their own computer. A clone is not a database backup. Do not export, overwrite, seed, reset or delete operational data as part of switching computers.
 
-Finish by reporting readiness and remaining approvals. Phase 3B and this maintenance PR must be reviewed independently. Phase 3C remains stopped until explicitly scoped and approved.
+Finish by reporting readiness and remaining approvals. PR #6 is merged; Phase 3B PR #5 remains an independently reviewed candidate requiring separate merge approval. Phase 3C remains stopped until explicitly scoped and approved.

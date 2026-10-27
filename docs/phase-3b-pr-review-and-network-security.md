@@ -2,6 +2,8 @@
 
 Reviewed 27 October 2026, Asia/Riyadh. This report does not authorize merging or Phase 3C implementation.
 
+**Historical review:** the OPEN PR/head references below describe the original review. PR #6 was subsequently approved and merged as `9224acc3be9d9bbc2b2f5c0d7329ef10b5d235cb`, and the user authorized its integration into PR #5. The database candidate still requires separate merge approval. Read [PROJECT_STATUS](PROJECT_STATUS.md) and PR #5 for current integration results and the verified source checkpoint.
+
 ## Local network finding and tested approaches
 
 The installed Supabase CLI is pinned to **2.122.0**. Its actual start help supports a custom `--network-id`, but no host-bind-address flag. The existing API 54321 and PostgreSQL 54322 containers have empty HostIp in their published-port configuration; Docker resolves them to `0.0.0.0` and `::`.
