@@ -29,9 +29,17 @@ export function createLocalAuthClient(
         const url = new URL(
           typeof input === 'string' ? input : input instanceof URL ? input.href : input.url,
         )
-        // This milestone has no data adapter, remote endpoint or redirect-token flow.
-        if (url.origin !== new URL(config.url).origin || !url.pathname.startsWith('/auth/v1/')) {
-          return Promise.reject(new Error('Only local Auth requests are enabled'))
+        const method = (
+          init?.method ?? (input instanceof Request ? input.method : 'GET')
+        ).toUpperCase()
+        const selfLookup =
+          url.pathname === '/rest/v1/rpc/get_my_account' && method === 'POST' && !url.search
+        // No shipment endpoints or generic Data API access in this milestone.
+        if (
+          url.origin !== new URL(config.url).origin ||
+          (!url.pathname.startsWith('/auth/v1/') && !selfLookup)
+        ) {
+          return Promise.reject(new Error('Only local Auth and self-account lookup are enabled'))
         }
         const timeout = AbortSignal.timeout(10000)
         return transport(input, {

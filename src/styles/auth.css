@@ -74,3 +74,16 @@
 .auth-confirmed {
   color: var(--success);
 }
+.auth-mfa {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--border);
+}
+.auth-mfa-qr {
+  width: min(100%, 208px);
+  height: auto;
+  align-self: center;
+  background: white;
+}

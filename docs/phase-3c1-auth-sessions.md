@@ -1,6 +1,6 @@
 # Phase 3C.1 — local Auth sessions
 
-**Phase 3C.1 implemented and verified on HOME, 28 October 2026; ready for project-manager review.** Branch `feature/phase-3c1-auth-sessions`, existing draft PR #9. Phase 3B is approved/merged as `7aaebaf608b2e09211c51a25d2974e47ae80aa71`. PR #9 remains Draft and unmerged. Phase 3C.2 and later remain out of scope.
+**Historical completed Phase 3C.1 report.** PR #9 was approved and merged at `c9c15347d5fc95075ade8438311479b3cb07ac0c`. The verification below records that milestone. Current Phase 3C.2 authorization and acceptance are recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md) and the [Phase 3C.2 report](phase-3c2-secure-accounts-mfa.md); older pending-approval wording below is historical.
 
 ## Approved local Auth repair — completed
 

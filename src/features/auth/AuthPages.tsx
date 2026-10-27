@@ -1,13 +1,12 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
-import { LockKeyhole, LogOut, RefreshCw, ShieldCheck } from 'lucide-react'
+import { LockKeyhole } from 'lucide-react'
 import { useAuth } from '../../app/auth/auth-context'
 import type { AuthProblem } from '../../app/auth/session-store'
 import { Brand } from '../../app/layout/Brand'
 import { AppearanceControls } from '../../app/layout/AppearanceControls'
 import { useLocale } from '../../shared/i18n/locale-context'
 import { Button } from '../../shared/ui/Primitives'
-import { formatDate } from '../../shared/lib/dates'
 
 export function AuthFrame({ children }: { children: ReactNode }) {
   const { t } = useLocale()
@@ -165,46 +164,6 @@ export function AuthLoginPage() {
           {state.operation === 'signin' ? t.authSigningIn : t.authSignIn}
         </Button>
       </form>
-    </AuthFrame>
-  )
-}
-
-export function AuthWorkspacePage() {
-  const { t, locale } = useLocale()
-  const { state, store } = useAuth()
-  return (
-    <AuthFrame>
-      <ShieldCheck className="auth-confirmed" size={28} aria-hidden="true" />
-      <h1>{t.authSessionTitle}</h1>
-      <p>{t.authSessionDescription}</p>
-      <dl className="auth-details">
-        <div>
-          <dt>{t.authAccount}</dt>
-          <dd>
-            <bdi>{state.user?.email}</bdi>
-          </dd>
-        </div>
-        <div>
-          <dt>{t.authSessionUntil}</dt>
-          <dd>{state.expiresAt ? formatDate(state.expiresAt, locale) : '—'}</dd>
-        </div>
-      </dl>
-      <h2>{t.authScopeTitle}</h2>
-      <p>{t.authScopeDescription}</p>
-      <div className="auth-actions">
-        <Button
-          variant="secondary"
-          onClick={() => void store.refresh()}
-          disabled={!!state.operation}
-        >
-          <RefreshCw size={16} aria-hidden="true" />
-          {t.authRefresh}
-        </Button>
-        <Button onClick={() => void store.signOut()} disabled={!!state.operation}>
-          <LogOut size={16} aria-hidden="true" />
-          {t.authSignOut}
-        </Button>
-      </div>
     </AuthFrame>
   )
 }

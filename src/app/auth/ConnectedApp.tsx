@@ -2,9 +2,9 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import {
   AuthConfigurationPage,
   AuthLoginPage,
-  AuthWorkspacePage,
   ProtectedAuthRoute,
 } from '../../features/auth/AuthPages'
+import { AccountWorkspacePage } from '../../features/auth/AccountWorkspacePage'
 import { AuthProvider } from './AuthProvider'
 import { readAuthConfiguration } from './config'
 import { createLocalAuthClient } from './client'
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   {
     element: <ProtectedAuthRoute />,
     errorElement: <ErrorPage />,
-    children: [{ path: '/workspace', element: <AuthWorkspacePage /> }],
+    children: [{ path: '/workspace', element: <AccountWorkspacePage /> }],
   },
   { path: '*', element: <Navigate to="/workspace" replace /> },
 ])
