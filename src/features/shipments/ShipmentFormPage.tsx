@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useId, useRef, useState, type FormEvent } from 'react'
 import { ArrowLeft, Check, FileImage, Info, Save } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDemo } from '../../app/demo/demo-context'
@@ -8,13 +8,19 @@ import {
   canAccess,
   displayField,
   EMPTY_FIELDS,
+  SHIPMENT_FIELD_MAX_LENGTH,
   type Shipment,
   type ShipmentField,
   type ShipmentFields,
 } from './model'
 import { fieldLabels } from './field-labels'
 import { ShipmentUnavailable } from './ShipmentUnavailable'
-import { validDriverPhone } from '../../shared/lib/phone'
+import {
+  firstInvalidField,
+  SHIPMENT_FORM_FIELDS,
+  validateShipmentForm,
+  type FormField,
+} from './form-validation'
 
 export function ShipmentFormPage() {
   const { id } = useParams()
@@ -40,17 +46,21 @@ function ShipmentForm({ row }: { row?: Shipment }) {
   )
   const [readingImage, setReadingImage] = useState(false)
   const [phoneTouched, setPhoneTouched] = useState(false)
-  const phoneInvalid = !validDriverPhone(fields.driverPhone ?? '')
+  const [submitted, setSubmitted] = useState(false)
+  const errors = validateShipmentForm(fields)
+  const formId = useId()
   const upload = useRef<HTMLInputElement>(null)
-  const phoneInput = useRef<HTMLInputElement>(null)
+  const inputs = useRef<Partial<Record<FormField, HTMLInputElement | null>>>({})
   function setField(key: ShipmentField, value: string) {
     setFields((current) => ({ ...current, [key]: value }))
   }
   function submit(event: FormEvent) {
     event.preventDefault()
     setPhoneTouched(true)
-    if (phoneInvalid) {
-      phoneInput.current?.focus()
+    setSubmitted(true)
+    const firstInvalid = firstInvalidField(errors)
+    if (firstInvalid) {
+      inputs.current[firstInvalid]?.focus()
       return
     }
     const savedId = row?.id ?? `TR-${String(state.nextShipmentNumber).padStart(4, '0')}`
@@ -93,6 +103,11 @@ function ShipmentForm({ row }: { row?: Shipment }) {
         description={row ? t.editDescription : t.newShipmentDescription}
       />
       <form onSubmit={submit} className="shipment-form" noValidate>
+        {submitted && firstInvalidField(errors) && (
+          <p className="form-validation-summary" role="alert">
+            {t.formValidationSummary}
+          </p>
+        )}
         <section className="panel form-panel">
           <div className="section-title">
             <span className="section-number">01</span>
@@ -103,65 +118,64 @@ function ShipmentForm({ row }: { row?: Shipment }) {
             <Check className="section-decoration" size={22} aria-hidden="true" />
           </div>
           <div className="form-grid">
-            {(
-              [
-                'customer',
-                'origin',
-                'destination',
-                'truck',
-                'driver',
-                'driverPhone',
-                'cargo',
-              ] as const
-            ).map((key) => (
-              <label
-                className={`form-field ${key === 'cargo' || key === 'customer' || key === 'truck' ? 'field-wide' : ''}`}
-                key={key}
-              >
-                <span>
-                  {t[fieldLabels[key]]}{' '}
-                  {key === 'driverPhone' ? (
-                    <small className="optional-label">{t.optional}</small>
-                  ) : (
-                    <em>*</em>
-                  )}
-                </span>
-                <input
-                  ref={key === 'driverPhone' ? phoneInput : undefined}
-                  name={key}
-                  aria-label={key === 'driverPhone' ? t.driverPhone : undefined}
-                  type={key === 'driverPhone' ? 'tel' : 'text'}
-                  inputMode={key === 'driverPhone' ? 'tel' : undefined}
-                  dir={key === 'driverPhone' ? 'ltr' : undefined}
-                  required={key !== 'driverPhone'}
-                  maxLength={key === 'driverPhone' ? 64 : 200}
-                  value={fields[key] ?? ''}
-                  onBlur={key === 'driverPhone' ? () => setPhoneTouched(true) : undefined}
-                  aria-invalid={
-                    key === 'driverPhone' && phoneTouched && phoneInvalid ? true : undefined
-                  }
-                  aria-describedby={
-                    key === 'driverPhone'
-                      ? phoneTouched && phoneInvalid
-                        ? 'driver-phone-error'
-                        : 'driver-phone-help'
-                      : undefined
-                  }
-                  autoComplete="off"
-                  onChange={(event) => setField(key, event.target.value)}
-                />
-                {key === 'driverPhone' &&
-                  (phoneTouched && phoneInvalid ? (
-                    <small id="driver-phone-error" className="form-error" role="alert">
-                      {t.invalidDriverPhone}
+            {SHIPMENT_FORM_FIELDS.map((key) => {
+              const error =
+                submitted || (key === 'driverPhone' && phoneTouched) ? errors[key] : undefined
+              const errorId = `${formId}-${key}-error`
+              const helpId = `${formId}-${key}-help`
+              return (
+                <label
+                  className={`form-field ${key === 'cargo' || key === 'customer' || key === 'truck' ? 'field-wide' : ''}`}
+                  key={key}
+                >
+                  <span id={`${formId}-${key}-label`}>
+                    {t[fieldLabels[key]]}{' '}
+                    {key === 'driverPhone' ? (
+                      <small className="optional-label">{t.optional}</small>
+                    ) : (
+                      <em>*</em>
+                    )}
+                  </span>
+                  <input
+                    ref={(element) => {
+                      inputs.current[key] = element
+                    }}
+                    name={key}
+                    aria-labelledby={key === 'driverPhone' ? undefined : `${formId}-${key}-label`}
+                    aria-label={key === 'driverPhone' ? t.driverPhone : undefined}
+                    type={key === 'driverPhone' ? 'tel' : 'text'}
+                    inputMode={key === 'driverPhone' ? 'tel' : undefined}
+                    dir={key === 'driverPhone' ? 'ltr' : undefined}
+                    required={key !== 'driverPhone'}
+                    maxLength={key === 'driverPhone' ? 64 : SHIPMENT_FIELD_MAX_LENGTH}
+                    value={fields[key] ?? ''}
+                    onBlur={key === 'driverPhone' ? () => setPhoneTouched(true) : undefined}
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? errorId : key === 'driverPhone' ? helpId : undefined}
+                    autoComplete="off"
+                    onChange={(event) => setField(key, event.target.value)}
+                  />
+                  {error ? (
+                    <small
+                      id={errorId}
+                      className="form-error"
+                      role={key === 'driverPhone' ? 'alert' : undefined}
+                    >
+                      {t[error]
+                        .replace('{field}', t[fieldLabels[key]])
+                        .replace(
+                          '{limit}',
+                          new Intl.NumberFormat(locale).format(SHIPMENT_FIELD_MAX_LENGTH),
+                        )}
                     </small>
-                  ) : (
-                    <small id="driver-phone-help" className="field-help">
+                  ) : key === 'driverPhone' ? (
+                    <small id={helpId} className="field-help">
                       {t.driverPhoneHelp}
                     </small>
-                  ))}
-              </label>
-            ))}
+                  ) : null}
+                </label>
+              )
+            })}
           </div>
         </section>
         <details
