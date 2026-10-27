@@ -28,7 +28,7 @@ Until this maintenance PR is reviewed and integrated, the Phase 3B branch does n
 
 ## End every approved session
 
-Update `docs/PROJECT_STATUS.md` with the approved task, implemented versus pending features, exact branch, PR links, actual test commands/results, environment blockers, and previous verified synchronization checkpoint. The new commit cannot contain its own eventual hash: report that hash after push and record it in the following status update.
+Update `docs/PROJECT_STATUS.md` with the approved task, implemented versus pending features, exact branch, PR links, actual test commands/results, environment blockers, and previous verified synchronization checkpoint. The new commit cannot contain its own eventual hash: report that hash after push and record it in the following status update. GitHub is the central reference for connected assistants: update the relevant PR description or an explicitly authorized summary comment for every approved milestone. After the approved commit/push, include the exact verified remote hash and distinguish local executed tests from historical evidence. Keep both the status document and PR readable without local screenshots or chat history; never upload backups, credentials or runtime files.
 
 Review `git diff`, `git diff --check`, each selected file, and all outgoing commits. Exclude real business records, credentials, environment files, machine settings, generated hooks, binaries, builds and exports. The script's pattern scan is a guard, not proof that arbitrary files contain no sensitive information. Review manually before passing approval switches.
 
@@ -53,23 +53,24 @@ Every end check runs `npm run check`, including formatting, Oxlint, application 
 
 After a normal, non-forced push, the script compares `HEAD` with the exact remote branch hash. Only a match produces `VERIFIED`. A concurrent push is rejected by Git. Report branch, full hash and PR URL; do not claim backup success from a local commit or push attempt alone. PR creation/review is separate; never automatically merge.
 
-## Database verification after the HOME restart
+## Database verification and the existing HOME stack
 
-Work only on `feature/phase-3b-database-foundation`, currently checkpoint `f290bfe0ae47126da1d56d08d56ff50c1a59291d`. Read its runbook. Verify Docker's context endpoint is local (`npipe:`/`unix:`) and its OS is Linux. Inspect existing containers and volumes; identify `supabase_db_vision-solution-local` and the dedicated `vision-solution-local` configuration, ports 54321/54322. Do not print or commit local keys.
+The HOME environment and localhost repair are complete. Do not repeat installation, restart containers or apply migrations as part of routine reporting. The dedicated PostgreSQL volume and original stopped rollback containers must be preserved. For an actual restart of the existing stack, follow the [verified HOME repair/restart procedure](home-localhost-repair-2026-10-27.md), which checks bindings and uses Docker start/stop on the expected existing containers.
 
-After verifying any existing project database and preserving its data:
+Do not run `npm run db:stop`, `supabase stop`, `npm run db:start`, stack recreation or project-label cleanup on the repaired HOME stack as a generic setup step. The pinned CLI can recreate wildcard publication or remove retained rollback containers. Never start a rollback PostgreSQL container while its replacement uses the same volume. The failed bridge-default setting is not the active security mechanism; explicit loopback publishing is.
+
+Run database checks from the approved database branch (`feature/phase-3b-database-foundation`, verified checkpoint `f290bfe0ae47126da1d56d08d56ff50c1a59291d` until approved integration). Use its existing pinned dependencies and dedicated local Linux Docker context. With the existing stack already healthy:
 
 ```powershell
-npm run db:start
 npx --no-install supabase migration list --local
-npx --no-install supabase migration up --local
 npm run test:db
 npx --no-install supabase db lint --local --level warning
 npm run check
-npm run dev -- --host 0.0.0.0
 ```
 
-Do not start a second preview if port 5173 already belongs to this project. On a fresh project, start may already apply both migrations; confirm their recorded versions before applying pending migrations. On an existing database, inspect first and stop on conflicts rather than resetting. Never run hosted `login`, `link`, `db push`, reset, volume removal or operational imports. Database tests create fictional isolated fixtures and clean up only their own records. They do not prove production Auth/JWT/MFA or Storage behavior.
+These commands do not authorize a reset, migration edit/replay, new stack, hosted login/link/push, volume removal or operational import. Inspect any pending migration and existing data before separately approved migration work. Fresh computer setup must follow the database runbook and verify its own bindings; HOME tool installations and volumes are not transferred by Git.
+
+Keep the existing preview running. Open http://127.0.0.1:5173/ rather than starting a second process when it already belongs to this project. Database tests create fictional isolated fixtures and clean up only their own records; SQL-claim tests do not prove real Auth/JWT/MFA or Storage behavior.
 
 ## Offline script verification
 
