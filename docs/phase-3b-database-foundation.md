@@ -64,6 +64,8 @@ The future UI adapter must treat errors as typed domain results, retain unsaved 
 
 ## Local setup on either Windows computer
 
+**Existing HOME exception:** this setup section records the original fresh-project procedure. Do not run it on the already repaired HOME stack. Use the [existing-stack guidance](#existing-home-stack-after-approved-workflow-integration) and [verified restart runbook](home-localhost-repair-2026-10-27.md) instead; installation, npm ci and CLI stack recreation are not part of this integration.
+
 The user explicitly authorized installing Docker Desktop and a pinned Supabase CLI during this phase. Installed CLI **2.122.0** is an exact development dependency in `package.json` and `package-lock.json`; `npm ci` reproduces it on the other computer. Docker Desktop **4.97.0** and its WSL prerequisite were installed on this computer; restarting Docker after WSL setup made the engine available without restarting Windows.
 
 On the other computer, install Docker Desktop and its Windows/WSL prerequisites through the organization's approved process, then start its Linux-container engine. A Windows restart may be required there. Docker is a machine prerequisite, not something transferred by Git. Installation/license and school device permissions must be handled on that computer. See [Docker Windows setup](https://docs.docker.com/desktop/setup/install/windows-install/) and [Microsoft WSL setup](https://learn.microsoft.com/en-us/windows/wsl/install).
@@ -83,7 +85,15 @@ For a new clone, clone first and switch to the branch; preserve any existing wor
 
 The dedicated container is `supabase_db_vision-solution-local`; API/database ports are 54321/54322. Use only the local Docker context. Database tests reject remote Docker endpoints and accept no production connection string. They insert fresh random UUIDs with `example.invalid` emails, assign actual PostgreSQL `authenticated`/`anon` roles and transaction-local identity/AAL claims, execute SQL, then remove only their own fixtures. They never create company users, passwords or send invitations. Test-created identity sequence gaps are expected.
 
-Use `npm run db:stop` to stop this project's local stack while retaining its data. Test scripts never reset a database or apply migrations themselves. Do not run cloud `login`, `link`, `db push`, hosted resets or deployment commands for this phase. Local API keys printed by the CLI are development values; keep all keys and CLI machine state out of Git. The frontend needs no `.env` and remains independent of this stack. Do not run `npm ci` over an active Vite process on Windows; stop it first to avoid native-file locks.
+The CLI `npm run db:stop` instruction applies to the original generic setup only, not the repaired HOME stack; use the existing-container restart runbook below. Test scripts never reset a database or apply migrations themselves. Do not run cloud `login`, `link`, `db push`, hosted resets or deployment commands for this phase. Local API keys printed by the CLI are development values; keep all keys and CLI machine state out of Git. The frontend needs no `.env` and remains independent of this stack. Do not run `npm ci` over an active Vite process on Windows; stop it first to avoid native-file locks.
+
+## Existing HOME stack after approved workflow integration
+
+The generic fresh-setup commands above record the original foundation setup. They are not the restart procedure for the repaired HOME stack. PR #6 is approved and merged as `9224acc3be9d9bbc2b2f5c0d7329ef10b5d235cb`; the user authorized integrating that verified main into this feature branch. PR #5 remains unmerged and needs separate approval.
+
+For the existing HOME database, follow the [verified localhost repair/restart runbook](home-localhost-repair-2026-10-27.md). Do not repeat installation, npm ci, generic CLI stop/start, stack recreation or migration replay during this integration. Keep the existing volume, database identity, generated keys and stopped rollback containers. Generic CLI recreation can undo localhost binding; never start two PostgreSQL containers on the same data directory. With services already running, execute the database suite, local schema lint and project checks. The applied migration files remain byte-for-byte unchanged.
+
+The [central status](PROJECT_STATUS.md) and [HOME/SCHOOL workflow](cross-computer-workflow.md) are now available on this branch. SQL-claim tests remain distinct from real Auth/JWT/MFA integration; Phase 3C is unapproved. No hosted database, production service, email or deployment is connected.
 
 ## Verification and limitations
 
