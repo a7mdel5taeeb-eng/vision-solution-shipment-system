@@ -9,7 +9,7 @@ Premium Arabic/English shipment operations application for Vision & Solution / �
 - **Approved frontend:** Phase 2.9. Official VS asset, local Cairo/Montserrat fonts, accessible form controls, bilingual/RTL support and separate role experiences are preserved.
 - **Approved architecture:** Phase 3A, merged through PR #4. Stable `origin/main` checkpoint: `7fb40c9bfde944a6f7c3cee57da822a164801890`.
 - **Phase 3B candidate:** database implementation `3e3cd72ba47ca2699c951c225ec609396fdb0c6f`; school checkpoint `f290bfe0ae47126da1d56d08d56ff50c1a59291d`; branch `feature/phase-3b-database-foundation`. Implemented and historically tested, but **not approved for merging**.
-- **Current maintenance work:** `chore/cross-computer-development-workflow`, based on the stable main checkpoint. Workflow docs/scripts only; no Phase 3B migrations or dependency changes are included. Maintenance PR awaits review; record its link below once created.
+- **Current maintenance work:** `chore/cross-computer-development-workflow`, based on the stable main checkpoint. Workflow docs/scripts only; no Phase 3B migrations or dependency changes are included. Maintenance [PR #6](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/pull/6) is open and awaits review; no automatic merge is authorized.
 - **Phase 3C:** not started, not scoped, and not authorized by environment setup.
 
 ## Features and boundaries
@@ -27,11 +27,11 @@ Repository: [a7mdel5taeeb-eng/vision-solution-shipment-system](https://github.co
 | Pull request                                                                                                    | Status                                                           |
 | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [#5 — Phase 3B database foundation](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/pull/5) | Open; unmerged; explicit approval required                       |
-| Workflow maintenance PR                                                                                         | To be created from the separate chore branch; no automatic merge |
+| [#6 — HOME/SCHOOL workflow](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/pull/6)         | Open; unmerged; workflow-only branch; explicit approval required |
 
 The home Phase 3B checkout recovered the exact school checkpoint, local and remote `f290bfe0ae47126da1d56d08d56ff50c1a59291d`, with no local work overwritten. There were no stashes or extra worktrees before this maintenance checkout was created. The original desktop checkout remains on the Phase 3B branch; a separate managed worktree holds maintenance changes. Local main was intentionally not changed during recovery.
 
-The last verified synchronization checkpoint is the school hash above. For the workflow commit that contains this file, use `git rev-parse HEAD` and compare `git ls-remote --heads origin <active-branch>`; a file cannot embed its own eventual commit hash. Record each **previous verified** checkpoint in the next session update and report the new hash externally after pushing.
+Verified maintenance publication: `61945cd1c68d16c562cf7d356cd31b8a9e751fad` was pushed to the separate chore branch and its remote hash matched. PR #6 was then opened. The school source checkpoint remains unchanged as recorded above. For the workflow commit that contains this file, use `git rev-parse HEAD` and compare `git ls-remote --heads origin <active-branch>`; a file cannot embed its own eventual commit hash. Record each **previous verified** checkpoint in the next session update and report the new hash externally after pushing.
 
 School recovery instructions: [computer-switch checkpoint](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/blob/f290bfe0ae47126da1d56d08d56ff50c1a59291d/docs/computer-switch-checkpoint-2026-10-27.md). Database details: [Phase 3B runbook](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/blob/f290bfe0ae47126da1d56d08d56ff50c1a59291d/docs/phase-3b-database-foundation.md). They live on the unmerged database branch and are intentionally not copied into this maintenance tree.
 
@@ -66,7 +66,7 @@ Earlier browser recovery checks verified the Arabic/English entry and dashboards
 
 ## Outstanding tasks / known issues
 
-1. Finish and verify this maintenance PR without merging PR #5 or main automatically.
+1. Review the published maintenance PR #6; its scripts and status remain isolated until explicit integration approval. Do not merge either PR automatically.
 2. Obtain approval for a Windows restart; save work first. WSL cannot start its Linux VM until Windows activates the newly enabled feature. Do not bypass this restriction or restart without approval.
 3. Complete Docker first-run setup; the installer did not auto-accept its subscription agreement. The user must approve any agreement/trust prompts. Verify local Linux engine/context and inspect existing project containers/volumes before starting Supabase.
 4. On the Phase 3B checkout, start the dedicated local stack, inspect migration state, safely apply only pending committed migrations, run `npm run test:db`, and run local database lint. Never reset or delete volumes to resolve errors.
