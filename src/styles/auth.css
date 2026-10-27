@@ -1,0 +1,76 @@
+/* An extension of the approved operational tokens; no demo selectors are changed. */
+.auth-main {
+  width: min(100% - 32px, 540px);
+  margin: 24px auto 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: stretch;
+}
+.auth-mode {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--accent);
+  font-weight: 650;
+}
+.auth-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(20px, 4vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.auth-panel h1 {
+  font-size: clamp(23px, 3vw, 28px);
+  letter-spacing: -0.025em;
+}
+.auth-panel p,
+.auth-help {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+.auth-help {
+  font-size: 13px;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-block-start: 8px;
+}
+.auth-form input {
+  min-height: 46px;
+  font-size: 16px;
+}
+.auth-panel .auth-error {
+  color: var(--danger);
+}
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block-start: 8px;
+}
+.auth-actions .button {
+  flex: 1 1 auto;
+  min-height: 44px;
+}
+.auth-details {
+  margin: 8px 0;
+  display: grid;
+  gap: 14px;
+}
+.auth-details dt {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.auth-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.auth-confirmed {
+  color: var(--success);
+}

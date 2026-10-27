@@ -2,13 +2,21 @@
 
 **Approved frontend baseline: Phase 2.9 — Accessibility Fixes & UI Hardening · v0.2.0**
 
-A bilingual, responsive shipment operations workspace built on the existing Phase 1 foundation. All people, customers, trucks and shipments in the seeded dataset are fictional. The application is entirely local: no authentication provider, database, email service, DNS or hosting is connected.
+A bilingual, responsive shipment operations workspace built on the existing Phase 1 foundation. All people, customers, trucks and shipments in the seeded dataset are fictional. Demo Mode keeps shipment operations in browser-local storage. A separate opt-in Connected Mode now verifies sessions against local Supabase Auth; no cloud project, external email service, DNS or hosting is connected.
 
 **Source repository:** [a7mdel5taeeb-eng/vision-solution-shipment-system](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system) · Private · Default branch: `main`.
 
 The application is a separate project from the company's public marketing website. The future product address is `system.vsolutions.co`; it has not been deployed.
 
-For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow is approved and merged through PR #6. This feature branch combines that workflow with the still-unmerged Phase 3B database candidate; the frontend remains browser-local.
+For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow and Phase 3B database foundation are approved and merged through PRs #6 and #5. Phase 3C.1 remains isolated in draft PR #9 for review.
+
+## Phase 3C.1 local authentication checkpoint
+
+Phase 3B is approved and merged into main at `7aaebaf608b2e09211c51a25d2974e47ae80aa71`. Local Auth session development is isolated on `feature/phase-3c1-auth-sessions`, draft PR #9. Demo Mode remains the default and existing shipment workflows remain browser-local. `npm run dev:connected` opens a separate local preview on 5174; no cloud project or production service is used.
+
+Local email/password login, session restoration/refresh, protected navigation and logout are implemented and verified. The owner-approved HOME Auth-only repair enabled the email provider while retaining disabled public signup, anonymous sign-in and SMTP. All 13 real Auth tests passed, alongside 41 application, 20 database and 20 workflow tests. English desktop and Arabic mobile browser flows passed. See the [local Auth setup and actual test report](docs/phase-3c1-auth-sessions.md) and [central status](docs/PROJECT_STATUS.md).
+
+The connected UI contains only sign-in/session states; real Admin/Employee account provisioning, MFA and live shipment operations belong to later approved milestones. Demo role selection never grants connected permissions. Use `npm run auth:fixture` only when a fictional local fixture and connected configuration do not already exist; its password stays in ignored `local-data/auth-preview-account.local.json`. Keep private CLI keys, passwords and environment/runtime files out of Git. PR #9 remains Draft and unmerged.
 
 ## Technology stack
 

@@ -1,8 +1,28 @@
 # Vision & Solution — project status
 
-Updated 27 October 2026, Asia/Riyadh. GitHub is the central source for approved code, open candidates and milestone reports. Results below distinguish this HOME integration from historical SCHOOL evidence.
+> **CURRENT PHASE 3C.1 CHECKPOINT — 28 October 2026. Local Auth sessions implemented and verified; ready for project-manager review.**
+>
+> Phase 3B is approved/merged into main at `7aaebaf608b2e09211c51a25d2974e47ae80aa71`. Existing branch `feature/phase-3c1-auth-sessions` and draft PR #9 were safely recovered at project-manager handoff `6f4fcbc6c4b6771d7a28de51e4fb0c45b518e123`; no duplicate branch or PR was created. Local main was fast-forwarded to the approved merge. No local work, Docker data, migrations or browser records were overwritten.
+>
+> **Authorized implementation:** official Supabase JS client 2.118.0; isolated opt-in Connected Mode at 5174; email/password/session/refresh/logout controller, server-verified route boundary and bilingual branded UI; default demo at 5173 remains unchanged. No 3C.2 account-access provisioning/MFA, connected shipment operations or production services are implemented. See [implementation/setup report](phase-3c1-auth-sessions.md). The existing broader Phase 3C plan remains unchanged and historical approval wording in it is superseded by the current user's 3C.1-only authorization.
+>
+> **Approved Auth-only exception completed:** after explicit owner approval and a fresh verified private PostgreSQL/configuration backup, only Auth was replaced, preserving its exact image, keys, internal address, aliases and other settings. Only the email provider changed to enabled; global public signup, anonymous sign-in and SMTP remain disabled. The original Auth is retained stopped for rollback. API/PostgreSQL/REST identities, mounts and localhost bindings are unchanged. All eight application tables/content, applied migrations and database cluster were verified against the baseline after fixture cleanup. No database reset, restore, volume deletion or migration change occurred. See the [repair/setup and verification report](phase-3c1-auth-sessions.md) before any local service recreation.
+>
+> **Actual HOME checks:** **13/13 real local Auth integration tests, 41/41 unit/application tests, 20/20 database regressions and 20/20 workflow tests passed**. Formatting, Oxlint, TypeScript, both mode builds, both browser credential scans and warning-level schema lint passed. The Auth suite includes real login/incorrect credentials, denied public signup/anonymous sign-in, session persistence/refresh, actually expired/tampered tokens, logout/revocation, offline retry, late-response safety, demo-storage isolation and HTTP denial of operational access despite forged admin metadata. The pre-approval provider failures are resolved; one ES256 expiry-fixture correction was verified without changing existing signing keys.
+>
+> **Browser acceptance:** real fictional-account login, wrong-password feedback, reload, manual refresh, second-tab restoration and cross-tab logout passed. A protected route and reload return to login after sign-out; role query parameters do not open operational routes. English desktop/light and Arabic RTL mobile/light/dark were checked, with no mobile horizontal overflow. Full-page mobile capture had a browser raster limitation; inspected viewport captures show the complete responsive panel. The separate demo entry remains available. Both local previews stay running: Demo `http://127.0.0.1:5173/`, Connected `http://127.0.0.1:5174/`. No browser storage was cleared.
+>
+> One generated fictional local Auth-only preview identity is retained without a profile/application role. Its password is only in ignored `local-data/auth-preview-account.local.json`; private CLI/signing credentials, public local configuration, backups, raw logs and screenshots remain local/ignored. Integration identities were cleaned up without touching the preview account. No production/cloud, external email or website service is connected.
+>
+> **GitHub reporting and next approval:** publish this verified completion to the existing branch and update draft PR #9, then verify its exact remote hash. Previous published implementation checkpoint: `1116e8c1030fc890a79e1c8d68f14da3bac4e557`; the final commit cannot embed its own hash, so use the verified PR #9 head/description for the new checkpoint. Stop for project-manager review. PR #9 merge, Phase 3C.2 accounts/MFA, connected shipments, production and deployment remain unapproved. The broader Phase 3C plan is unchanged. The historical report below predates the approved Phase 3B merge and must not override this current block or verified PR metadata.
 
-## Current approved and candidate state
+---
+
+## Historical PR #6 / PR #5 integration report — 27 October 2026
+
+The following record is retained as historical evidence. Its then-pending PR #5 and Phase 3C approval statements were superseded by the current checkpoint above. GitHub is the central source for current approved code and candidates.
+
+## Historical approved and candidate state
 
 | Item                  | Verified state                                                                                                                                                       |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
