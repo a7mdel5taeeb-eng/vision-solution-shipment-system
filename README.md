@@ -1,6 +1,6 @@
 # Vision & Solution Shipment Management System
 
-**Phase 2.6 — Official Brand Integration & Operational Improvements · v0.2.0**
+**Approved frontend baseline: Phase 2.9 — Accessibility Fixes & UI Hardening · v0.2.0**
 
 A bilingual, responsive shipment operations workspace built on the existing Phase 1 foundation. All people, customers, trucks and shipments in the seeded dataset are fictional. The application is entirely local: no authentication provider, database, email service, DNS or hosting is connected.
 
@@ -224,7 +224,9 @@ See [Phase 2.9 accessibility verification](docs/phase-2.9-verification.md), [Pha
 
 ## Development status and roadmap
 
-**Current:** Phase 2.6 frontend prototype, including official branding, owner-scoped shipment workflows, optional driver phone, reports and browser-local persistence. The source repository provides the starting point for future approved phases.
+**Current:** Phase 2.9 is approved and merged into `main` through [PR #3](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/pull/3), merge commit `d593ab7ae27651409430746b9817a794e31c7d55`. Its branding, Admin/Employee entry and dashboards, bilingual workflows, Impeccable configuration and accessibility improvements form the preserved frontend baseline. All 36 automated tests pass. The application still uses browser-local persistence.
+
+The [Phase 3A architecture proposal](docs/phase-3a-architecture-proposal.md) recommends Supabase PostgreSQL/Auth, ownership and RLS, private invoices, transactional audit, concurrency protection, recovery and operating costs while retaining React/TypeScript/Vite/Tailwind. It is documentation for review only; no backend implementation or production provisioning is authorized. The earlier readiness report remains historical context.
 
 1. **Phase 3, after approval:** production authentication, server-verified roles, PostgreSQL persistence, API validation, row-level security, private invoice storage, transactional audit events and durable daily-email scheduling.
 2. **Production readiness:** authorization and storage integration tests, concurrent numbering/edit protection, backup/restore validation, accessibility and browser/device coverage, monitoring and recovery procedures.

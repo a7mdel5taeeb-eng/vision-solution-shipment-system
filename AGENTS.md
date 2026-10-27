@@ -11,6 +11,7 @@
 
 - This is a React 19 + TypeScript + Vite browser-local prototype. Preserve the current architecture: domain rules in `src/features/shipments/model.ts`, local persistence in `src/app/demo/`, shared Riyadh utilities in `src/shared/lib/dates.ts`, typed messages in `src/shared/i18n/`, and role-aware routing in `src/app/router.tsx`.
 - Do not rebuild approved UI/UX or change official Vision & Solution branding, the company website, production hosting, DNS, databases, email delivery, or external services.
+- Phase 2.9 is the officially approved frontend baseline. Preserve its Admin/Employee landing page, separate dashboards, shipment workflows, bilingual support, Impeccable configuration and accessibility improvements. No major UI redesign is authorized. Phase 3A currently permits an architecture proposal only; backend implementation requires separate approval.
 - Keep Arabic and English equally supported, including RTL/LTR behavior, Arabic typography, labels, errors, and phone input. Use existing tokens, translations, logical CSS properties, and accessible primitives.
 
 ## Approved workflow and roles
