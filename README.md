@@ -45,6 +45,32 @@ npm run preview
 
 Open [http://127.0.0.1:4173/](http://127.0.0.1:4173/). The development command above binds to all local interfaces as requested for the preview; the default config and production preview bind to loopback. Building and previewing do not deploy anything. The future application address `system.vsolutions.co` is informational; no domain or production configuration has been changed.
 
+## Branch workflow and working from another computer
+
+GitHub is the project’s source of truth. `main` is the stable, approved baseline; each development phase uses a dedicated feature branch and is merged only with explicit approval. Before any work, inspect the current checkout and changes, then fetch the remote state:
+
+```sh
+git status --short --branch
+git fetch origin --prune
+git branch --show-current
+```
+
+Never discard or overwrite uncommitted changes. For a new phase, start from the current approved remote `main` and create a focused branch, for example `git switch -c qa-performance-phase-2.7 origin/main`. Run `npm run check`, review for accidental secrets or generated files, commit the verified work, push with `git push -u origin <branch>`, and confirm it appears on GitHub. Do not merge or force-push `main` without explicit approval.
+
+To continue on another Windows computer, first finish transferable work on the current machine with a reviewed commit and push. On the other machine, clone if needed, authenticate to GitHub, fetch, and switch to the branch:
+
+```powershell
+git clone https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system.git
+cd vision-solution-shipment-system
+git fetch origin --prune
+git switch <branch>
+git pull --ff-only origin <branch>
+npm ci
+npm run dev -- --host 0.0.0.0
+```
+
+If `git pull --ff-only` refuses because local commits differ, do not force a resolution: inspect `git status`, commit or stash only work you intend to keep, then reconcile deliberately. Browser-local prototype data is intentionally not synchronized by GitHub; only committed source, documentation, and tests transfer between computers.
+
 ## Try the two roles
 
 Open `/` to see the account-selection landing page, then choose a named employee or administrator. No passwords or real accounts are involved. **Logout** returns to the landing page without removing shipment records. The selected demo entry survives refresh within the same tab; a fresh tab starts at account selection.
