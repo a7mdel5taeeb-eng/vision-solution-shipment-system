@@ -1,5 +1,15 @@
 # Vision & Solution — project status
 
+> **CURRENT STATUS — 27 October 2026, after PR #5 approval**  
+> **Phase 3B is APPROVED and merged into `main`.** Actual GitHub merge commit: `7aaebaf608b2e09211c51a25d2974e47ae80aa71`.  
+> **PR #6 HOME/SCHOOL workflow** was already merged at `9224acc3be9d9bbc2b2f5c0d7329ef10b5d235cb`.  
+> **Next authorized task:** implement **Phase 3C.1 only** on `feature/phase-3c1-auth-sessions`: opt-in LOCAL Supabase authentication, login/logout/session refresh and protected route/loading/error states, with the APPROVED demo mode unchanged and default. Do not begin 3C.2–3C.5.  
+> **No implementation code or Phase 3C tests yet:** this paragraph is a planning handoff, not evidence of completion. Keep local-only fictional identities; do not create a cloud project, expose service keys, change DNS, publish production data, deploy or rewrite migrations.  
+> **Source of truth:** [Phase 3C plan](phase-3c-implementation-plan.md), [GitHub tracking issue #7](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/issues/7), and this branch's future PR. Check remote refs and uncommitted local data before switching branches.  
+> **Historical note:** portions of the detailed HOME integration report below predate the actual PR #5 merge and correctly describe the earlier unmerged checkpoint. Treat the above current status and verified GitHub merged PR metadata as authoritative.
+
+---
+
 Updated 27 October 2026, Asia/Riyadh. GitHub is the central source for approved code, open candidates and milestone reports. Results below distinguish this HOME integration from historical SCHOOL evidence.
 
 ## Current approved and candidate state
