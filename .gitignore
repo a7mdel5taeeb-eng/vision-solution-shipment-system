@@ -34,6 +34,10 @@ id_ed25519*
 .agents/
 .vercel/
 
+# Machine-local Supabase CLI state; migrations/config/tests remain versioned.
+/supabase/.temp/
+/supabase/.branches/
+
 # Impeccable skill and provider hooks are recreated by scripts/setup-impeccable.ps1.
 # Commit shared context/toolchain pins, never machine-local consent or runtime state.
 .impeccable/cache/

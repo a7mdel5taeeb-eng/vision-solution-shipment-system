@@ -219,6 +219,9 @@ Extend domain rules in `features/shipments/model.ts`, not only in UI event handl
 | `npm run format`       | Format source and documentation                            |
 | `npm run format:check` | Verify formatting                                          |
 | `npm run check`        | Formatting, lint, tests and production build               |
+| `npm run db:start`     | Start the isolated local Supabase stack (Docker required)  |
+| `npm run db:stop`      | Stop the local stack while retaining its database data     |
+| `npm run test:db`      | 20 separate real PostgreSQL integration tests              |
 
 See [Phase 2.9 accessibility verification](docs/phase-2.9-verification.md), [Phase 2.8 portability and audit](docs/phase-2.8-verification.md), [Phase 2.6 verification](docs/phase-2.6-verification.md), [brand analysis](docs/phase-2.6-brand-analysis.md), [supplied specification](docs/phase-2.6-specification.md), and [Phase 3 readiness recommendations](docs/phase-3-readiness.md). Earlier phase reports remain historical records. References to `artifacts/` in those reports describe local verification outputs and source snapshots; that directory is intentionally excluded from Git and is not required to run or test the application.
 
@@ -226,13 +229,15 @@ See [Phase 2.9 accessibility verification](docs/phase-2.9-verification.md), [Pha
 
 **Current:** Phase 2.9 is approved and merged into `main` through [PR #3](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/pull/3), merge commit `d593ab7ae27651409430746b9817a794e31c7d55`. Its branding, Admin/Employee entry and dashboards, bilingual workflows, Impeccable configuration and accessibility improvements form the preserved frontend baseline. All 36 automated tests pass. The application still uses browser-local persistence.
 
-The [Phase 3A architecture proposal](docs/phase-3a-architecture-proposal.md) recommends Supabase PostgreSQL/Auth, ownership and RLS, private invoices, transactional audit, concurrency protection, recovery and operating costs while retaining React/TypeScript/Vite/Tailwind. It is documentation for review only; no backend implementation or production provisioning is authorized. The earlier readiness report remains historical context.
+The [Phase 3A architecture](docs/phase-3a-architecture-proposal.md) was approved and merged through PR #4 as `7fb40c9bfde944a6f7c3cee57da822a164801890`. The [Phase 3B database foundation](docs/phase-3b-database-foundation.md) prepares eight tables, protected roles/RLS, transactional shipment commands and a separate local integration suite on `feature/phase-3b-database-foundation`. It preserves React/TypeScript/Vite/Tailwind and the approved UI. Production provisioning and connecting the application are not authorized. The earlier readiness report remains historical context.
+
+For local database work, install Docker Desktop/WSL through the approved Windows process, start its Linux engine, then run `npm ci`, `npm run db:start`, `npm run test:db` and `npm run check`. Supabase CLI **2.122.0** is pinned as a development dependency; no cloud login, environment credentials or paid project is needed. See the Phase 3B runbook before using an existing database. Git transfers source and migrations, not database volumes or browser-local data; repeat setup on the school computer.
 
 1. **Phase 3, after approval:** production authentication, server-verified roles, PostgreSQL persistence, API validation, row-level security, private invoice storage, transactional audit events and durable daily-email scheduling.
 2. **Production readiness:** authorization and storage integration tests, concurrent numbering/edit protection, backup/restore validation, accessibility and browser/device coverage, monitoring and recovery procedures.
 3. **Controlled release:** staging validation, business acceptance and a separately authorized production deployment. Hosting, domain and production-service configuration remain future work.
 
-See the [technical readiness report](docs/phase-3-readiness.md) for the proposed data model and integration boundaries. Phase 3 implementation has not started.
+See the [Phase 3B runbook](docs/phase-3b-database-foundation.md) for the implemented local foundation, test coverage, boundaries and unresolved production decisions. The frontend still uses its original demo persistence; no browser-to-database adapter has been connected.
 
 ## Constraints and limitations
 
@@ -240,4 +245,4 @@ There is no real authentication/authorization, application backend, production d
 
 The print action delegates to the browser. Use a normal browser's Print → Save as PDF. Native print-preview automation was blocked during testing; the print stylesheet was reviewed, but no PDF file was generated or visually certified. Real-device touch testing, Safari/Firefox and an exhaustive accessibility audit remain outside this verification run.
 
-The company website and its repository are unchanged. No deployment, DNS changes, production database connection or external email configuration has been performed. This private application repository is the authorized source repository for future development. Phase 3 requires explicit approval.
+The company website and its repository are unchanged. No deployment, DNS changes, production database connection or external email configuration has been performed. This private application repository is the authorized source repository for future development. Further integration and production work require explicit approval.

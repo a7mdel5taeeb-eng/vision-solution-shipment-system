@@ -1,6 +1,6 @@
 # Phase 3A — centralized shipment system architecture proposal
 
-**Status: proposal for review; implementation is not authorized.** Prepared 2026-10-27 against the approved Phase 2.9 frontend. This document recommends a design; it creates no database, authentication configuration, storage, credentials, scheduled jobs, dependencies, or deployment.
+**Status: approved technical baseline.** Prepared 2026-10-27 against the approved Phase 2.9 frontend and approved by the user before merging PR #4. The user has now authorized the isolated [Phase 3B local database foundation](phase-3b-database-foundation.md). Production provisioning, application connection, credentials, scheduled jobs and deployment remain separately gated. The proposal below records the original architecture recommendations; this document itself creates no services.
 
 ## Approved baseline and merge evidence
 
@@ -182,4 +182,4 @@ This branch contains documentation only. A later approved Phase 3A implementatio
 
 Required evidence before production includes real JWT sessions for employee A/B, admin with/without MFA, disabled users and unauthenticated callers. Test direct Data API writes, function execution grants, metadata-role escalation, guessed UUIDs, parent/file/history isolation, deleted shipments and exports. Verify denied actions leave no mutation or audit artifact. Exercise simultaneous creates, duplicate retries, conflicting edits, attachment finalization failures, exactly-96-hour boundaries, Riyadh day boundaries, reopening/report history, and restored sequence/ownership state. Re-run keyboard, responsive, AR/EN and theme checks after integration; the existing tests alone do not prove RLS security.
 
-**Approval remains required before database or backend implementation.** No project, provider account, production credential, public website change, deployment, SMTP delivery or scheduler is created by this proposal.
+**Phase 3B local database foundation is approved; production implementation and application connection require separate approval.** No paid project, provider account, production credential, public website change, deployment, SMTP delivery or scheduler is created by this proposal.
