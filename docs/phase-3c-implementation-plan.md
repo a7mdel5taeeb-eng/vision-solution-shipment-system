@@ -4,7 +4,7 @@
 
 ## Entry gates
 
-1. Complete the localhost network boundary repair and rerun database tests without resetting the existing database. The current Docker build did not honor the documented bridge default in disposable proofs; explicit localhost port publishing did work. Container replacement requires the user's decision because preserving current containers was requested.
+1. Preserve the [approved and verified HOME localhost repair](home-localhost-repair-2026-10-27.md): explicit publishing is applied, the existing volume/data is preserved and fresh database tests passed. Existing-container Docker stop/start retained the bindings. Future CLI recreation or SCHOOL setup requires its own safe verification; do not assume the repair is a portable Supabase setting.
 2. Obtain separate approval decisions for PR #5 (database foundation) and PR #6 (workflow). Reconcile their overlapping AGENTS/README instructions deliberately and rerun checks. Both are individually mergeable against the current main; that does not prove a combined integration.
 3. Agree Phase 3C scope, account bootstrap/recovery rules and invoice-byte handling. Create small focused implementation branches only after approval from the resulting approved base. Never edit the applied Phase 3B migrations; append migrations for new contracts.
 
