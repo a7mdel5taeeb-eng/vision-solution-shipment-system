@@ -1,5 +1,13 @@
 # Vision & Solution — project status
 
+> **CURRENT STATUS — 28 October 2026, after Phase 3C.1 approval**  
+> **PR #9 (Phase 3C.1) was explicitly approved and merged into `main`.** Verified actual merge commit: `c9c15347d5fc95075ade8438311479b3cb07ac0c`. Existing opt-in local Auth + unchanged default Demo now form the approved baseline.  
+> **Phase 3C.2 planning branch only:** `feature/phase-3c2-secure-accounts-mfa`, based directly on that merged commit. Scope: trusted fictional local account bootstrap, backend-controlled protected roles, administrator TOTP/AAL2, real signed-JWT/HTTP authorization and negative tests. No application implementation is included yet; coding and merge remain separate gates.  
+> **Security guardrails:** no production/cloud deployment, no live identities, no public signup, no uncontrolled privileged keys, no manual edits to applied migrations, no Docker reset/volume removal, no database/data loss, no auto-start of 3C.3+. Existing demo and branded login remain unchanged. Administrator recovery and account lifecycle operations are design decisions, not features to silently enable.  
+> The earlier Phase 3C.1 report below is retained as *historical candidate* evidence; any wording claiming PR #9 remains open is superseded by this verified GitHub merge.
+
+---
+
 > **CURRENT PHASE 3C.1 CHECKPOINT — 28 October 2026. Local Auth sessions implemented and verified; ready for project-manager review.**
 >
 > Phase 3B is approved/merged into main at `7aaebaf608b2e09211c51a25d2974e47ae80aa71`. Existing branch `feature/phase-3c1-auth-sessions` and draft PR #9 were safely recovered at project-manager handoff `6f4fcbc6c4b6771d7a28de51e4fb0c45b518e123`; no duplicate branch or PR was created. Local main was fast-forwarded to the approved merge. No local work, Docker data, migrations or browser records were overwritten.
