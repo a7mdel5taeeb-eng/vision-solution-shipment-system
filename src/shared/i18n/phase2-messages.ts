@@ -1,4 +1,7 @@
 export const phase2English = {
+  fieldRequired: '{field} is required.',
+  fieldTooLong: '{field} must be {limit} characters or fewer.',
+  formValidationSummary: 'Check the highlighted fields. Your entries have been kept.',
   phase: 'PHASE 02',
   foundation: 'Interactive prototype',
   foundationShort: 'Local demo workspace',
@@ -235,6 +238,9 @@ export const phase2English = {
 } as const
 
 export const phase2Arabic: Record<keyof typeof phase2English, string> = {
+  fieldRequired: 'يرجى إدخال {field}.',
+  fieldTooLong: 'يجب ألا يتجاوز {field} عدد {limit} حرف.',
+  formValidationSummary: 'راجع الحقول الموضحة أدناه. تم الاحتفاظ بالبيانات التي أدخلتها.',
   phase: 'المرحلة ٠٢',
   foundation: 'نموذج تفاعلي',
   foundationShort: 'مساحة تجريبية محلية',

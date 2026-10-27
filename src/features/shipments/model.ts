@@ -56,6 +56,15 @@ export interface DemoState {
 
 export const HOUR = 3_600_000
 export const OVERDUE_AFTER = 96 * HOUR
+export const REQUIRED_SHIPMENT_FIELDS = [
+  'customer',
+  'origin',
+  'destination',
+  'truck',
+  'driver',
+  'cargo',
+] as const
+export const SHIPMENT_FIELD_MAX_LENGTH = 200
 export const EMPTY_FIELDS: ShipmentFields = {
   customer: '',
   origin: '',
@@ -132,15 +141,11 @@ export function normalizeFields(input: ShipmentFields): ShipmentFields {
     if (typeof value !== 'string') throw new DomainError('requiredFields')
     fields[key] = value.trim()
   }
-  const required: ShipmentField[] = [
-    'customer',
-    'origin',
-    'destination',
-    'truck',
-    'driver',
-    'cargo',
-  ]
-  if (required.some((key) => !fields[key] || fields[key].length > 200))
+  if (
+    REQUIRED_SHIPMENT_FIELDS.some(
+      (key) => !fields[key] || fields[key].length > SHIPMENT_FIELD_MAX_LENGTH,
+    )
+  )
     throw new DomainError('requiredFields')
   if (fields.notes.length > 2000 || fields.invoice.length > 100)
     throw new DomainError('requiredFields')

@@ -213,14 +213,14 @@ Extend domain rules in `features/shipments/model.ts`, not only in UI event handl
 | `npm run dev`          | Local Vite development server                              |
 | `npm run typecheck`    | Strict TypeScript checks for application, config and tests |
 | `npm run lint`         | Oxlint and React hooks checks                              |
-| `npm test`             | 28 tests using Node's built-in test runner                 |
+| `npm test`             | 36 tests using Node's built-in test runner                 |
 | `npm run build`        | Type-check and produce the local bundle                    |
 | `npm run preview`      | Serve the built bundle locally                             |
 | `npm run format`       | Format source and documentation                            |
 | `npm run format:check` | Verify formatting                                          |
 | `npm run check`        | Formatting, lint, tests and production build               |
 
-See [Phase 2.6 verification](docs/phase-2.6-verification.md), [brand analysis](docs/phase-2.6-brand-analysis.md), [supplied specification](docs/phase-2.6-specification.md), and [Phase 3 readiness recommendations](docs/phase-3-readiness.md). Earlier phase reports remain historical records. References to `artifacts/` in those reports describe local verification outputs and source snapshots; that directory is intentionally excluded from Git and is not required to run or test the application.
+See [Phase 2.9 accessibility verification](docs/phase-2.9-verification.md), [Phase 2.8 portability and audit](docs/phase-2.8-verification.md), [Phase 2.6 verification](docs/phase-2.6-verification.md), [brand analysis](docs/phase-2.6-brand-analysis.md), [supplied specification](docs/phase-2.6-specification.md), and [Phase 3 readiness recommendations](docs/phase-3-readiness.md). Earlier phase reports remain historical records. References to `artifacts/` in those reports describe local verification outputs and source snapshots; that directory is intentionally excluded from Git and is not required to run or test the application.
 
 ## Development status and roadmap
 

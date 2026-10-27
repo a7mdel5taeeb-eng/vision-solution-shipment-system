@@ -30,10 +30,10 @@
   border-bottom: 1px solid var(--border);
   background: var(--surface-soft);
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .demo-strip > span {
-  font-size: 9px;
+  font-size: var(--type-meta);
 }
 .demo-user-control {
   display: flex;
@@ -53,7 +53,7 @@
   border: 1px solid var(--border-strong);
   border-radius: 5px;
   background: var(--surface);
-  font-size: 10px;
+  font-size: var(--type-meta);
   font-weight: 650;
 }
 .storage-warning {
@@ -94,7 +94,7 @@ a.metric-card:hover {
   box-shadow: 0 4px 18px #0b586b0a;
 }
 .operational-metrics .metric-top {
-  font-size: 11px;
+  font-size: var(--type-secondary);
 }
 .operational-metrics .metric-value {
   display: flex;
@@ -105,7 +105,7 @@ a.metric-card:hover {
   margin-top: 7px;
 }
 .operational-metrics .metric-card p {
-  font-size: 9px;
+  font-size: var(--type-meta);
 }
 .metric-icon.red {
   color: #c74652;
@@ -184,7 +184,7 @@ a.metric-card:hover {
   color: #8f3440;
 }
 .overdue-heading p {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: #a1656d;
   margin-top: 2px;
 }
@@ -193,7 +193,7 @@ a.metric-card:hover {
   place-items: center;
   background: #fbe1e4;
   color: #b94250;
-  font-size: 9px;
+  font-size: var(--type-meta);
   min-width: 19px;
   height: 19px;
   border-radius: 5px;
@@ -204,7 +204,7 @@ a.metric-card:hover {
   align-items: center;
   gap: 7px;
   color: #ad3c49;
-  font-size: 10px;
+  font-size: var(--type-meta);
   font-weight: 700;
   margin-inline-start: auto;
   white-space: nowrap;
@@ -233,7 +233,7 @@ a.metric-card:hover {
   align-items: center;
 }
 .overdue-card-top > bdi {
-  font-size: 10px;
+  font-size: var(--type-meta);
   font-weight: 800;
   color: #b33c4a;
 }
@@ -245,11 +245,11 @@ a.metric-card:hover {
   color: #bd4150;
   padding: 3px 5px;
   border-radius: 4px;
-  font-size: 8px;
+  font-size: var(--type-meta);
   white-space: nowrap;
 }
 .overdue-card h3 {
-  font-size: 11px;
+  font-size: var(--type-secondary);
   margin-top: 9px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -260,13 +260,13 @@ a.metric-card:hover {
   align-items: center;
   gap: 5px;
   flex-wrap: wrap;
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
   margin-top: 6px;
 }
 .overdue-card small {
   display: block;
-  font-size: 8px;
+  font-size: var(--type-meta);
   color: var(--text-subtle);
   margin-top: 8px;
 }
@@ -296,7 +296,7 @@ a.metric-card:hover {
   font-size: 12px;
 }
 .all-clear p {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
   margin-top: 3px;
 }
@@ -309,7 +309,7 @@ a.metric-card:hover {
   font-size: 14px;
 }
 .dashboard-register .panel-heading p {
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .shipment-toolbar {
   display: flex;
@@ -345,7 +345,7 @@ a.metric-card:hover {
   background: transparent;
   color: var(--text);
   padding: 10px 0;
-  font-size: 11px;
+  font-size: var(--type-secondary);
   min-width: 0;
 }
 .shipment-toolbar select,
@@ -354,7 +354,7 @@ a.metric-card:hover {
   border: 1px solid var(--border-strong);
   border-radius: 6px;
   background: var(--surface);
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text);
   min-height: 37px;
   max-width: 180px;
@@ -367,7 +367,7 @@ a.metric-card:hover {
   width: 100%;
   border-collapse: collapse;
   min-width: 1110px;
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .data-table th {
   padding: 12px 17px;
@@ -377,7 +377,7 @@ a.metric-card:hover {
   background: var(--surface-soft);
   white-space: nowrap;
   border-bottom: 1px solid var(--border);
-  font-size: 9px;
+  font-size: var(--type-meta);
 }
 .data-table td {
   padding: 14px 17px;
@@ -412,7 +412,7 @@ a.metric-card:hover {
 .date-cell small {
   display: block;
   color: var(--text-subtle);
-  font-size: 8px;
+  font-size: var(--type-meta);
   margin-top: 2px;
 }
 .compact-table {
@@ -427,7 +427,7 @@ a.metric-card:hover {
   gap: 5px;
   padding: 4px 7px;
   border-radius: 5px;
-  font-size: 9px;
+  font-size: var(--type-meta);
   font-weight: 700;
   white-space: nowrap;
   line-height: 1.5;
@@ -460,7 +460,7 @@ a.metric-card:hover {
   gap: 3px;
 }
 .late-label {
-  font-size: 8px;
+  font-size: var(--type-meta);
   color: var(--text-subtle);
 }
 .row-actions {
@@ -500,7 +500,7 @@ a.metric-card:hover {
   padding: 14px 20px;
   gap: 15px;
   border-top: 1px solid var(--border);
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
 }
 .pagination > div {
@@ -549,7 +549,7 @@ a.metric-card:hover {
   background: var(--accent);
 }
 .record-tabs span {
-  font-size: 9px;
+  font-size: var(--type-meta);
   padding: 2px 5px;
   background: var(--surface-soft);
   border: 1px solid var(--border);
@@ -558,7 +558,7 @@ a.metric-card:hover {
 .register-note {
   padding: 13px 22px;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: var(--type-secondary);
 }
 .shipment-register > .shipment-toolbar {
   border-top: 0;
@@ -604,7 +604,7 @@ a.metric-card:hover {
   font-size: 13px;
 }
 .chart-heading > span {
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-subtle);
 }
 .distribution-content {
@@ -641,7 +641,7 @@ a.metric-card:hover {
 }
 .donut-chart span {
   color: var(--text-muted);
-  font-size: 9px;
+  font-size: var(--type-meta);
   margin-top: 3px;
 }
 .chart-legend {
@@ -660,7 +660,7 @@ a.metric-card:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: var(--type-secondary);
   color: var(--text-muted);
 }
 .chart-legend strong {
@@ -698,7 +698,7 @@ a.metric-card:hover {
   align-items: center;
   height: 100%;
   gap: 7px;
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
 }
 .bar-track {
@@ -721,7 +721,7 @@ a.metric-card:hover {
   background: #0b9fbc;
 }
 .bar-count {
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text);
   font-weight: 700;
 }
@@ -740,7 +740,7 @@ a.metric-card:hover {
   font-weight: 700;
 }
 .compact-brand-banner p {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: #9dbec8;
   margin-top: 3px;
 }
@@ -756,7 +756,7 @@ a.metric-card:hover {
 }
 .brand-banner-caption {
   margin-inline-start: auto;
-  font-size: 9px;
+  font-size: var(--type-meta);
   letter-spacing: 0.14em;
   color: #6c9eac;
   white-space: nowrap;
@@ -829,7 +829,7 @@ body:has(.modal[open]) {
   flex-direction: column;
   gap: 8px;
   min-width: 0;
-  font-size: 12px;
+  font-size: var(--type-control);
 }
 .form-field > span {
   font-weight: 650;
@@ -846,15 +846,42 @@ body:has(.modal[open]) {
   width: 100%;
   min-width: 0;
   padding: 11px 12px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--control-border);
   border-radius: 6px;
   background: var(--surface);
   color: var(--text);
-  font-size: 12px;
+  font-size: var(--type-body);
+}
+.form-field :is(input, textarea, select):focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.form-field :is(input, textarea, select)[aria-invalid='true'] {
+  border-color: var(--danger);
+  border-width: 2px;
+}
+.form-field :is(input, textarea, select):disabled {
+  border-style: dashed;
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.form-field :is(input, textarea)::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+.form-validation-summary {
+  padding: 12px 16px;
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  font-size: var(--type-secondary);
 }
 .form-field input[type='file'] {
   padding: 8px;
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .form-field input[type='file']::file-selector-button {
   border: 0;
@@ -870,13 +897,13 @@ body:has(.modal[open]) {
   min-height: 90px;
 }
 .field-help {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
   line-height: 1.9;
   margin-top: 9px;
 }
 .form-error {
-  color: #c74a56;
+  color: var(--danger);
   font-size: 12px;
   line-height: 1.8;
   margin-top: 10px;
@@ -902,7 +929,7 @@ body:has(.modal[open]) {
   font-size: 15px;
 }
 .section-title p {
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-subtle);
   margin-top: 3px;
 }
@@ -918,7 +945,7 @@ body:has(.modal[open]) {
   background: var(--accent-soft);
   color: var(--accent);
   border-radius: 7px;
-  font-size: 10px;
+  font-size: var(--type-meta);
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -951,7 +978,7 @@ body:has(.modal[open]) {
   content: '−';
 }
 .optional-label {
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-subtle);
   font-weight: 500;
 }
@@ -989,7 +1016,7 @@ body:has(.modal[open]) {
   align-items: center;
   gap: 9px;
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--type-meta);
   max-width: 480px;
 }
 .form-footer > div {
@@ -998,7 +1025,7 @@ body:has(.modal[open]) {
   flex-shrink: 0;
 }
 .back-link {
-  font-size: 11px;
+  font-size: var(--type-secondary);
   width: fit-content;
 }
 .detail-action-bar {
@@ -1035,7 +1062,7 @@ body:has(.modal[open]) {
   margin: 23px 0 0;
 }
 .detail-grid dt {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
   margin-bottom: 6px;
 }
@@ -1061,11 +1088,11 @@ body:has(.modal[open]) {
 .journey-item span {
   display: block;
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .journey-item strong {
   display: block;
-  font-size: 11px;
+  font-size: var(--type-secondary);
   margin-top: 5px;
 }
 .journey-panel .field-help {
@@ -1106,13 +1133,13 @@ body:has(.modal[open]) {
   font-size: 12px;
 }
 .history-list p {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
   margin-top: 4px;
 }
 .history-list small {
   display: block;
-  font-size: 9px;
+  font-size: var(--type-meta);
   color: var(--text-subtle);
   margin-top: 4px;
 }
@@ -1185,7 +1212,7 @@ body:has(.modal[open]) {
 }
 .filter-title .button {
   margin-inline-start: auto;
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .report-filter-grid {
   display: grid;
@@ -1193,11 +1220,11 @@ body:has(.modal[open]) {
   gap: 15px;
 }
 .report-filter-grid .form-field {
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .report-filter-grid input,
 .report-filter-grid select {
-  font-size: 11px;
+  font-size: var(--type-secondary);
 }
 .report-table {
   min-width: 980px;
@@ -1215,17 +1242,17 @@ body:has(.modal[open]) {
   border-radius: 9px;
   padding: 14px 18px;
   color: var(--accent);
-  font-size: 11px;
+  font-size: var(--type-secondary);
 }
 .preview-notice > span {
   margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .email-metadata {
-  font-size: 11px;
+  font-size: var(--type-secondary);
   color: var(--text-muted);
   display: flex;
   flex-direction: column;
@@ -1274,7 +1301,7 @@ body:has(.modal[open]) {
   border-bottom: 1px solid #e5ecef;
 }
 .email-paper > header > span {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: #667b87;
 }
 .email-paper .brand-name {
@@ -1285,7 +1312,7 @@ body:has(.modal[open]) {
 }
 .email-body > .eyebrow {
   color: #078aa3;
-  font-size: 9px;
+  font-size: var(--type-meta);
 }
 .email-body > h2 {
   font-size: 27px;
@@ -1297,7 +1324,7 @@ body:has(.modal[open]) {
   font-size: 13px;
 }
 .email-intro {
-  font-size: 12px;
+  font-size: var(--type-body);
   color: #667b87;
   margin-top: 7px;
   line-height: 1.9;
@@ -1321,7 +1348,7 @@ body:has(.modal[open]) {
   color: #17313c;
 }
 .email-summary span {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: #667b87;
   margin-top: 4px;
 }
@@ -1336,7 +1363,7 @@ body:has(.modal[open]) {
   margin-bottom: 13px;
 }
 .email-section h3 span {
-  font-size: 10px;
+  font-size: var(--type-meta);
   background: #eaf8fb;
   color: #087e96;
   padding: 2px 6px;
@@ -1349,7 +1376,7 @@ body:has(.modal[open]) {
   width: 100%;
   border-collapse: collapse;
   min-width: 550px;
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .email-section th {
   text-align: start;
@@ -1371,13 +1398,13 @@ body:has(.modal[open]) {
 }
 .email-section small {
   display: block;
-  font-size: 8px;
+  font-size: var(--type-meta);
   color: #718491;
   margin-top: 4px;
 }
 .email-empty {
   color: #667b87;
-  font-size: 11px;
+  font-size: var(--type-secondary);
   padding: 14px;
   background: #f9fbfc;
   border-radius: 6px;
@@ -1396,7 +1423,7 @@ body:has(.modal[open]) {
   font-size: 13px;
 }
 .email-outstanding p {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: #667b87;
   margin-top: 4px;
 }
@@ -1407,7 +1434,7 @@ body:has(.modal[open]) {
 }
 .email-disclaimer {
   color: #718491;
-  font-size: 9px;
+  font-size: var(--type-meta);
   margin-top: 24px;
 }
 .email-paper > footer {
@@ -1417,11 +1444,11 @@ body:has(.modal[open]) {
   padding: 20px 35px;
   background: #062d39;
   color: #d0e8ed;
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .email-paper > footer span {
   color: #96b8c3;
-  font-size: 9px;
+  font-size: var(--type-meta);
 }
 .users-grid {
   display: grid;
@@ -1456,13 +1483,13 @@ body:has(.modal[open]) {
   font-size: 16px;
 }
 .user-email {
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
   margin-top: 6px;
   overflow-wrap: anywhere;
 }
 .user-role {
-  font-size: 11px;
+  font-size: var(--type-secondary);
   color: var(--accent);
   margin-top: 12px;
 }
@@ -1474,7 +1501,7 @@ body:has(.modal[open]) {
   margin-top: 20px;
 }
 .user-card-actions .button {
-  font-size: 10px;
+  font-size: var(--type-meta);
   min-height: 33px;
 }
 .user-form-fields {
@@ -1507,7 +1534,7 @@ body:has(.modal[open]) {
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 7px 9px;
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
 }
 .recipient-chips button {
@@ -1531,11 +1558,11 @@ body:has(.modal[open]) {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
+  font-size: var(--type-meta);
   color: var(--text-muted);
 }
 .settings-email-footer .button {
-  font-size: 10px;
+  font-size: var(--type-meta);
 }
 .reset-panel > .button {
   margin-top: 23px;
@@ -1625,7 +1652,7 @@ body:has(.modal[open]) {
     font-size: 12px;
   }
   .data-table th {
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .data-table td {
     padding-block: 16px;
@@ -1636,16 +1663,16 @@ body:has(.modal[open]) {
     padding-inline: 26px;
   }
   .demo-strip > span {
-    font-size: 8px;
+    font-size: var(--type-meta);
   }
   .overdue-card-top {
     flex-wrap: wrap;
   }
   .overdue-card-top > span {
-    font-size: 8px;
+    font-size: var(--type-meta);
   }
   .operational-metrics .metric-top {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .metric-mini-line {
     gap: 3px;
@@ -1722,10 +1749,10 @@ body:has(.modal[open]) {
   }
   .demo-user-control {
     gap: 7px;
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .demo-user-control select {
-    font-size: 9px;
+    font-size: var(--type-meta);
     max-width: 230px;
     padding-inline: 7px;
   }
@@ -1751,7 +1778,7 @@ body:has(.modal[open]) {
   }
   .page-description {
     max-width: none;
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .dashboard-page {
     gap: 19px;
@@ -1766,10 +1793,10 @@ body:has(.modal[open]) {
     font-size: 29px;
   }
   .operational-metrics .metric-top {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .operational-metrics .metric-card p {
-    font-size: 8px;
+    font-size: var(--type-meta);
     line-height: 1.8;
   }
   .metric-mini-line {
@@ -1792,13 +1819,13 @@ body:has(.modal[open]) {
     font-size: 13px;
   }
   .overdue-heading p {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .overdue-heading .alert-link {
     width: 100%;
     margin-top: 4px;
     margin-inline-start: 45px;
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .alert-heading-icon {
     width: 35px;
@@ -1814,19 +1841,19 @@ body:has(.modal[open]) {
     flex-wrap: nowrap;
   }
   .overdue-card-top > bdi {
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .overdue-card-top > span {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .overdue-card h3 {
     font-size: 12px;
   }
   .overdue-card p {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .overdue-card small {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .overdue-full {
     padding: 17px;
@@ -1850,10 +1877,10 @@ body:has(.modal[open]) {
     flex: 1;
     min-width: 110px;
     max-width: none;
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .shipment-toolbar .button {
-    font-size: 10px;
+    font-size: var(--type-meta);
     padding: 8px 10px;
   }
   .dashboard-register > .data-table-scroll,
@@ -1885,7 +1912,7 @@ body:has(.modal[open]) {
     margin-top: 12px;
   }
   .mobile-route {
-    font-size: 11px;
+    font-size: var(--type-secondary);
     color: var(--text-muted);
     margin-top: 5px;
   }
@@ -1899,11 +1926,11 @@ body:has(.modal[open]) {
     margin: 17px 0;
   }
   .shipment-mobile-card dt {
-    font-size: 9px;
+    font-size: var(--type-meta);
     color: var(--text-subtle);
   }
   .shipment-mobile-card dd {
-    font-size: 10px;
+    font-size: var(--type-meta);
     color: var(--text);
     margin: 3px 0 0;
   }
@@ -1915,7 +1942,7 @@ body:has(.modal[open]) {
     padding-top: 11px;
   }
   .mobile-card-actions .text-link {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .row-action {
     width: 33px;
@@ -1925,7 +1952,7 @@ body:has(.modal[open]) {
     padding: 13px 14px;
     flex-wrap: wrap;
     gap: 12px;
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .pagination > div {
     margin-inline-start: auto;
@@ -1962,7 +1989,7 @@ body:has(.modal[open]) {
     font-size: 12px;
   }
   .compact-brand-banner p {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .form-panel {
     padding: 21px;
@@ -1988,7 +2015,7 @@ body:has(.modal[open]) {
     gap: 17px;
   }
   .form-footer > p {
-    font-size: 10px;
+    font-size: var(--type-meta);
     align-items: flex-start;
   }
   .form-footer > div {
@@ -2019,7 +2046,7 @@ body:has(.modal[open]) {
   }
   .detail-action-bar .button {
     flex: 1;
-    font-size: 10px;
+    font-size: var(--type-meta);
     min-width: 130px;
   }
   .delete-detail-button {
@@ -2039,7 +2066,7 @@ body:has(.modal[open]) {
     inset-inline-end: 16px;
   }
   .toast {
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .report-filters {
     padding: 18px;
@@ -2048,37 +2075,37 @@ body:has(.modal[open]) {
     gap: 14px;
   }
   .report-filter-grid .form-field {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .report-filter-grid input,
   .report-filter-grid select {
-    font-size: 10px;
+    font-size: var(--type-meta);
     padding: 10px 8px;
   }
   .heading-buttons .button {
     flex: 1;
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .report-register .panel-heading {
     align-items: flex-start;
   }
   .report-register .panel-heading .scope-note {
     max-width: 150px;
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .preview-notice {
     flex-wrap: wrap;
-    font-size: 10px;
+    font-size: var(--type-meta);
     gap: 8px;
     padding: 14px;
   }
   .preview-notice > span {
     width: 100%;
     margin-inline-start: 0;
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .email-metadata {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .email-metadata p > span {
     min-width: 100px;
@@ -2103,7 +2130,7 @@ body:has(.modal[open]) {
     font-size: 23px;
   }
   .email-summary span {
-    font-size: 8px;
+    font-size: var(--type-meta);
   }
   .email-section h3 {
     font-size: 12px;
@@ -2119,10 +2146,10 @@ body:has(.modal[open]) {
     font-size: 12px;
   }
   .email-outstanding p {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .email-body > .button {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
   .users-grid {
     grid-template-columns: 1fr;
@@ -2132,7 +2159,7 @@ body:has(.modal[open]) {
     padding: 23px;
   }
   .user-card-actions .button {
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .recipient-form {
     flex-direction: column;
@@ -2142,7 +2169,7 @@ body:has(.modal[open]) {
   }
   .recipient-chips > span {
     max-width: 100%;
-    font-size: 9px;
+    font-size: var(--type-meta);
     overflow-wrap: anywhere;
   }
   .settings-email-footer {
@@ -2150,35 +2177,35 @@ body:has(.modal[open]) {
     gap: 8px;
   }
   .settings-email-footer > span {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .record-tabs {
     padding-inline: 17px;
     gap: 22px;
   }
   .record-tabs button {
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .all-clear {
     padding: 16px;
   }
   .all-clear strong {
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
 }
 @media (max-width: 399px) {
   .demo-user-control label {
-    font-size: 8px;
+    font-size: var(--type-meta);
   }
   .demo-user-control select {
     max-width: 213px;
-    font-size: 8px;
+    font-size: var(--type-meta);
   }
   .operational-metrics .metric-card {
     padding: 13px;
   }
   .operational-metrics .metric-top {
-    font-size: 9px;
+    font-size: var(--type-meta);
   }
   .metric-mini-line {
     display: none;
@@ -2201,7 +2228,7 @@ body:has(.modal[open]) {
     gap: 12px;
   }
   .email-summary span {
-    font-size: 10px;
+    font-size: var(--type-meta);
     margin: 0;
   }
   .email-summary strong {
@@ -2213,7 +2240,7 @@ body:has(.modal[open]) {
     font-size: 13px;
   }
   .modal-actions .button {
-    font-size: 10px;
+    font-size: var(--type-meta);
   }
 }
 @media print {
@@ -2424,7 +2451,7 @@ body:has(.modal[open]) {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
-    font-size: 11px;
+    font-size: var(--type-secondary);
   }
   .shipment-mobile-card h3 {
     font-size: 14px;

@@ -24,6 +24,11 @@
   --text-subtle: #63727a;
   --border: #dde6e9;
   --border-strong: #c3d2d9;
+  --control-border: #748792;
+  --type-body: 1rem;
+  --type-secondary: 0.875rem;
+  --type-control: 0.875rem;
+  --type-meta: 0.75rem;
   --accent: #006a80;
   --accent-soft: #e7faff;
   --accent-border: #acdfe9;
@@ -52,6 +57,7 @@
   --text-subtle: #a4b5bf;
   --border: #2b3a42;
   --border-strong: #445a67;
+  --control-border: #6f8794;
   --accent: var(--brand-primary);
   --accent-soft: #093442;
   --accent-border: #20566a;
