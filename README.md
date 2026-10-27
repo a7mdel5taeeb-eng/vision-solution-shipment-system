@@ -8,6 +8,8 @@ A bilingual, responsive shipment operations workspace built on the existing Phas
 
 The application is a separate project from the company's public marketing website. The future product address is `system.vsolutions.co`; it has not been deployed.
 
+For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The workflow maintenance branch contains no unmerged Phase 3B database implementation.
+
 ## Technology stack
 
 | Area                     | Technology                                                           |
