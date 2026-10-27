@@ -34,6 +34,13 @@ id_ed25519*
 .agents/
 .vercel/
 
+# Impeccable skill and provider hooks are recreated by scripts/setup-impeccable.ps1.
+# Commit shared context/toolchain pins, never machine-local consent or runtime state.
+.impeccable/cache/
+.impeccable/live/
+.impeccable/critique/
+.impeccable/*.local.json
+
 # Local operational data, exports, backups and QA evidence
 /artifacts/
 /local-data/

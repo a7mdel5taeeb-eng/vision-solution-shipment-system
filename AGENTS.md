@@ -23,6 +23,8 @@
 ## Engineering and safety standards
 
 - Make focused, maintainable changes and avoid speculative refactors or unapproved dependencies. Use available, verified specialist skills when applicable.
+- On a new Windows checkout, run `scripts/setup-impeccable.ps1` to recreate the approved project skill and hook, then verify with `-CheckOnly`. Respect `.impeccable/toolchain.json`; never silently upgrade or force-replace an existing installation. Keep generated skills, native binaries, local consent, and hook runtime files ignored.
+- Use Impeccable for approved typography, layout, accessibility, consistency, responsiveness, and component polishing. Honor the shared code-first default and `PRODUCT.md`; comp-first concepts require explicit user approval. An audit documents findings without changing the approved UI.
 - Retain native semantic controls, keyboard navigation, visible focus, labels, useful errors, adequate contrast, and non-colour status cues. Test responsive behavior after UI changes.
 - Run `npm run check` for every completed phase; add or update focused tests for changed domain behavior. Perform browser-based checks when available.
 - Never commit credentials, keys, local data, personal data, generated build output, or sensitive logs. No production auth, authorization, storage, email, or scheduling is to be connected until explicitly approved for Phase 3.
