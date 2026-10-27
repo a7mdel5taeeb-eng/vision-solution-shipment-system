@@ -22,10 +22,12 @@ export const authEnglish = {
   accountMfaHelp:
     'Administrator access requires a current six-digit code from your authenticator app. Password-only sessions cannot access operational data.',
   accountMfaStart: 'Set up authenticator',
+  accountMfaUnfinished:
+    'An unfinished setup already exists. Complete it in the original tab, or ask the local operator to review it. Existing factors have been preserved.',
   accountMfaQr: 'Scan this private QR code with your authenticator app',
   accountMfaManual: 'Manual setup key',
   accountMfaPrivate:
-    'Keep this setup key private. It is shown only during enrollment and is not saved by this page. An unfinished local setup can be restarted with Set up authenticator.',
+    'Keep this setup key private. It is shown only during enrollment and is not saved by this page. Complete setup in this tab; existing factors are never removed automatically.',
   accountMfaCode: 'Six-digit verification code',
   accountMfaConfirm: 'Verify code',
   accountMfaChecking: 'Verifying code…',
@@ -92,10 +94,12 @@ export const authArabic: { [K in keyof typeof authEnglish]: string } = {
   accountMfaHelp:
     'يتطلب وصول المدير رمزاً حالياً من ستة أرقام من تطبيق المصادقة. الجلسات المعتمدة على كلمة المرور فقط لا تصل إلى البيانات التشغيلية.',
   accountMfaStart: 'إعداد تطبيق المصادقة',
+  accountMfaUnfinished:
+    'يوجد إعداد غير مكتمل بالفعل. أكمله في علامة التبويب الأصلية، أو اطلب من المشغّل المحلي مراجعته. تم الاحتفاظ بعوامل المصادقة الحالية.',
   accountMfaQr: 'امسح رمز الاستجابة السريعة الخاص باستخدام تطبيق المصادقة',
   accountMfaManual: 'مفتاح الإعداد اليدوي',
   accountMfaPrivate:
-    'احتفظ بمفتاح الإعداد سرياً. يظهر أثناء التسجيل فقط ولا تحفظه هذه الصفحة. يمكنك إعادة الإعداد المحلي غير المكتمل بزر إعداد تطبيق المصادقة.',
+    'احتفظ بمفتاح الإعداد سرياً. يظهر أثناء التسجيل فقط ولا تحفظه هذه الصفحة. أكمل الإعداد في هذه العلامة؛ لا تُزال عوامل المصادقة الحالية تلقائياً.',
   accountMfaCode: 'رمز التحقق من ستة أرقام',
   accountMfaConfirm: 'التحقق من الرمز',
   accountMfaChecking: 'جارٍ التحقق من الرمز…',

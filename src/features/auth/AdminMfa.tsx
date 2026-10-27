@@ -2,9 +2,9 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useAuth } from '../../app/auth/auth-context'
 import { useLocale } from '../../shared/i18n/locale-context'
 import { Button } from '../../shared/ui/Primitives'
+import { normalizeMfaCode, prepareTotpSetup, type Enrollment } from './mfa-setup'
 
 type Factor = { id: string; friendly_name?: string; status: string }
-type Enrollment = { id: string; secret: string; qr: string }
 
 export function AdminMfa() {
   const { client, store } = useAuth()
@@ -14,15 +14,21 @@ export function AdminMfa() {
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
   const [problem, setProblem] = useState(false)
+  const [unfinished, setUnfinished] = useState(false)
   const live = useRef(true)
   useEffect(() => {
     live.current = true
     let current = true
-    void client.auth.mfa.listFactors().then(({ data, error }) => {
-      if (!current) return
-      if (error) setProblem(true)
-      else setFactors(data.all.filter((factor) => factor.factor_type === 'totp'))
-    })
+    void client.auth.mfa
+      .listFactors()
+      .then(({ data, error }) => {
+        if (!current) return
+        if (error) setProblem(true)
+        else setFactors(data.all.filter((factor) => factor.factor_type === 'totp'))
+      })
+      .catch(() => {
+        if (current) setProblem(true)
+      })
     return () => {
       current = false
       live.current = false
@@ -35,23 +41,15 @@ export function AdminMfa() {
     if (busy || !factors || verified.length) return
     setBusy(true)
     setProblem(false)
+    setUnfinished(false)
     try {
-      // Only our unfinished enrollment may be replaced, through this explicit action.
-      // Never delete verified factors, including factors belonging to other applications.
-      for (const factor of factors.filter(
-        (f) => f.status === 'unverified' && f.friendly_name === 'Vision & Solution local',
-      )) {
-        const result = await client.auth.mfa.unenroll({ factorId: factor.id })
-        if (result.error) throw result.error
+      const result = await prepareTotpSetup(client.auth.mfa, () => live.current)
+      if (!live.current || result.kind === 'cancelled') return
+      if (result.kind === 'enrolled') setEnrollment(result.enrollment)
+      else {
+        setFactors(result.factors)
+        setUnfinished(result.kind === 'unfinished')
       }
-      const { data, error } = await client.auth.mfa.enroll({
-        factorType: 'totp',
-        friendlyName: 'Vision & Solution local',
-        issuer: 'Vision & Solution Local',
-      })
-      if (error) throw error
-      if (live.current)
-        setEnrollment({ id: data.id, secret: data.totp.secret, qr: data.totp.qr_code })
     } catch {
       if (live.current) setProblem(true)
     } finally {
@@ -86,7 +84,8 @@ export function AdminMfa() {
           {t.accountMfaError}
         </p>
       )}
-      {factors && !verified.length && !enrollment && (
+      {unfinished && <p role="status">{t.accountMfaUnfinished}</p>}
+      {factors && !verified.length && !enrollment && !unfinished && (
         <Button onClick={() => void enroll()} disabled={busy}>
           {t.accountMfaStart}
         </Button>
@@ -138,17 +137,7 @@ export function AdminMfa() {
               aria-describedby={problem ? 'mfa-problem' : undefined}
               value={code}
               disabled={busy}
-              onChange={(e) =>
-                setCode(
-                  e.target.value.replace(/[٠-٩۰-۹]/g, (value) =>
-                    String(
-                      '٠١٢٣٤٥٦٧٨٩'.includes(value)
-                        ? '٠١٢٣٤٥٦٧٨٩'.indexOf(value)
-                        : '۰۱۲۳۴۵۶۷۸۹'.indexOf(value),
-                    ),
-                  ),
-                )
-              }
+              onChange={(e) => setCode(normalizeMfaCode(e.target.value))}
             />
           </label>
           <Button type="submit" disabled={busy}>
