@@ -1,5 +1,6 @@
 import { phase2Arabic, phase2English } from './phase2-messages'
 import { redesignArabic, redesignEnglish } from './redesign-messages'
+import { authArabic, authEnglish } from './auth-messages'
 
 const baseEnglish = {
   appName: 'Vision & Solution',
@@ -104,7 +105,7 @@ const baseEnglish = {
   footerTagline: 'Moving your world… mile by mile.',
 } as const
 
-export const en = { ...baseEnglish, ...phase2English, ...redesignEnglish } as const
+export const en = { ...baseEnglish, ...phase2English, ...redesignEnglish, ...authEnglish } as const
 
 export type Messages = { [Key in keyof typeof en]: string }
 export type MessageKey = keyof Messages
@@ -210,4 +211,4 @@ const baseArabic: Record<keyof typeof baseEnglish, string> = {
   footerTagline: 'ننقل عالمك.. ميلاً بميل.',
 }
 
-export const ar: Messages = { ...baseArabic, ...phase2Arabic, ...redesignArabic }
+export const ar: Messages = { ...baseArabic, ...phase2Arabic, ...redesignArabic, ...authArabic }

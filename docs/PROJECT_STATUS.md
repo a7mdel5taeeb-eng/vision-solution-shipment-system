@@ -1,12 +1,18 @@
 # Vision & Solution — project status
 
-> **CURRENT STATUS — 27 October 2026, after PR #5 approval**  
-> **Phase 3B is APPROVED and merged into `main`.** Actual GitHub merge commit: `7aaebaf608b2e09211c51a25d2974e47ae80aa71`.  
-> **PR #6 HOME/SCHOOL workflow** was already merged at `9224acc3be9d9bbc2b2f5c0d7329ef10b5d235cb`.  
-> **Next authorized task:** implement **Phase 3C.1 only** on `feature/phase-3c1-auth-sessions`: opt-in LOCAL Supabase authentication, login/logout/session refresh and protected route/loading/error states, with the APPROVED demo mode unchanged and default. Do not begin 3C.2–3C.5.  
-> **No implementation code or Phase 3C tests yet:** this paragraph is a planning handoff, not evidence of completion. Keep local-only fictional identities; do not create a cloud project, expose service keys, change DNS, publish production data, deploy or rewrite migrations.  
-> **Source of truth:** [Phase 3C plan](phase-3c-implementation-plan.md), [GitHub tracking issue #7](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system/issues/7), and this branch's future PR. Check remote refs and uncommitted local data before switching branches.  
-> **Historical note:** portions of the detailed HOME integration report below predate the actual PR #5 merge and correctly describe the earlier unmerged checkpoint. Treat the above current status and verified GitHub merged PR metadata as authoritative.
+> **CURRENT PHASE 3C.1 CHECKPOINT — 27 October 2026. Implementation prepared; real Auth verification BLOCKED.**
+>
+> Phase 3B is approved/merged into main at `7aaebaf608b2e09211c51a25d2974e47ae80aa71`. Existing branch `feature/phase-3c1-auth-sessions` and draft PR #9 were safely recovered at project-manager handoff `6f4fcbc6c4b6771d7a28de51e4fb0c45b518e123`; no duplicate branch or PR was created. Local main was fast-forwarded to the approved merge. No local work, Docker data, migrations or browser records were overwritten.
+>
+> **Authorized implementation:** official Supabase JS client 2.118.0; isolated opt-in Connected Mode at 5174; email/password/session/refresh/logout controller, server-verified route boundary and bilingual branded UI; default demo at 5173 remains unchanged. No 3C.2 account-access provisioning/MFA, connected shipment operations or production services are implemented. See [implementation/setup report](phase-3c1-auth-sessions.md). The existing broader Phase 3C plan remains unchanged and historical approval wording in it is superseded by the current user's 3C.1-only authorization.
+>
+> **Verified blocker / pending decision:** existing local Auth has `GOTRUE_EXTERNAL_EMAIL_ENABLED=false` and returns `email_provider_disabled`. A separate narrow approval request is pending to replace only Auth with the same image/keys/network address, enable local password login, retain the stopped original, and keep global signup/anonymous login/SMTP disabled. No containers have been changed. A private read-only DB backup and Auth snapshot were prepared, with matching SHA-256 on both copies. Do not run generic Supabase stop/start or reset the database as a workaround.
+>
+> **Actual checks:** 41/41 unit/application cases, 20/20 database regressions and 20/20 workflow regressions passed; typecheck/lint and both mode builds passed; both bundles passed credential scans. Browser checks covered missing configuration, protected anonymous navigation, AR/EN, RTL mobile/desktop states and provider-disabled feedback/password clearing. The initial real-Auth suite had 11 failed/1 passed because the provider was disabled; positive login, persistence/refresh, expiration/logout and race checks are NOT verified. The latest rerun fails early on disabled provider settings (0 passed/12 failed at the shared prerequisite; successful session cases did not execute). Do not report Phase 3C.1 complete or PR #9 merge-ready.
+>
+> One generated fictional local Auth-only preview identity was created without a profile/application role. Credentials and public connected config are ignored/local; they are not company data and are not uploaded. All existing data remains intact. Both previews stay running; connected mode currently shows the verified provider-disabled error when submitting credentials.
+>
+> **GitHub reporting:** publish only approved source/docs to this existing feature branch, keep PR #9 Draft with the actual blocked status, verify its remote checkpoint, then await the pending local Auth fix decision. PR #9 merge, Phase 3C.2+, production and deployment remain unapproved. The historical integration report below predates the merged Phase 3B checkpoint and must not override this current block or verified PR #9 metadata.
 
 ---
 
