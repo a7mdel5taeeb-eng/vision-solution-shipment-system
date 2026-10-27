@@ -71,6 +71,33 @@ npm run dev -- --host 0.0.0.0
 
 If `git pull --ff-only` refuses because local commits differ, do not force a resolution: inspect `git status`, commit or stash only work you intend to keep, then reconcile deliberately. Browser-local prototype data is intentionally not synchronized by GitHub; only committed source, documentation, and tests transfer between computers.
 
+## Impeccable on the home and school computers
+
+After cloning/synchronizing this branch and running `npm ci`, run the project setup from PowerShell:
+
+```powershell
+.\scripts\setup-impeccable.ps1
+.\scripts\setup-impeccable.ps1 -CheckOnly
+```
+
+The script finds the repository relative to its own location, checks Git, Node.js 22.12+ and npm 10+, and installs only the Codex project skill. It pins **skill 4.8.0**, **npm launcher 4.8.0**, **engine 0.1.18**, and the SHA-256 of the official `skill-v4.8.0` bundle in `.impeccable/toolchain.json`. Pinning npm alone is insufficient: the official installer normally fetches the current skill bundle. Our script supplies the verified release archive through its supported `IMPECCABLE_BUNDLE_PATH` input. No application dependency is added.
+
+Existing installations are verified and preserved. A different version, incomplete installation, failed download, or checksum mismatch stops setup instead of forcing a replacement. The official hook command merges provider manifests. `-CheckOnly` verifies the existing installation without changing it; `-SkipHooks` installs/verifies the skill without enabling provider hooks. The first engine run may need access to GitHub for its verified native binary. Node/npm and Codex must be installed separately on each Windows computer.
+
+Open/reopen this repository in Codex after setup. The skill should be available on the next turn; invoke `$impeccable audit` or `$impeccable polish <target>` when that work is approved. Approve the project hook in Codex through `/hooks` if that build requests trust. Installation consent and hook activation on one machine do not transfer to the other machine. If organizational PowerShell, proxy, or antivirus policy blocks setup, use the school's approved installation process; do not disable protections.
+
+Shared GitHub files are `AGENTS.md`, `PRODUCT.md`, `.impeccable/config.json`, `.impeccable/toolchain.json`, and this setup script. `.agents/`, `.codex/`, release caches, live sessions, and `.impeccable/config.local.json` remain ignored and are regenerated locally. Do not copy credentials or absolute home-computer paths to the school computer. The default workflow is code-first; a future comp-first concept needs explicit approval. Do not run unpinned `impeccable update`; upgrade the version and digest together in a reviewed feature branch.
+
+The native hook runs locally with the agent's permissions; Codex trust is still required where supported. It emits design feedback, and is not a security sandbox or production security audit. Setup preserves existing product context and approved UI. Manual scans remain available if the hook is unavailable in a particular Codex build:
+
+```powershell
+.\.agents\skills\impeccable\scripts\impeccable.cmd detect src --json
+```
+
+The Phase 2.8 clean-clone test found that the earlier GitHub lockfile omitted four optional transitive packages, causing npm 11.19.1 to reject `npm ci`. The preserved lockfile correction supplies those entries without changing declared dependencies or existing package versions. Stop the local dev server before running `npm ci` on Windows to avoid locked native-module files. See [the Phase 2.8 report](docs/phase-2.8-verification.md) for validation and the read-only design audit.
+
+Official references: [Impeccable installation](https://impeccable.style/docs/), [skill 4.8.0 release](https://github.com/pbakaus/impeccable/releases/tag/skill-v4.8.0), [installer local-bundle support](https://github.com/pbakaus/impeccable/blob/skill-v4.8.0/crates/skills/src/bundle.rs), and [OpenAI skills documentation](https://learn.chatgpt.com/docs/build-skills).
+
 ## Try the two roles
 
 Open `/` to see the account-selection landing page, then choose a named employee or administrator. No passwords or real accounts are involved. **Logout** returns to the landing page without removing shipment records. The selected demo entry survives refresh within the same tab; a fresh tab starts at account selection.
