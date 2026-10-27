@@ -1,0 +1,69 @@
+@theme {
+  --font-sans: 'Montserrat Variable', sans-serif;
+  --color-brand-950: #050505;
+  --color-brand-900: #0a0a0a;
+  --color-brand-500: #00d4ff;
+  --color-brand-100: #e7faff;
+}
+:root {
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  /* Exact public-site brand values; see docs/phase-2.6-brand-analysis.md. */
+  --brand-primary: #00d4ff;
+  --brand-secondary: #007bff;
+  --brand-dark: #0a0a0a;
+  --brand-darker: #050505;
+  --brand-gray: #b3b3b3;
+  --brand-gradient: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  /* Product surfaces and readable text variants derived for operational use. */
+  --canvas: #f5f7f8;
+  --surface: #fff;
+  --surface-soft: #f0f4f6;
+  --text: #14242b;
+  --text-muted: #58676e;
+  --text-subtle: #63727a;
+  --border: #dde6e9;
+  --border-strong: #c3d2d9;
+  --accent: #006a80;
+  --accent-soft: #e7faff;
+  --accent-border: #acdfe9;
+  --sidebar: #fff;
+  --shadow: 0 3px 15px #14242b04;
+  --radius: 10px;
+  --sidebar-width: 232px;
+  --action: var(--brand-primary);
+  --action-text: #050505;
+  --action-hover: #42e0ff;
+  --ink: var(--brand-dark);
+  --pending: #865c13;
+  --pending-soft: #fbf4e5;
+  --success: #206c57;
+  --success-soft: #eaf4ef;
+  --danger: #b34351;
+  --danger-soft: #fcf0f0;
+  --button-radius: 5px;
+}
+:root[data-theme='dark'] {
+  --canvas: var(--brand-darker);
+  --surface: #111719;
+  --surface-soft: #1b252a;
+  --text: #f0f5f7;
+  --text-muted: #b3c0c7;
+  --text-subtle: #a4b5bf;
+  --border: #2b3a42;
+  --border-strong: #445a67;
+  --accent: var(--brand-primary);
+  --accent-soft: #093442;
+  --accent-border: #20566a;
+  --sidebar: var(--brand-dark);
+  --shadow: none;
+  --pending: #ebc47b;
+  --pending-soft: #372f24;
+  --success: #92d4b9;
+  --success-soft: #20382f;
+  --danger: #f4a4ad;
+  --danger-soft: #392a31;
+}
+:root[lang='ar'] {
+  font-family: 'Cairo Variable', sans-serif;
+}

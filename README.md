@@ -1,0 +1,188 @@
+# Vision & Solution Shipment Management System
+
+**Phase 2.6 — Official Brand Integration & Operational Improvements · v0.2.0**
+
+A bilingual, responsive shipment operations workspace built on the existing Phase 1 foundation. All people, customers, trucks and shipments in the seeded dataset are fictional. The application is entirely local: no authentication provider, database, email service, DNS or hosting is connected.
+
+**Source repository:** [a7mdel5taeeb-eng/vision-solution-shipment-system](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system) · Private · Default branch: `main`.
+
+The application is a separate project from the company's public marketing website. The future product address is `system.vsolutions.co`; it has not been deployed.
+
+## Technology stack
+
+| Area                     | Technology                                                           |
+| ------------------------ | -------------------------------------------------------------------- |
+| Application              | React 19, TypeScript 6, Vite 8                                       |
+| Interface                | Tailwind CSS 4, semantic CSS tokens, Lucide icons                    |
+| Navigation               | React Router 7                                                       |
+| Languages and typography | Typed Arabic/English catalogs, RTL/LTR, local Montserrat/Cairo fonts |
+| Demo persistence         | Versioned browser localStorage and tab-local demo entry              |
+| Quality checks           | Node built-in test runner, strict TypeScript, Oxlint, Prettier       |
+
+## Open locally
+
+Requirements: Git, Node.js 22.12+ (24 LTS recommended), npm 10+, and an authenticated GitHub account with access to this private repository.
+
+```sh
+git clone https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system.git
+cd vision-solution-shipment-system
+npm ci
+npm run dev -- --host 0.0.0.0
+```
+
+Open [http://127.0.0.1:5173/](http://127.0.0.1:5173/), then select an administrator or employee demo account. The commands work in PowerShell, macOS and Linux shells. Authenticate private Git access through Git Credential Manager or GitHub CLI (`gh auth login`) when needed. No environment file, API key, company credential or backend setup is required.
+
+For an existing checkout, start from `npm ci`. If this project's server is already running, open the URL instead of starting a second server. Vite uses `strictPort`, so an occupied port produces an explicit error. Stop a server you started with Ctrl+C.
+
+Cloning installs the source and fictional seed data. Existing browser-local shipment records are not uploaded to GitHub or transferred between computers. Dependencies, builds, environment files, credentials, operational exports and local QA artifacts are excluded by `.gitignore`.
+
+To view the local production bundle:
+
+```sh
+npm run build
+npm run preview
+```
+
+Open [http://127.0.0.1:4173/](http://127.0.0.1:4173/). The development command above binds to all local interfaces as requested for the preview; the default config and production preview bind to loopback. Building and previewing do not deploy anything. The future application address `system.vsolutions.co` is informational; no domain or production configuration has been changed.
+
+## Try the two roles
+
+Open `/` to see the account-selection landing page, then choose a named employee or administrator. No passwords or real accounts are involved. **Logout** returns to the landing page without removing shipment records. The selected demo entry survives refresh within the same tab; a fresh tab starts at account selection.
+
+| Demo user        | Role          | Experience                                                                                                                         |
+| ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Noura Al Salem   | Administrator | All shipments, creation/editing, completion/reopening, soft deletion/restoration, overdue alerts, reports, demo users and settings |
+| Omar Al Harbi    | Employee      | Own shipments, creation/editing, completion/reopening, invoice information                                                         |
+| Sara Al Nasser   | Employee      | A different employee's own shipment records                                                                                        |
+| Faisal Al Rashid | Employee      | A third employee's own shipment records                                                                                            |
+
+Employees have a simple header, a charcoal welcome banner with a cyan registration button, three statistics and personal shipment cards. Administrators have a sidebar, four statistics and a shipment table, which becomes cards on phones and smaller tablets. A compact drawer provides mobile navigation. Admin-only routes redirect to the dashboard for employees. Other employees' shipment IDs cannot be opened or edited within the prototype. These checks also run in the domain mutation layer. This is **prototype behavior, not production security**: all demo data lives in the browser and the role selector is intentionally unrestricted.
+
+The identity uses the official company's unmodified VS PNG asset, extracted cyan `#00D4FF`, blue `#007BFF`, charcoal surfaces, and the official Arabic name **رؤى وحلول**. Montserrat and Cairo are bundled locally. The approved entry folio and role layouts are preserved. Arabic mirrors navigation using logical CSS properties. See [brand analysis and provenance](docs/phase-2.6-brand-analysis.md).
+
+The employee dashboard uses a slim welcome strip and compact statistics so shipments appear earlier. Consignment cards emphasize customer names, labeled loading/unloading points, truck/driver details, start times and statuses. The administrator dashboard restores a **Priority desk** showing the three longest-overdue active shipments, with a link to all alerts. Admin navigation omits My Shipments; its existing route remains available for compatibility.
+
+Main routes: `/` (account selection), `/dashboard`, `/shipments`, `/my-shipments`, `/shipments/new`, `/shipments/:id`, `/shipments/:id/edit`, `/alerts`, `/reports`, `/daily-report`, `/users`, `/settings`, and `/deleted-shipments`.
+
+## Functional features
+
+- **Operational dashboards:** compact branded welcome banners, real counts from local records, status filters, sorting and search. Employees use personal cards; administrators use the central register and three most urgent overdue shipments. Status distribution and the seven-day starts chart remain on Reports.
+- **Shipment registration:** customer, loading/unloading locations, truck, driver and cargo are required. ID (`TR-0001` etc.), start timestamp and owner are recorded automatically. No manually entered start date is requested.
+- **Driver phone:** optional telephone input beside Driver Name. Saudi/international formats, Arabic/Persian digits, formatting separators and optional extensions are supported. Main numbers use 7–15 digits; 00 prefixes and optional international trunk-zero notation are handled in safe `tel:` links. Values remain strings with entered formatting. The creator and administrators can edit; details and owner-scoped cards display the number. No SMS, WhatsApp or number verification is connected.
+- **Editing and invoices:** shipment fields, invoice number, notes and an optional invoice image. PNG/JPEG/WebP images up to 750 KB are stored as local data URLs. SVG, PDF and larger files are rejected. Removing an image is supported.
+- **Workflow:** the stored status is Pending or Completed. An open record is displayed as Overdue strictly after 96 hours. Completion requires a timestamp between start and now, entered in Asia/Riyadh time. Completed records can have their completion time edited or be reopened. Reopening retains the start timestamp and recalculates overdue status. Late completions remain Completed and receive a separate label.
+- **Administration:** soft delete and restore through explicit confirmations; deleted records retain history and are excluded from active dashboards, alerts and reports. Search, employee/status filters, sorting and pagination are available. IDs are never reused on deletion or restoration.
+- **History:** registration, edits (changed field names), completion time changes, reopening, deletion and restoration, with actor and timestamp. It is local prototype history, not a tamper-proof production audit log.
+- **Reports:** start-date range, customer and employee filters; totals, status distribution and seven-day chart; a complete filtered register; CSV download; print styles and a browser Print / Save PDF action. CSV uses UTF-8 BOM, CRLF, escaped fields and spreadsheet formula protection.
+- **Daily report preview:** branding, the previous Riyadh calendar day's starts and completions, all currently open overdue shipments, outstanding totals, recipient list and a local administrator-dashboard link. The future 08:00 Asia/Riyadh schedule is displayed only; nothing is sent or scheduled.
+- **Demo users:** create and edit names, email and role; activate/deactivate. Inactive users disappear from the selector while their shipments remain. The current administrator cannot deactivate or demote themselves.
+- **Settings:** persistent language and appearance; local daily-report recipient additions/removals; confirmed demo reset.
+
+## Dates and reporting semantics
+
+All operational timestamps are stored as ISO instants and displayed in Asia/Riyadh. Completion input is interpreted as Riyadh time regardless of the computer's timezone. Overdue status refreshes every 30 seconds, when the window regains focus, and after a mutation.
+
+Report date filters apply to **shipment start dates**, with an inclusive end calendar date in Riyadh. Deleted records are excluded. Pending counts exclude overdue records; outstanding totals include all open records, including overdue.
+
+The daily preview uses yesterday's midnight-to-midnight Riyadh interval, not a rolling 24 hours. Completion activity uses the latest effective completion timestamp, including a prior completion retained in history if that shipment was later reopened. Its current open state is still included in outstanding counts. Editing the effective completion time moves it to the corresponding reporting day.
+
+## Persistence and reset
+
+The initial dataset contains **32** fictional shipment records, six customers, several Saudi city pairs, different drivers/trucks and three employees. It includes pending, overdue, completed and late-completed examples. Seed timestamps are relative to the first run/reset and then persist; they do not regenerate on refresh.
+
+Browser storage keys:
+
+| Key               | Purpose                                                        |
+| ----------------- | -------------------------------------------------------------- |
+| `vs.prototype.v2` | Shipments, history, users, recipients and next shipment number |
+| `vs.demo-user.v2` | Selected demo identity                                         |
+| `vs.locale.v1`    | Arabic/English preference                                      |
+| `vs.theme.v1`     | Light/Dark/System preference                                   |
+
+Tab-local `sessionStorage` key `vs.demo-entry.v1` records which demo workspace was entered. It is a demo navigation preference, not an authentication token; logout removes only this entry.
+
+Use **Settings → Prototype data → Reset demo data** as administrator to replace the local dataset. The confirmation explains which prototype data is removed. Language and appearance are preserved. A failed storage write leaves the prior data intact and displays an error; removing an invoice image can help with browser storage quotas. Invalid saved data is not silently overwritten: a temporary demo and warning appear until an administrator explicitly resets it.
+
+Data is specific to the browser profile and origin. `localhost`, `127.0.0.1`, port 5173 and port 4173 have separate stores. This is a single-editor prototype: use one editing tab. Concurrent tabs/users are not coordinated, and local data is neither shared nor backed up on a server. Clearing browser site data removes it.
+
+Phase 2.6 keeps the version-2 storage key and schema compatible. Older shipments may omit `driverPhone`; they render a translated empty state and remain editable. Reads do not reseed or rewrite old records. New/edited records normalize blank phones to an empty string. Fresh demo seeds include fictional US 555 phone examples; existing saved shipments keep their values.
+
+## Architecture
+
+```text
+src/
+  app/
+    demo/                     Context/provider, repository, seed, demo entry and role boundaries
+    layout/                   Shared brand, appearance controls and role-specific shell
+    navigation.ts             Role-specific navigation
+    router.tsx                Route composition
+    ErrorBoundary.tsx         Root and route error recovery
+  features/
+    entry/                    Bilingual demo account-selection landing page
+    overview/                 Role-aware operational dashboard
+    shipments/
+      model.ts                Types, workflow rules, access checks, validated commands
+      query.ts                Search/filter/sort logic
+      ShipmentList.tsx        Register controls, table and pagination
+      ShipmentCards.tsx       Employee and mobile shipment presentation
+      ShipmentFormPage.tsx    Registration/editing and convenience image input
+      ShipmentDetailPage.tsx  Details, invoice and history
+      ShipmentActionDialog.tsx
+      StatusBadge.tsx, SummaryCards.tsx, ...
+    alerts/                   Overdue cards and admin alerts page
+    reports/                  Charts, filtered reports, CSV and daily email preview
+    users/                    Local demo-user management
+    settings/                 Existing preferences plus recipients and demo reset
+    about/, not-found/        Project scope and recovery pages
+  shared/
+    i18n/                     Existing typed catalogs plus Phase 2 English/Arabic copy
+    theme/                    Existing light/dark/system theme infrastructure
+    lib/                      Browser preferences and Riyadh date utilities
+    ui/                       Existing primitives plus accessible native-dialog wrapper
+  styles/
+    tokens.css                Official brand and product tokens, Montserrat and Cairo
+    index.css                 Existing base/component/responsive styles
+    prototype.css             Operational components, mobile touch targets and print rules
+    redesign.css              Current entry folio, role shells, priorities and consignment cards
+tests/
+  shipments.test.ts           Domain, dates, reports, CSV, access and persistence tests
+  phone.test.ts               Phone formats, links, ownership and legacy persistence
+```
+
+Fonts use `@fontsource-variable/montserrat` and `@fontsource-variable/cairo`. Charts are lightweight HTML/CSS with accessible labels or textual legends. Fonts, logo and icons are served locally. User-entered names/content remain in the language entered; seeded names and locations include Arabic equivalents.
+
+Extend domain rules in `features/shipments/model.ts`, not only in UI event handlers. Use the shared translation catalogs, theme tokens and logical CSS properties. Keep future external data/auth adapters separate from the current local prototype.
+
+## Commands and verification
+
+| Command                | Purpose                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `npm run dev`          | Local Vite development server                              |
+| `npm run typecheck`    | Strict TypeScript checks for application, config and tests |
+| `npm run lint`         | Oxlint and React hooks checks                              |
+| `npm test`             | 28 tests using Node's built-in test runner                 |
+| `npm run build`        | Type-check and produce the local bundle                    |
+| `npm run preview`      | Serve the built bundle locally                             |
+| `npm run format`       | Format source and documentation                            |
+| `npm run format:check` | Verify formatting                                          |
+| `npm run check`        | Formatting, lint, tests and production build               |
+
+See [Phase 2.6 verification](docs/phase-2.6-verification.md), [brand analysis](docs/phase-2.6-brand-analysis.md), [supplied specification](docs/phase-2.6-specification.md), and [Phase 3 readiness recommendations](docs/phase-3-readiness.md). Earlier phase reports remain historical records. References to `artifacts/` in those reports describe local verification outputs and source snapshots; that directory is intentionally excluded from Git and is not required to run or test the application.
+
+## Development status and roadmap
+
+**Current:** Phase 2.6 frontend prototype, including official branding, owner-scoped shipment workflows, optional driver phone, reports and browser-local persistence. The source repository provides the starting point for future approved phases.
+
+1. **Phase 3, after approval:** production authentication, server-verified roles, PostgreSQL persistence, API validation, row-level security, private invoice storage, transactional audit events and durable daily-email scheduling.
+2. **Production readiness:** authorization and storage integration tests, concurrent numbering/edit protection, backup/restore validation, accessibility and browser/device coverage, monitoring and recovery procedures.
+3. **Controlled release:** staging validation, business acceptance and a separately authorized production deployment. Hosting, domain and production-service configuration remain future work.
+
+See the [technical readiness report](docs/phase-3-readiness.md) for the proposed data model and integration boundaries. Phase 3 implementation has not started.
+
+## Constraints and limitations
+
+There is no real authentication/authorization, application backend, production database, email delivery, scheduler, live tracking, external integration, payments, accounting, fleet maintenance or CRM. Truck, driver and customer are simple shipment fields. The application uses publicly accessible official branding; a separate brand manual/vector master was not supplied. Production roles and row access must be verified by the backend in Phase 3.
+
+The print action delegates to the browser. Use a normal browser's Print → Save as PDF. Native print-preview automation was blocked during testing; the print stylesheet was reviewed, but no PDF file was generated or visually certified. Real-device touch testing, Safari/Firefox and an exhaustive accessibility audit remain outside this verification run.
+
+The company website and its repository are unchanged. No deployment, DNS changes, production database connection or external email configuration has been performed. This private application repository is the authorized source repository for future development. Phase 3 requires explicit approval.
