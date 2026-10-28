@@ -1,5 +1,13 @@
 # Vision & Solution — project status
 
+> **CURRENT — PHASE 3C.5 MERGED; MOBILE-FIRST UI FOLLOW-UP AUTHORIZED (28 Oct 2026)**  
+> Owner visually reviewed the local Connected `/daily-report`, dashboard and `/reports` displaying three authorized **retained** fictional records (TR-0548 complete, TR-0549 overdue, TR-0550 pending). Owner **explicitly approved Phase 3C.5**; GitHub PR #14 was verified merged to `main` at `ed4b8f0649b7e05e7c9f69865ee740529f85094d`. PR #14's local Codex tests were 74 app, 30 signed security, 13 Auth, 20 database and 20 workflow; there are no new independent CI results. This is milestone approval, NOT production readiness.  
+> Owner additionally instructed urgent **font size/readability, desktop table/report width and especially MOBILE-first employee workflow** refinement. Dedicated branch `feature/mobile-first-connected-ui-readability` created from the exact merged main SHA; see `docs/mobile-first-connected-ui-readability.md` for clear viewport, accessibility, security and preservation requirements. **This is a UI task handoff, not completed code or tested UI yet**. The next PR stays Draft/unmerged pending owner visual approval.  
+> IMPORTANT: Preserve the three **owner-review QA shipments** TR-0548/TR-0549/TR-0550 in local PostgreSQL, along with all records/accounts/MFA and six applied migrations. They must **NOT** be cleaned up, deleted, overwritten or reset. No additional fixtures or Docker/network changes without specific authorization. Keep current local Demo/Connected modes, backend access controls, migrations, default Demo and company branding. No production deployment, scheduled email, invoice binary upload, user lifecycle or new business workflow changes.  
+> Codex on HOME must inspect git status, safely fetch/switch to existing feature branch without discarding work, implement and test responsive accessible mobile employee flows at 320/360/375/390/430px and desktop admin at 1280px, AR/EN RTL/LTR dark/light, avoid sideways scroll, ensure adequately sized text/touch controls and preserve existing test suites. Push verified changes; **DO NOT MERGE NEXT PR** until separate review.
+
+---
+
 > **CURRENT VERIFIED CANDIDATE — 28 October 2026: Phase 3C.5 connected workflow acceptance, Draft PR #14.**
 >
 > Approved main is `6e4bc35cf06cb75a9817cd0de962ad8a76db9c2f` (PR #13 merged). HOME inspected a clean checkout/upstream/worktrees, fetched origin and safely switched to existing `feature/phase-3c5-connected-workflow-acceptance` at authorized handoff `8df195b11eaf008adee7e0340b24a3a031c2d0d2`. No reset/clean/stash/force-push or duplicate branch/PR. The owner's manual Phase 3C.4 acceptance remains deferred; agent tests do not replace it.
