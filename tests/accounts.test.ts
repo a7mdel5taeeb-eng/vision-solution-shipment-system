@@ -74,9 +74,10 @@ test('browser transport permits exact shipment RPCs, never raw writes, arbitrary
     'get_shipments',
     'read_shipment_history_page',
     'shipment_command',
+    'read_operational_report',
   ])
     assert.equal((await selected.rpc(name)).error, null)
-  assert.equal(calls.length, 5)
+  assert.equal(calls.length, 6)
   await selected.auth.stopAutoRefresh()
 })
 test('test-only TOTP generator matches the public RFC 6238 SHA-1 vector', () => {

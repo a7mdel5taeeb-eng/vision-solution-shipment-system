@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { LogOut, Package, Trash2, Menu, X } from 'lucide-react'
+import { LogOut, Package, Trash2, Menu, X, BarChart3, Mail } from 'lucide-react'
 import { useAuth } from '../../app/auth/auth-context'
 import type { ActiveAccount } from '../../app/auth/account'
 import { Brand } from '../../app/layout/Brand'
@@ -16,11 +16,15 @@ import { connectedCommandRepository } from './command-repository'
 import { CommandSession } from './command-session'
 import { CommandContext } from './command-context'
 import { CommandFeedback } from './CommandFeedback'
+import { ConnectedReports } from './ConnectedReports'
+import { connectedReportRepository } from './report-repository'
+import { reportMessages } from '../../shared/i18n/report-messages'
 import '../../styles/connected.css'
 
 export function ConnectedWorkspace({ account }: { account: ActiveAccount }) {
   const { client, store, state } = useAuth()
   const repository = useMemo(() => connectedShipmentRepository(client), [client])
+  const reports = useMemo(() => connectedReportRepository(client), [client])
   const [commands] = useState(
     () =>
       new CommandSession(
@@ -40,6 +44,8 @@ export function ConnectedWorkspace({ account }: { account: ActiveAccount }) {
     main = useRef<HTMLElement>(null)
   const admin = account.role === 'admin'
   const form = location.pathname === '/shipments/new' || location.pathname.endsWith('/edit')
+  const report = location.pathname === '/reports' || location.pathname === '/daily-report'
+  const rm = reportMessages[locale]
   useEffect(() => {
     if (commands.getSnapshot().status === 'error') commands.dismiss()
     drawer.current?.close()
@@ -57,13 +63,33 @@ export function ConnectedWorkspace({ account }: { account: ActiveAccount }) {
         </div>
         <div className="nav-group">
           <Link
-            className={`nav-link ${!location.search.includes('scope=deleted') ? 'active' : ''}`}
+            className={`nav-link ${!report && !location.search.includes('scope=deleted') ? 'active' : ''}`}
             to="/workspace"
-            aria-current={!location.search.includes('scope=deleted') ? 'page' : undefined}
+            aria-current={
+              !report && !location.search.includes('scope=deleted') ? 'page' : undefined
+            }
             onClick={() => drawer.current?.close()}
           >
             <Package size={17} aria-hidden="true" />
             {t.allShipments}
+          </Link>
+          <Link
+            className={`nav-link ${location.pathname === '/reports' ? 'active' : ''}`}
+            aria-current={location.pathname === '/reports' ? 'page' : undefined}
+            to="/reports"
+            onClick={() => drawer.current?.close()}
+          >
+            <BarChart3 size={17} aria-hidden="true" />
+            {rm.reports}
+          </Link>
+          <Link
+            className={`nav-link ${location.pathname === '/daily-report' ? 'active' : ''}`}
+            aria-current={location.pathname === '/daily-report' ? 'page' : undefined}
+            to="/daily-report"
+            onClick={() => drawer.current?.close()}
+          >
+            <Mail size={17} aria-hidden="true" />
+            {rm.daily}
           </Link>
           <Link
             className={`nav-link ${location.search.includes('scope=deleted') ? 'active' : ''}`}
@@ -159,8 +185,33 @@ export function ConnectedWorkspace({ account }: { account: ActiveAccount }) {
           </header>
           <main id="connected-main" className="main-content" ref={main} tabIndex={-1}>
             <p className="connected-notice">{m.scope}</p>
+            {!admin && !form && (
+              <nav className="auth-actions" aria-label={t.navigation}>
+                <Link
+                  className="text-link"
+                  to="/workspace"
+                  aria-current={!report ? 'page' : undefined}
+                >
+                  {t.myShipments}
+                </Link>
+                <Link
+                  className="text-link"
+                  to="/reports"
+                  aria-current={report ? 'page' : undefined}
+                >
+                  {rm.reports}
+                </Link>
+              </nav>
+            )}
             <CommandFeedback />
-            {form ? (
+            {report ? (
+              <ConnectedReports
+                key={location.pathname}
+                repository={reports}
+                admin={admin}
+                daily={location.pathname === '/daily-report'}
+              />
+            ) : form ? (
               <ConnectedFormPage key={id ?? 'new'} id={id} repository={repository} />
             ) : id ? (
               <ConnectedDetail key={id} id={id} repository={repository} admin={admin} />

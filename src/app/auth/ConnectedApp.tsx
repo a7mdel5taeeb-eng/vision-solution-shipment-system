@@ -37,6 +37,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: '/workspace', element: <AccountWorkspacePage /> },
+      { path: '/reports', element: <AccountWorkspacePage /> },
+      { path: '/daily-report', element: <AccountWorkspacePage /> },
       { path: '/shipments/new', element: <AccountWorkspacePage /> },
       { path: '/shipments/:id', element: <AccountWorkspacePage /> },
       { path: '/shipments/:id/edit', element: <AccountWorkspacePage /> },

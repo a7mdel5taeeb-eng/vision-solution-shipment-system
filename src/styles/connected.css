@@ -1,4 +1,21 @@
 /* Connected-only layout guards. Approved Demo selectors/styles are untouched. */
+.connected-workspace .connected-report-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-block: 16px 0;
+}
+.connected-workspace .connected-report-counts dd {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 4px 0 0;
+}
+.connected-workspace .report-filters input,
+.connected-workspace .report-filters select {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 16px;
+}
 .connected-workspace {
   --type-meta: 12px;
   --type-secondary: 14px;
