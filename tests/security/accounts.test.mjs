@@ -46,10 +46,17 @@ const token = async (person) => (await person.client.auth.getSession()).data.ses
 const self = async (person) => http('rpc/get_my_account', await token(person), 'POST', {})
 const list = async (person, id) =>
   http(`rpc/get_shipments`, await token(person), 'POST', { p_id: id })
-async function command(person, operation, id = null, revision = null, data = {}) {
+async function command(
+  person,
+  operation,
+  id = null,
+  revision = null,
+  data = {},
+  requestId = randomUUID(),
+) {
   return http('rpc/shipment_command', await token(person), 'POST', {
     p_operation: operation,
-    p_request_id: randomUUID(),
+    p_request_id: requestId,
     p_shipment_id: id,
     p_expected_revision: revision,
     p_fields: data,
@@ -317,6 +324,8 @@ test('cross-owner edits and employee delete/restore leave shipment, history and 
   assert.equal(crossOwner.body.code, 'PT404')
   assert.equal(crossOwner.body.message, 'record_unavailable')
   assert.deepEqual(crossOwner, absent)
+  const malformed = await command(people.a, 'update', 'not-a-uuid', '1', fields)
+  assert.equal(malformed.status, 400, 'Malformed input remains a validation error, not not-found')
   assert.equal((await command(people.a, 'delete', ownA, '1')).status, 403)
   assert.equal((await command(people.a, 'restore', ownA, '1')).status, 403)
   assert.equal(
@@ -332,6 +341,39 @@ test('cross-owner edits and employee delete/restore leave shipment, history and 
     receiptCount,
   )
   assert.equal((await list(people.b, ownB)).body[0].customer, fields.customer)
+})
+
+test('cached request replay after soft deletion returns the same HTTP 404 without side effects', async () => {
+  const requestId = randomUUID()
+  const created = await command(people.a, 'create', null, null, fields, requestId)
+  assert.equal(created.status, 200)
+  const replay = await command(people.a, 'create', null, null, fields, requestId)
+  assert.deepEqual(replay, created, 'Authorized idempotent replay remains unchanged')
+  const id = created.body.shipment_id
+  const deleted = await command(people.admin, 'delete', id, created.body.revision)
+  assert.equal(deleted.status, 200)
+  const fingerprint = () =>
+    sql(`select md5(jsonb_build_object(
+    'shipment',(select to_jsonb(s) from public.shipments s where id=${q(id)}),
+    'events',(select jsonb_agg(to_jsonb(e) order by id) from public.shipment_events e where shipment_id=${q(id)}),
+    'receipts',(select jsonb_agg(to_jsonb(r) order by id) from app_private.command_receipts r where shipment_id=${q(id)})
+  )::text);`)
+  const before = await fingerprint()
+  const unavailable = await command(people.a, 'create', null, null, fields, requestId)
+  const absent = await command(people.a, 'update', randomUUID(), '1', fields)
+  assert.equal(unavailable.status, 404)
+  assert.equal(unavailable.body.code, 'PT404')
+  assert.equal(unavailable.body.message, 'record_unavailable')
+  assert.deepEqual(
+    unavailable,
+    absent,
+    'A cached inaccessible record must not reveal its existence',
+  )
+  assert.equal(
+    await fingerprint(),
+    before,
+    'Denied replay must not alter record, audit or receipts',
+  )
 })
 test('tampered AAL/admin claims and expired correctly signed tokens fail at the actual HTTP JWT boundary', async () => {
   const jwt = await token(people.a)
@@ -392,11 +434,15 @@ test('new self-reader role has no login, bypass, table ownership, writes or PUBL
 test('HTTP mapping migration keeps command owner and narrowly granted execute rights', async () => {
   const signature = 'public.shipment_command(text,uuid,uuid,bigint,jsonb,timestamptz)'
   assert.equal(
-    await sql(`select pg_get_userbyid(proowner) from pg_proc where oid='${signature}'::regprocedure;`),
+    await sql(
+      `select pg_get_userbyid(proowner) from pg_proc where oid='${signature}'::regprocedure;`,
+    ),
     'vs_command_writer',
   )
   assert.equal(
-    await sql(`select has_function_privilege('anon','${signature}','execute') or has_function_privilege('service_role','${signature}','execute');`),
+    await sql(
+      `select has_function_privilege('anon','${signature}','execute') or has_function_privilege('service_role','${signature}','execute');`,
+    ),
     'f',
   )
   assert.equal(
