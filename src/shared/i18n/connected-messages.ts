@@ -1,6 +1,6 @@
 const en = {
-  readOnly: 'Connected · read only',
-  scope: 'Live local database records. Shipment changes remain available in Demo Mode only.',
+  mode: 'Connected · local workspace',
+  scope: 'Local connected workspace. Shipment changes are saved to your authorized account.',
   loading: 'Loading authorized records…',
   denied: 'Your account cannot access these records. Refresh your session or sign in again.',
   unavailable: 'This shipment is unavailable or you do not have access.',
@@ -19,12 +19,12 @@ const en = {
   employeeScope: 'Only your own active shipments are visible.',
   adminScope: 'All authorized shipments · administrator MFA verified',
   limit: 'The pagination safety limit has been reached. Narrow your search to see more records.',
-  notFound: 'This page is unavailable in read-only Connected Mode.',
+  notFound: 'This page is unavailable in Connected Mode.',
 }
 type ConnectedMessages = { [K in keyof typeof en]: string }
 const ar: ConnectedMessages = {
-  readOnly: 'متصل · للعرض فقط',
-  scope: 'سجلات مباشرة من قاعدة البيانات المحلية. تعديل الشحنات متاح حالياً في الوضع التجريبي فقط.',
+  mode: 'متصل · مساحة العمل المحلية',
+  scope: 'مساحة العمل المحلية المتصلة. تُحفظ تغييرات الشحنات في حسابك المصرح به.',
   loading: 'جارٍ تحميل السجلات المصرح بها…',
   denied: 'لا يملك حسابك صلاحية الوصول لهذه السجلات. حدّث الجلسة أو سجّل الدخول مجدداً.',
   unavailable: 'الشحنة غير متاحة أو لا تملك صلاحية الوصول إليها.',
@@ -43,6 +43,6 @@ const ar: ConnectedMessages = {
   employeeScope: 'تظهر شحناتك النشطة فقط.',
   adminScope: 'جميع الشحنات المصرح بها · تم التحقق بخطوتين للمسؤول',
   limit: 'تم الوصول إلى الحد الآمن للصفحات. حدّد البحث لعرض المزيد من السجلات.',
-  notFound: 'هذه الصفحة غير متاحة في الوضع المتصل للعرض فقط.',
+  notFound: 'هذه الصفحة غير متاحة في الوضع المتصل.',
 }
 export const connectedMessages = { en, ar }

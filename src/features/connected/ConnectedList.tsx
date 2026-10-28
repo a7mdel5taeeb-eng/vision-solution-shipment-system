@@ -4,7 +4,9 @@ import { Search, Package, Clock3, CheckCircle2, TriangleAlert } from 'lucide-rea
 import { useLocale } from '../../shared/i18n/locale-context'
 import { connectedMessages } from '../../shared/i18n/connected-messages'
 import { formatDate } from '../../shared/lib/dates'
-import { Button } from '../../shared/ui/Primitives'
+import { Button, ButtonLink } from '../../shared/ui/Primitives'
+import { commandMessages } from '../../shared/i18n/command-messages'
+import { useCommands } from './command-context'
 import { defaultQuery, type ReadQuery } from './read-model'
 import type { ShipmentReadRepository } from './repository'
 import { useRead } from './use-read'
@@ -42,7 +44,8 @@ export function ConnectedList({
       ),
     [repository, search, validStatus, scope, safeOffset, limit, sort],
   )
-  const result = useRead(load)
+  const { state } = useCommands()
+  const result = useRead(load, state.version)
   function filter(key: string, value: string) {
     setParams(
       (previous) => {
@@ -66,6 +69,11 @@ export function ConnectedList({
           {t.authRefresh}
         </Button>
       </div>
+      {!admin && (
+        <div className="connected-mobile-create">
+          <ButtonLink to="/shipments/new">{t.addShipment}</ButtonLink>
+        </div>
+      )}
       {page && (
         <section
           className={`metrics-grid operational-metrics ${admin ? '' : 'employee-metrics'}`}
@@ -162,7 +170,23 @@ export function ConnectedList({
           <>
             {!page.rows.length ? (
               <section className="panel list-empty" role="status">
-                <p>{m.empty}</p>
+                <h2>
+                  {scope === 'deleted'
+                    ? commandMessages[locale].deletedEmpty
+                    : search || validStatus
+                      ? commandMessages[locale].filteredEmpty
+                      : commandMessages[locale].emptyTitle}
+                </h2>
+                <p>
+                  {scope === 'deleted'
+                    ? commandMessages[locale].deletedHelp
+                    : search || validStatus
+                      ? commandMessages[locale].filteredHelp
+                      : commandMessages[locale].emptyHelp}
+                </p>
+                {scope === 'active' && !search && !validStatus && (
+                  <ButtonLink to="/shipments/new">{t.addShipment}</ButtonLink>
+                )}
               </section>
             ) : admin ? (
               <>
@@ -244,7 +268,8 @@ function UrgentReads({ repository }: { repository: ShipmentReadRepository }) {
       repository.list({ ...defaultQuery, status: 'overdue', sort: 'oldest', limit: 3 }, signal),
     [repository],
   )
-  const result = useRead(load)
+  const { state } = useCommands()
+  const result = useRead(load, state.version)
   if (result.status !== 'ready') return <ReadFeedback {...result} />
   if (!result.data?.rows.length) return null
   return (

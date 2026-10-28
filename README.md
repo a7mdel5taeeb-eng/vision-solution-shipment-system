@@ -8,13 +8,13 @@ A bilingual, responsive shipment operations workspace built on the existing Phas
 
 The application is a separate project from the company's public marketing website. The future product address is `system.vsolutions.co`; it has not been deployed.
 
-For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow, Phase 3B, Phase 3C.1/3C.2 and HTTP 404 fix are approved/merged at main `eac7bcabda0f08ca099e2c5e395bbf200554c44e`. The current Phase 3C.3 read-only candidate is isolated in existing Draft PR #12.
+For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow, Phase 3B, Phase 3C.1–3C.3 and HTTP 404 fix are approved/merged at main `3497b2fbaa166fa9858712558adc9641f8a8d912`. The current Phase 3C.4 command candidate is isolated in existing Draft PR #13.
 
 ## Current local connected candidate
 
-Phase 3C.3 adds real **read-only** shipment lists, details, history, server-side search/filtering/pagination/counts and protected employee/AAL2 administrator views. Default Demo Mode and its browser records/workflows remain separate and unchanged. See [the local read-only runbook and actual test results](docs/phase-3c3-connected-shipment-reads.md); older prototype descriptions below describe Demo Mode.
+Phase 3C.4 adds real shipment creation, editing, manual Riyadh completion/time editing, reopening and administrator-only soft deletion/restoration through the existing transactional `shipment_command`. Expected revisions protect concurrent edits; uncertain retries preserve the same request key and payload. Authorized lists/details/history refresh after saves. Employees operate on their own rows; administrator operations require real AAL2. Default Demo Mode and its browser records/workflows remain separate and unchanged. See [the command runbook and actual test results](docs/phase-3c4-connected-shipment-commands.md) and [the merged read foundation](docs/phase-3c3-connected-shipment-reads.md); older prototype descriptions below describe Demo Mode.
 
-Run `npm run dev` for Demo at `http://127.0.0.1:5173/` and, with the existing approved local Supabase stack/public-client configuration, `npm run dev:connected` for `http://127.0.0.1:5174/workspace`. Never put service credentials in Vite variables. The read-only candidate uses new forward migration `20261028120000`; preserve/verify a private backup before applying pending local migrations, never reset a populated database. Connected mutations, production services, deployment and merging PR #12 are outside this milestone.
+Run `npm run dev` for Demo at `http://127.0.0.1:5173/` and, with the existing approved local Supabase stack/public-client configuration, `npm run dev:connected` for `http://127.0.0.1:5174/workspace`. Never put service credentials in Vite variables. The five existing local migrations include read migration `20261028120000`; Phase 3C.4 needs no new migration. Preserve/verify a private backup before any pending local migration and never reset a populated database. Invoice image uploads, connected reports, production services, deployment, Phase 3C.5 and merging PR #13 are outside this milestone. Pending command recovery and one unsaved draft are account-bound in tab sessionStorage, survive reload and clear at logout; they do not synchronize across computers.
 
 ## Phase 3C.1 local authentication checkpoint
 
@@ -24,11 +24,11 @@ Local email/password login, session restoration/refresh, protected navigation an
 
 The original unprovisioned Auth-only fixture remains local; its previously exposed fictional password was rotated and refresh sessions revoked. Use `npm run auth:fixture` only when that fixture and connected configuration do not already exist. Keep private CLI keys, passwords and environment/runtime files out of Git.
 
-## Phase 3C.2 protected accounts and MFA candidate
+## Historical Phase 3C.2 protected accounts and MFA checkpoint
 
 The existing `feature/phase-3c2-secure-accounts-mfa` branch / draft PR #10 adds trusted fictional local Admin/Employee provisioning, self-only protected profile/role lookup, administrator TOTP enrollment/verification and bilingual role-aware account screens. Real signed-HTTP tests verify employee isolation, inactive/unauthorized denial, metadata-forgery resistance and administrator AAL1/AAL2 boundaries. Demo role selection cannot grant connected permissions.
 
-See the [Phase 3C.2 setup, security tests and current acceptance status](docs/phase-3c2-secure-accounts-mfa.md). HOME already has three fictional local accounts; credentials remain only in ignored `local-data/phase3c2-accounts.local.json`. The bootstrap refuses existing files; do not overwrite accounts or factors. No connected shipment adapter, account-management/recovery UI, public signup or production services are included. PR #10 must remain Draft and unmerged pending review.
+See the [Phase 3C.2 setup and historical security tests](docs/phase-3c2-secure-accounts-mfa.md). HOME already has three fictional local accounts; credentials remain only in ignored `local-data/phase3c2-accounts.local.json`. The bootstrap refuses existing files; do not overwrite accounts or factors. PR #10 was approved and merged; its original scope excluded shipment integration. Account-management/recovery UI, public signup and production services remain excluded.
 
 ## Technology stack
 

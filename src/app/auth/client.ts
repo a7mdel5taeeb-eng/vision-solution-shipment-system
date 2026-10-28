@@ -40,13 +40,16 @@ export function createLocalAuthClient(
             '/rest/v1/rpc/read_shipment_page',
             '/rest/v1/rpc/get_shipments',
             '/rest/v1/rpc/read_shipment_history_page',
+            '/rest/v1/rpc/shipment_command',
           ].includes(url.pathname)
-        // Explicit read RPCs only. Commands, raw tables, storage and arbitrary RPCs stay blocked.
+        // Explicit read/transactional command RPCs only. Raw writes/storage/arbitrary RPCs stay blocked.
         if (
           url.origin !== new URL(config.url).origin ||
           (!url.pathname.startsWith('/auth/v1/') && !readLookup)
         ) {
-          return Promise.reject(new Error('Only local Auth and authorized read APIs are enabled'))
+          return Promise.reject(
+            new Error('Only local Auth and authorized shipment APIs are enabled'),
+          )
         }
         const timeout = AbortSignal.timeout(10000)
         return transport(input, {

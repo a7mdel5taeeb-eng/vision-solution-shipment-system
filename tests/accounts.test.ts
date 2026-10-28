@@ -42,7 +42,7 @@ test('inactive and unprovisioned responses discard any attached profile/role dat
   for (const state of ['inactive', 'unprovisioned'])
     assert.deepEqual(parseAccount({ ...employee, state }, 'verified-id'), { state })
 })
-test('browser transport permits exact read RPCs, never commands, raw tables or GET RPCs', async () => {
+test('browser transport permits exact shipment RPCs, never raw writes, arbitrary RPCs or GET commands', async () => {
   const anon = `${btoa('{}').replaceAll('=', '')}.${btoa(JSON.stringify({ role: 'anon' })).replaceAll('=', '')}.signature`
   const calls: string[] = []
   const selected = createLocalAuthClient(
@@ -59,17 +59,24 @@ test('browser transport permits exact read RPCs, never commands, raw tables or G
   assert.equal(me.error, null)
   assert.equal(calls.length, 1)
   for (const request of [
-    () => selected.rpc('shipment_command').retry(false),
+    () => selected.rpc('arbitrary_command').retry(false),
+    () => selected.rpc('shipment_command', {}, { get: true }).retry(false),
     () => selected.from('shipments').select('*').retry(false),
+    () => selected.from('shipments').insert({ customer: 'Denied' }).retry(false),
     () => selected.rpc('get_my_account', {}, { get: true }).retry(false),
   ]) {
     const result = await request()
     assert.ok(result.error)
   }
   assert.equal(calls.length, 1)
-  for (const name of ['read_shipment_page', 'get_shipments', 'read_shipment_history_page'])
+  for (const name of [
+    'read_shipment_page',
+    'get_shipments',
+    'read_shipment_history_page',
+    'shipment_command',
+  ])
     assert.equal((await selected.rpc(name)).error, null)
-  assert.equal(calls.length, 4)
+  assert.equal(calls.length, 5)
   await selected.auth.stopAutoRefresh()
 })
 test('test-only TOTP generator matches the public RFC 6238 SHA-1 vector', () => {
