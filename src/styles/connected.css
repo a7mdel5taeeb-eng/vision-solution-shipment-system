@@ -17,10 +17,12 @@
   font-size: 16px;
 }
 .connected-workspace {
-  --type-meta: 12px;
-  --type-secondary: 14px;
-  font-size: 14px;
+  --type-meta: 0.875rem;
+  --type-secondary: 0.9375rem;
+  --type-control: 1rem;
+  font-size: 1rem;
 }
+
 .connected-workspace .connected-fields {
   border: 0;
   padding: 0;
@@ -98,5 +100,453 @@
   .connected-workspace .pagination {
     flex-wrap: wrap;
     gap: 12px;
+  }
+}
+
+/* Connected presentation only: native controls stay zoomable and touch friendly. */
+.auth-page {
+  --type-meta: 0.875rem;
+  --type-secondary: 0.9375rem;
+  --type-control: 1rem;
+  font-size: 1rem;
+}
+:is(.connected-workspace, .auth-page) {
+  line-height: 1.65;
+}
+:root[lang='ar'] :is(.connected-workspace, .auth-page) {
+  line-height: 1.85;
+}
+:is(.connected-workspace, .auth-page) h1 {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+:is(.connected-workspace, .auth-page) h2 {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+:is(.connected-workspace, .auth-page) .button,
+.connected-workspace .status-segments button,
+.connected-workspace .pagination .button {
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+  padding: 0.625rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+:is(.connected-workspace, .auth-page) :is(input, select, textarea) {
+  min-block-size: 2.875rem;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  font-size: 1rem;
+  scroll-margin-block: 1.5rem;
+}
+:is(.connected-workspace, .auth-page) :is(.form-field, .page-description) {
+  font-size: 1rem;
+}
+:is(.connected-workspace, .auth-page)
+  :is(.field-help, .form-error, .optional-label, .auth-help, .auth-details dt) {
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+:is(.connected-workspace, .auth-page)
+  :is(.language-control, .appearance-control, .logout-button, .modal-close) {
+  min-inline-size: 2.75rem;
+  min-block-size: 2.75rem;
+  inline-size: auto;
+  padding: 0.625rem;
+  font-size: 0.875rem;
+}
+.connected-workspace
+  :is(
+    .app-body,
+    .main-content,
+    .workspace-header-start,
+    .workspace-header-actions,
+    .page-heading > div
+  ) {
+  min-inline-size: 0;
+}
+.connected-workspace .main-content {
+  width: 100%;
+  max-width: 100rem;
+  margin-inline: auto;
+  padding: clamp(1rem, 2vw, 1.75rem);
+}
+.connected-workspace.employee-shell .main-content {
+  max-width: 76rem;
+}
+.connected-workspace .workspace-header-inner {
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem clamp(1rem, 2vw, 1.75rem);
+}
+.connected-workspace .workspace-header-actions {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.connected-workspace .workspace-identity strong,
+.connected-workspace .brand-subtitle,
+.connected-workspace .sidebar-foot,
+.connected-workspace .app-footer {
+  font-size: 0.875rem;
+}
+.connected-workspace :is(.nav-link, .sidebar-create .button, .brand-wordmark) {
+  font-size: 1rem;
+}
+.connected-workspace .nav-link {
+  min-block-size: 2.75rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .sidebar {
+  overflow-y: auto;
+}
+.connected-workspace .mobile-drawer {
+  width: min(22rem, calc(100% - 1rem));
+  max-width: calc(100% - 1rem);
+}
+.connected-workspace .text-link,
+.connected-workspace .load-id,
+.connected-workspace .shipment-id,
+.connected-workspace .driver-phone {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .text-link {
+  font-size: 1rem;
+}
+.connected-workspace .workspace-header-start > a {
+  min-block-size: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+.connected-workspace .driver-phone {
+  max-inline-size: 100%;
+  white-space: normal;
+  font-size: 0.9375rem;
+}
+.connected-workspace .driver-phone bdi {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .page-heading {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.connected-workspace .connected-list-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+@media (max-width: 700px) {
+  .connected-workspace.employee-shell .header-create {
+    display: none;
+  }
+  .connected-workspace.employee-shell .connected-list-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  .connected-workspace .connected-list-actions .connected-mobile-create .button {
+    width: 100%;
+    height: 100%;
+  }
+}
+.connected-workspace .connected-filter-disclosure > summary {
+  min-block-size: 2.75rem;
+  padding: 0.625rem 0;
+  font-size: 1rem;
+  font-weight: 650;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .connected-report-filters {
+  padding: 0.5rem 1rem;
+}
+.connected-workspace .connected-report-filters .report-filters {
+  border: 0;
+  padding: 1rem 0;
+  box-shadow: none;
+}
+.connected-workspace .connected-notice {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin-block-end: 0.75rem;
+}
+.connected-workspace :is(.detail-panel, .form-panel, .report-filters) {
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+.connected-workspace
+  :is(.detail-grid dd, .history-list strong, .load-driver bdi, .load-route strong) {
+  font-size: 1rem;
+}
+.connected-workspace
+  :is(
+    .detail-grid dt,
+    .history-list p,
+    .history-list small,
+    .load-id,
+    .load-cargo,
+    .load-route small,
+    .load-driver small,
+    .load-timing time,
+    .late-label,
+    .status-badge
+  ) {
+  font-size: 0.875rem;
+}
+.connected-workspace .detail-grid,
+.connected-workspace .detail-layout {
+  gap: 1.25rem;
+}
+.connected-workspace .detail-layout {
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+}
+.connected-workspace .register-tools-main {
+  flex-wrap: wrap;
+}
+.connected-workspace .register-tools .search-field {
+  min-inline-size: 0;
+  flex: 1 1 18rem;
+  min-block-size: 2.875rem;
+}
+.connected-workspace .register-tools .search-field input {
+  font-size: 1rem;
+  min-block-size: 2.75rem;
+}
+.connected-workspace .status-segments {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0.25rem;
+}
+.connected-workspace .status-segments button {
+  font-size: 0.875rem;
+  padding-inline: 0.75rem;
+  flex: 1 1 auto;
+}
+.connected-workspace .register-tools-secondary select {
+  font-size: 1rem;
+  min-height: 2.875rem;
+  max-width: 100%;
+}
+.connected-workspace .shipment-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+}
+.connected-workspace .shipment-load-card {
+  padding: 1rem;
+}
+.connected-workspace .shipment-load-card h3 {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+.connected-workspace .load-card-top {
+  flex-wrap: wrap;
+}
+.connected-workspace .load-cargo {
+  white-space: normal;
+  overflow: visible;
+}
+.connected-workspace .status-badge {
+  white-space: normal;
+  max-width: 100%;
+  line-height: 1.5;
+}
+.connected-workspace .metric-card {
+  min-width: 0;
+  padding: 1rem;
+}
+.connected-workspace .employee-metrics .metric-top {
+  font-size: 0.875rem;
+  flex-wrap: wrap;
+}
+.connected-workspace .metric-value {
+  font-size: 1.75rem;
+}
+.connected-workspace .report-filter-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1rem;
+}
+.connected-workspace .report-filter-grid .form-field {
+  font-size: 0.9375rem;
+}
+.connected-workspace .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.connected-workspace .field-wide {
+  grid-column: 1 / -1;
+}
+.connected-workspace .form-footer > div,
+.connected-workspace .detail-action-bar,
+.connected-workspace .modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.connected-workspace .form-footer > div .button,
+.connected-workspace .detail-action-bar .button,
+.connected-workspace .modal-actions .button {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+.connected-workspace .modal {
+  width: min(36rem, calc(100% - 1.5rem));
+  max-height: calc(100dvh - 1.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.connected-workspace .modal-inner {
+  padding: 1.25rem;
+}
+.connected-workspace :is(.modal-record, .modal-description) {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .modal-header {
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.connected-workspace .modal-header h2 {
+  min-width: 0;
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .modal input {
+  width: 100%;
+}
+.connected-workspace .data-table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 0;
+}
+.connected-workspace .data-table :is(th, td) {
+  font-size: 0.875rem;
+  padding: 0.75rem 0.5rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.connected-workspace .data-table :is(.customer-cell, .table-route) {
+  min-width: 0;
+  max-width: none;
+  font-size: 0.9375rem;
+}
+.connected-workspace .data-table th:nth-child(1) {
+  width: 11%;
+}
+.connected-workspace .data-table th:nth-child(2) {
+  width: 19%;
+}
+.connected-workspace .data-table th:nth-child(3) {
+  width: 18%;
+}
+.connected-workspace .data-table th:nth-child(4) {
+  width: 12%;
+}
+.connected-workspace .data-table th:nth-child(5) {
+  width: 13%;
+}
+.connected-workspace .data-table th:nth-child(6) {
+  width: 15%;
+}
+.connected-workspace .data-table th:nth-child(7) {
+  width: 12%;
+}
+.connected-workspace .data-table .shipment-id {
+  font-size: 0.875rem;
+}
+.auth-page .entry-header {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.auth-page .auth-main {
+  width: min(calc(100% - 2rem), 36rem);
+}
+.auth-page .auth-panel {
+  padding: clamp(1rem, 4vw, 2rem);
+}
+.auth-page .brand-wordmark {
+  font-size: 1.125rem;
+}
+.connected-workspace .shipment-form summary {
+  font-size: 1rem;
+}
+.connected-workspace .list-empty p {
+  font-size: 1rem;
+}
+.connected-workspace .report-filters small {
+  font-size: 0.875rem;
+}
+.auth-page .brand-subtitle,
+.auth-page .entry-footer {
+  font-size: 0.875rem;
+}
+@media (max-width: 1199px) {
+  .connected-workspace .shipment-list.table-layout .admin-table {
+    display: none;
+  }
+  .connected-workspace .shipment-list .admin-mobile-cards {
+    display: block;
+  }
+}
+@media (min-width: 1200px) {
+  .connected-workspace .shipment-list.table-layout .admin-table {
+    display: block;
+  }
+  .connected-workspace .shipment-list .admin-mobile-cards {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .connected-workspace .form-grid,
+  .connected-workspace .detail-layout,
+  .connected-workspace .detail-grid,
+  .connected-workspace .load-route,
+  .connected-workspace .load-driver {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .connected-workspace .load-route > div + div {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+    padding-block-start: 0.75rem;
+  }
+  .connected-workspace .journey-panel {
+    order: 0;
+  }
+  .connected-workspace .workspace-header-start {
+    flex: 1 1 100%;
+  }
+  .connected-workspace .workspace-header-actions {
+    margin-inline-start: 0;
+  }
+  .connected-workspace .workspace-identity {
+    display: none;
+  }
+  .connected-workspace .status-segments {
+    flex: 1 1 100%;
+  }
+  .connected-workspace .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .connected-workspace .employee-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .connected-workspace .employee-metrics .metric-card {
+    padding: 0.75rem 0.5rem;
+  }
+  .connected-workspace .employee-metrics .metric-icon {
+    display: none;
+  }
+  .connected-workspace .employee-metrics .metric-value {
+    font-size: 1.5rem;
   }
 }

@@ -66,15 +66,17 @@ export function ConnectedList({
           <h1>{scope === 'deleted' ? t.deletedRecords : admin ? t.allShipments : t.myShipments}</h1>
           <p className="page-description">{admin ? m.adminScope : m.employeeScope}</p>
         </div>
-        <Button variant="secondary" onClick={() => void result.retry()}>
-          {reportMessages[locale].refresh}
-        </Button>
-      </div>
-      {!admin && (
-        <div className="connected-mobile-create">
-          <ButtonLink to="/shipments/new">{t.addShipment}</ButtonLink>
+        <div className="connected-list-actions">
+          {!admin && (
+            <span className="connected-mobile-create">
+              <ButtonLink to="/shipments/new">{t.addShipment}</ButtonLink>
+            </span>
+          )}
+          <Button variant="secondary" onClick={() => void result.retry()}>
+            {reportMessages[locale].refresh}
+          </Button>
         </div>
-      )}
+      </div>
       {page && (
         <section
           className={`metrics-grid operational-metrics ${admin ? '' : 'employee-metrics'}`}
@@ -125,6 +127,12 @@ export function ConnectedList({
               onChange={(e) => filter('q', e.target.value)}
             />
           </label>
+        </div>
+        <details className="connected-filter-disclosure">
+          <summary>
+            {t.filters}
+            {validStatus ? ` · ${t[validStatus]}` : ''}
+          </summary>
           <div className="status-segments" role="group" aria-label={t.status}>
             {(['', 'pending', 'overdue', 'completed'] as const).map((key) => (
               <button
@@ -137,32 +145,32 @@ export function ConnectedList({
               </button>
             ))}
           </div>
-        </div>
-        <div className="register-tools-secondary">
-          <label>
-            {t.sortBy}{' '}
-            <select value={sort} onChange={(e) => filter('sort', e.target.value)}>
-              <option value="newest">{t.newest}</option>
-              <option value="oldest">{t.oldest}</option>
-            </select>
-          </label>
-          <label>
-            {t.pageSize}{' '}
-            <select value={limit} onChange={(e) => filter('limit', e.target.value)}>
-              {[6, 10, 25].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Button
-            variant="ghost"
-            onClick={() => setParams(scope === 'deleted' ? { scope: 'deleted' } : {})}
-          >
-            {t.clearFilters}
-          </Button>
-        </div>
+          <div className="register-tools-secondary">
+            <label>
+              {t.sortBy}{' '}
+              <select value={sort} onChange={(e) => filter('sort', e.target.value)}>
+                <option value="newest">{t.newest}</option>
+                <option value="oldest">{t.oldest}</option>
+              </select>
+            </label>
+            <label>
+              {t.pageSize}{' '}
+              <select value={limit} onChange={(e) => filter('limit', e.target.value)}>
+                {[6, 10, 25].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Button
+              variant="ghost"
+              onClick={() => setParams(scope === 'deleted' ? { scope: 'deleted' } : {})}
+            >
+              {t.clearFilters}
+            </Button>
+          </div>
+        </details>
       </div>
       {result.status !== 'ready' ? (
         <ReadFeedback {...result} />
