@@ -41,7 +41,13 @@ export function ReadFeedback({
     </section>
   )
 }
-export function ReadCards({ rows }: { rows: ReadShipment[] }) {
+export function ReadCards({
+  rows,
+  completionLabel,
+}: {
+  rows: (ReadShipment & { report_completed_at?: string | null })[]
+  completionLabel?: string
+}) {
   const { t, locale } = useLocale()
   return (
     <div className="shipment-card-grid">
@@ -93,6 +99,14 @@ export function ReadCards({ rows }: { rows: ReadShipment[] }) {
               <Clock3 size={12} aria-hidden="true" />
               {formatDate(row.started_at, locale)}
             </time>
+            {completionLabel && row.report_completed_at && (
+              <span>
+                {completionLabel}:{' '}
+                <time dateTime={row.report_completed_at}>
+                  {formatDate(row.report_completed_at, locale)}
+                </time>
+              </span>
+            )}
           </div>
           <div className="load-actions">
             <ButtonLink variant="secondary" to={`/shipments/${row.id}`}>

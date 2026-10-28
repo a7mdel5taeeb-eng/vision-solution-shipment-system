@@ -41,6 +41,7 @@ export function createLocalAuthClient(
             '/rest/v1/rpc/get_shipments',
             '/rest/v1/rpc/read_shipment_history_page',
             '/rest/v1/rpc/shipment_command',
+            '/rest/v1/rpc/read_operational_report',
           ].includes(url.pathname)
         // Explicit read/transactional command RPCs only. Raw writes/storage/arbitrary RPCs stay blocked.
         if (

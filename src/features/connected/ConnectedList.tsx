@@ -6,6 +6,7 @@ import { connectedMessages } from '../../shared/i18n/connected-messages'
 import { formatDate } from '../../shared/lib/dates'
 import { Button, ButtonLink } from '../../shared/ui/Primitives'
 import { commandMessages } from '../../shared/i18n/command-messages'
+import { reportMessages } from '../../shared/i18n/report-messages'
 import { useCommands } from './command-context'
 import { defaultQuery, type ReadQuery } from './read-model'
 import type { ShipmentReadRepository } from './repository'
@@ -66,7 +67,7 @@ export function ConnectedList({
           <p className="page-description">{admin ? m.adminScope : m.employeeScope}</p>
         </div>
         <Button variant="secondary" onClick={() => void result.retry()}>
-          {t.authRefresh}
+          {reportMessages[locale].refresh}
         </Button>
       </div>
       {!admin && (
@@ -255,6 +256,7 @@ export function ConnectedList({
             <p className="field-help">
               {m.serverTime}: {formatDate(page.server_now, locale)} · {t.localTime}
             </p>
+            <p className="field-help">{reportMessages[locale].sync}</p>
           </>
         )
       )}
@@ -262,7 +264,7 @@ export function ConnectedList({
   )
 }
 function UrgentReads({ repository }: { repository: ShipmentReadRepository }) {
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const load = useCallback(
     (signal: AbortSignal) =>
       repository.list({ ...defaultQuery, status: 'overdue', sort: 'oldest', limit: 3 }, signal),
@@ -277,7 +279,7 @@ function UrgentReads({ repository }: { repository: ShipmentReadRepository }) {
       <div className="page-heading">
         <h2>{t.overdue}</h2>
         <Link className="text-link" to="/workspace?status=overdue">
-          {t.allShipments}
+          {reportMessages[locale].allOverdue}
         </Link>
       </div>
       <ReadCards rows={result.data.rows} />

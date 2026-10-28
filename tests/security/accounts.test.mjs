@@ -19,6 +19,9 @@ import {
 } from '../../src/features/connected/command-session.ts'
 import { EMPTY_FIELDS } from '../../src/features/shipments/model.ts'
 import { dateTimeInput } from '../../src/shared/lib/dates.ts'
+import { connectedReportRepository } from '../../src/features/connected/report-repository.ts'
+import { reportDefaults } from '../../src/features/connected/report-model.ts'
+import { ReadResource } from '../../src/features/connected/read-resource.ts'
 
 let context
 const people = {}
@@ -425,6 +428,7 @@ test('tampered AAL/admin claims and expired correctly signed tokens fail at the 
   )
   for (const [path, args] of [
     ['rpc/read_shipment_page', {}],
+    ['rpc/read_operational_report', {}],
     [
       'rpc/shipment_command',
       { p_operation: 'create', p_request_id: randomUUID(), p_fields: fields },
@@ -1012,4 +1016,279 @@ test('genuine AAL2 administrator creates owned records and edits/completes/reope
   assert.equal(row.number, number)
   const history = await reads.history(row.id, 0, signal())
   assert.ok(history.rows.slice(-3).every((e) => e.actor_id === people.admin.id))
+})
+
+// Phase 3C.5 disposable report fixtures: explicitly approved for this local test run.
+const reportRows = {}
+const reportArgs = (patch = {}) => ({
+  p_kind: 'operations',
+  p_search: '',
+  p_status: '',
+  p_owner: null,
+  p_from: null,
+  p_to: null,
+  p_date_field: 'started',
+  p_limit: 10,
+  p_offset: 0,
+  ...patch,
+})
+const reportHttp = async (person, patch = {}) =>
+  http('rpc/read_operational_report', await token(person), 'POST', reportArgs(patch))
+
+test('report invoker preserves RLS and validates real employee/AAL1/AAL2/inactive access', async () => {
+  const fresh = { ...people.admin, client: client() }
+  assert.equal(
+    (await fresh.client.auth.signInWithPassword({ email: fresh.email, password: fresh.password }))
+      .error,
+    null,
+  )
+  for (const person of [fresh, people.inactive, people.orphan]) {
+    assert.equal((await reportHttp(person)).status, 403)
+    assert.equal((await reportHttp(person, { p_kind: 'daily_starts' })).status, 403)
+  }
+  for (const kind of ['daily_starts', 'daily_completions', 'daily_overdue'])
+    assert.equal((await reportHttp(people.a, { p_kind: kind })).status, 403)
+  assert.equal((await reportHttp(people.a)).status, 200)
+  assert.equal((await reportHttp(people.admin)).status, 200)
+  assert.equal((await reportHttp(people.admin, { p_kind: 'daily_starts' })).status, 200)
+  assert.equal(
+    await sql(
+      "select (not prosecdef and provolatile='s')::text from pg_proc where oid='public.read_operational_report(text,text,text,uuid,date,date,text,integer,integer)'::regprocedure",
+    ),
+    'true',
+  )
+  assert.equal(
+    await sql(
+      "select has_function_privilege('anon','public.read_operational_report(text,text,text,uuid,date,date,text,integer,integer)','execute')::text",
+    ),
+    'false',
+  )
+  assert.equal(
+    await sql(
+      "select has_function_privilege('authenticated','public.read_operational_report(text,text,text,uuid,date,date,text,integer,integer)','execute')::text",
+    ),
+    'true',
+  )
+})
+
+test('reports apply server Riyadh inclusive dates, literal Unicode search, owner/status filters, paging and string counts', async () => {
+  const marker = '3C5-report-' + randomUUID()
+  reportRows.marker = marker
+  const midnight =
+    "((statement_timestamp() at time zone 'Asia/Riyadh')::date)::timestamp at time zone 'Asia/Riyadh'"
+  for (const name of ['start', 'end', 'today', 'overdue', 'done', 'reopened', 'deleted', 'b']) {
+    const person = name === 'b' ? people.b : people.a
+    // Trusted operator fixture insertion, not a production command/backdating API.
+    // Never disable the immutable-identity trigger or edit an existing record.
+    const at =
+      name === 'start'
+        ? `(${midnight})-interval '24 hours'`
+        : name === 'end'
+          ? `(${midnight})-interval '1 microsecond'`
+          : name === 'today'
+            ? `(${midnight})`
+            : name === 'b'
+              ? 'statement_timestamp()'
+              : "statement_timestamp()-interval '97 hours'"
+    reportRows[name] = await sql(
+      `insert into public.shipments(owner_id,customer,origin,destination,truck,driver,cargo,started_at) values (${q(person.id)},${q(marker + '_' + name + '%العربية')},'الرياض','Jeddah','REPORT-TEST','Fictional driver','Test cargo',${at}) returning id;`,
+    )
+    await sql(
+      `insert into public.shipment_events(shipment_id,actor_id,action,revision,occurred_at) select id,owner_id,'created',1,started_at from public.shipments where id=${q(reportRows[name])};`,
+    )
+  }
+  const yesterday = await sql(
+    `select ((statement_timestamp() at time zone 'Asia/Riyadh')::date-1)::text`,
+  )
+  reportRows.day = yesterday
+  const filtered = await reportHttp(people.a, {
+    p_search: marker,
+    p_from: yesterday,
+    p_to: yesterday,
+    p_limit: 1,
+  })
+  assert.equal(filtered.status, 200)
+  assert.equal(filtered.body.total, '2')
+  assert.equal(filtered.body.rows.length, 1)
+  assert.equal(filtered.body.counts.total, '2')
+  const next = await reportHttp(people.a, {
+    p_search: marker,
+    p_from: yesterday,
+    p_to: yesterday,
+    p_limit: 1,
+    p_offset: 1,
+  })
+  assert.notEqual(filtered.body.rows[0].id, next.body.rows[0].id)
+  const all = await reportHttp(people.a, { p_search: marker, p_limit: 1000 })
+  assert.equal(all.body.total, '7')
+  assert.ok(all.body.rows.every((r) => r.owner_id === people.a.id))
+  const deniedOwner = await reportHttp(people.a, { p_owner: people.b.id, p_search: marker })
+  assert.equal(deniedOwner.body.total, '0')
+  assert.deepEqual(deniedOwner.body.rows, [])
+  const adminOwner = await reportHttp(people.admin, { p_owner: people.b.id, p_search: marker })
+  assert.equal(adminOwner.body.total, '1')
+  assert.equal(adminOwner.body.rows[0].id, reportRows.b)
+  assert.equal(
+    (await reportHttp(people.a, { p_search: marker + '_start%العربية' })).body.total,
+    '1',
+  )
+  assert.equal(
+    (await reportHttp(people.a, { p_search: marker, p_status: 'overdue' })).body.total,
+    '4',
+  )
+})
+
+test('daily preview uses prior Riyadh calendar day, latest completion history on reopen, all current overdue and no deleted rows', async () => {
+  const yesterday = reportRows.day
+  const at = yesterday + 'T12:00:00+03:00'
+  for (const name of ['done', 'reopened']) {
+    let row = await connectedShipmentRepository(people.a.client).detail(reportRows[name], signal())
+    await executeCommand(people.a, {
+      operation: 'complete',
+      id: row.id,
+      revision: row.revision,
+      completedAt: at,
+    })
+    if (name === 'reopened') {
+      row = await connectedShipmentRepository(people.a.client).detail(row.id, signal())
+      await executeCommand(people.a, { operation: 'reopen', id: row.id, revision: row.revision })
+    }
+  }
+  const row = await connectedShipmentRepository(people.admin.client).detail(
+    reportRows.deleted,
+    signal(),
+  )
+  await executeCommand(people.admin, { operation: 'delete', id: row.id, revision: row.revision })
+  for (const [kind, included, excluded] of [
+    ['daily_starts', ['start', 'end'], ['today', 'overdue', 'deleted']],
+    ['daily_completions', ['done', 'reopened'], ['overdue', 'deleted', 'today']],
+    ['daily_overdue', ['overdue', 'reopened'], ['done', 'deleted', 'today']],
+  ]) {
+    const result = await reportHttp(people.admin, { p_kind: kind, p_limit: 1000 })
+    assert.equal(result.status, 200)
+    for (const name of included)
+      assert.ok(
+        result.body.rows.some((r) => r.id === reportRows[name]),
+        kind + ' includes ' + name,
+      )
+    for (const name of excluded)
+      assert.ok(
+        !result.body.rows.some((r) => r.id === reportRows[name]),
+        kind + ' excludes ' + name,
+      )
+    assert.equal(
+      Date.parse(result.body.period_end) - Date.parse(result.body.period_start),
+      86400000,
+    )
+    assert.equal(
+      Date.parse(result.body.intended_delivery_at) - Date.parse(result.body.period_end),
+      28800000,
+    )
+    assert.equal(
+      new Date(Date.parse(result.body.period_start) + 10800000).toISOString().slice(11, 19),
+      '00:00:00',
+    )
+    assert.equal(typeof result.body.daily_counts[kind], 'string')
+  }
+  const done = await reportHttp(people.a, {
+    p_search: reportRows.marker,
+    p_date_field: 'completed',
+    p_from: yesterday,
+    p_to: yesterday,
+  })
+  assert.equal(done.body.total, '2')
+  assert.ok(
+    done.body.rows.some(
+      (r) => r.id === reportRows.reopened && r.workflow === 'pending' && r.report_completed_at,
+    ),
+  )
+  const active = await reportHttp(people.admin, { p_search: reportRows.marker })
+  assert.equal(active.body.total, '7')
+  assert.ok(active.body.rows.every((r) => !r.deleted_at))
+})
+
+test('report bounds and malformed filters fail without writes; HTTP export stays bounded and rejects a caller clock', async () => {
+  const fingerprint = () =>
+    sql("select md5(string_agg(to_jsonb(s)::text,'' order by id)) from public.shipments s")
+  const before = await fingerprint()
+  for (const patch of [
+    { p_limit: 0 },
+    { p_limit: 1001 },
+    { p_offset: -1 },
+    { p_search: 'x'.repeat(201) },
+    { p_status: 'deleted' },
+    { p_kind: 'all' },
+    { p_from: 'infinity' },
+    { p_to: '-infinity' },
+    { p_from: '2026-02-29' },
+    { p_from: '2026-02-02', p_to: '2026-02-01' },
+    { p_kind: 'daily_starts', p_owner: people.a.id },
+    { p_kind: 'daily_starts', p_search: 'ignored' },
+    { p_date_field: 'unsafe' },
+  ]) {
+    const result = await reportHttp(people.admin, patch)
+    assert.equal(result.status, 400, JSON.stringify(patch))
+  }
+  assert.equal((await reportHttp(people.admin, { p_now: '1900-01-01' })).status, 404)
+  const page = await reportHttp(people.admin, { p_limit: 1, p_search: reportRows.marker })
+  assert.equal(page.body.rows.length, 1)
+  assert.ok(BigInt(page.body.total) > 1n)
+  assert.equal(await fingerprint(), before)
+})
+
+test('real signed report transport fails closed on network loss, retries successfully and ignores a late canceled response', async () => {
+  const saved = new Map()
+  let offline = true,
+    hold = false,
+    release
+  const selected = createLocalAuthClient(
+    { url: context.url, publicKey: context.publicKey },
+    {
+      getItem: (k) => saved.get(k) ?? null,
+      setItem: (k, v) => saved.set(k, v),
+      removeItem: (k) => saved.delete(k),
+    },
+    async (input, init) => {
+      if (String(input).endsWith('/rpc/read_operational_report') && offline)
+        throw new TypeError('Controlled offline test')
+      const response = await fetch(input, init)
+      if (String(input).endsWith('/rpc/read_operational_report') && hold)
+        await new Promise((resolve) => {
+          release = resolve
+        })
+      return response
+    },
+  )
+  clients.push(selected)
+  const existing = (await people.b.client.auth.getSession()).data.session
+  assert.equal(
+    (
+      await selected.auth.setSession({
+        access_token: existing.access_token,
+        refresh_token: existing.refresh_token,
+      })
+    ).error,
+    null,
+  )
+  const repo = connectedReportRepository(selected)
+  const resource = new ReadResource((s) =>
+    repo.page({ ...reportDefaults, search: reportRows.marker }, s),
+  )
+  await resource.load()
+  assert.equal(resource.getSnapshot().status, 'error')
+  assert.equal(resource.getSnapshot().data, null)
+  offline = false
+  await resource.load()
+  assert.equal(resource.getSnapshot().status, 'ready')
+  assert.equal(resource.getSnapshot().data.total, '1')
+  assert.ok(resource.getSnapshot().data.rows.every((r) => r.owner_id === people.b.id))
+  hold = true
+  const pending = resource.load(true)
+  for (let attempt = 0; !release && attempt < 100; attempt++)
+    await new Promise((resolve) => setTimeout(resolve, 20))
+  assert.ok(release, 'Real response was obtained before cancellation')
+  resource.clear()
+  release()
+  await pending
+  assert.equal(resource.getSnapshot().data, null)
 })
