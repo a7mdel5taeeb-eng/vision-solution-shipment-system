@@ -388,3 +388,19 @@ test('new self-reader role has no login, bypass, table ownership, writes or PUBL
     'f',
   )
 })
+
+test('HTTP mapping migration keeps command owner and narrowly granted execute rights', async () => {
+  const signature = 'public.shipment_command(text,uuid,uuid,bigint,jsonb,timestamptz)'
+  assert.equal(
+    await sql(`select pg_get_userbyid(proowner) from pg_proc where oid='${signature}'::regprocedure;`),
+    'vs_command_writer',
+  )
+  assert.equal(
+    await sql(`select has_function_privilege('anon','${signature}','execute') or has_function_privilege('service_role','${signature}','execute');`),
+    'f',
+  )
+  assert.equal(
+    await sql(`select has_function_privilege('authenticated','${signature}','execute');`),
+    't',
+  )
+})
