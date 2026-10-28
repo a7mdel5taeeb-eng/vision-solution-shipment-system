@@ -1,5 +1,14 @@
 # Vision & Solution — project status
 
+> **CURRENT HANDOFF: PHASE 3C.4 MERGED; 3C.5 PLANNING ONLY — 28 OCTOBER 2026**  
+> **Owner approved Phase 3C.4 before doing their own later hands-on acceptance test.** PR #13 merged into `main` at verified GitHub commit `6e4bc35cf06cb75a9817cd0de962ad8a76db9c2f`. The owner explicitly deferred their manual test; do **not** record end-user acceptance as completed. The PR's 70 application, 25 signed HTTP/security, 13 Auth, 20 PostgreSQL, 20 workflow passes were reported as actual *Codex HOME* runs (not new independent CI or owner acceptance).  
+> Created planning branch `feature/phase-3c5-connected-workflow-acceptance` from the verified 3C.4 merge. **This branch is documentation-only preparation. No 3C.5 application changes, new migrations, tests, production actions, or deployment are authorized by this handoff.** Do not start 3C.5 implementation automatically until owner confirms desired scope and timing.  
+> **Deferred owner acceptance checkpoint:** from HOME Connected `http://127.0.0.1:5174/workspace`, using existing fictional accounts and retained admin TOTP, test create, edit, manual completion, completion-time correction, reopen, admin soft delete/restore and employee cross-account isolation; use obviously fictitious data. No test record creation/removal is performed by this GitHub preparation.  
+> **Proposed 3C.5 scope for later approval:** complete locally connected role-aware dashboards, alerts, reports, formula-safe exports and 08:00 Riyadh daily *preview only*; authorized real two-session browser matrix, timezone boundaries, accessibility, error recovery, full regression and offline/restart behavior. No scheduler/SMTP, invoice image bytes, account-management/recovery, shared cross-machine database, production deployment or default-connected-mode switch without separate decisions.  
+> Existing Demo at 5173 and connected local mode at 5174 stay separate. Preserve private test accounts, MFA, backups and five migrations; no Docker reset/volume deletion or live record modification. Historical 3C.4 candidate wording below is superseded by this verified merged status.
+
+---
+
 > **CURRENT VERIFIED CANDIDATE — 28 October 2026: Phase 3C.4 connected shipment commands, Draft PR #13.**
 >
 > Approved main is `3497b2fbaa166fa9858712558adc9641f8a8d912` (PR #12 merged). HOME fetched origin, verified the approved ancestry and switched cleanly to existing `feature/phase-3c4-connected-shipment-commands` at PM checkpoint `5ca1545763e1ae41a142ee4221e84ce4305ec077`. No local work, ignored files, other worktrees or published history was overwritten. Earlier blocks below are historical.
