@@ -66,6 +66,13 @@ before(async () => {
     '1',
     'New self-account migration is required',
   )
+  assert.equal(
+    await sql(
+      "select count(*) from supabase_migrations.schema_migrations where version='20261028060000'",
+    ),
+    '1',
+    'Forward-only HTTP 404 mapping migration is required',
+  )
   for (const [label, role, active] of [
     ['a', 'employee', true],
     ['b', 'employee', true],
@@ -304,10 +311,10 @@ test('cross-owner edits and employee delete/restore leave shipment, history and 
     ...fields,
     customer: 'Denied',
   })
-  // Existing Phase 3B uses P0002; PostgREST maps it to HTTP 500. It fails closed
-  // with the exact same generic response for invisible and nonexistent rows.
-  assert.equal(crossOwner.status, 500)
-  assert.equal(crossOwner.body.code, 'P0002')
+  // HTTP 404 is intentional: invisible and nonexistent records must be indistinguishable,
+  // and failed commands must have no audit, shipment or idempotency side effects.
+  assert.equal(crossOwner.status, 404)
+  assert.equal(crossOwner.body.code, 'PT404')
   assert.equal(crossOwner.body.message, 'record_unavailable')
   assert.deepEqual(crossOwner, absent)
   assert.equal((await command(people.a, 'delete', ownA, '1')).status, 403)
