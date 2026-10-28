@@ -1,6 +1,22 @@
 # Vision & Solution — project status
 
-> **CURRENT PHASE 3C.2 CANDIDATE — 28 October 2026. Implemented and locally verified for project-manager review.**
+> **CURRENT VERIFIED CANDIDATE — 28 October 2026: shipment-command HTTP 404 fix, PR #11.**
+>
+> Phase 3C.2 PR #10 is approved/merged into GitHub main at `ae60413b427a86ba82bf3812be1791eac20827bd`. The clean checkout safely switched to existing branch `fix/shipment-command-not-found-http-404` at PM checkpoint `ddbaa44bb6b062321f245fa6144a63b373a70e31`. No local work, ignored data or published history was overwritten.
+>
+> **Migration reviewed/applied locally:** a fresh private PostgreSQL custom-format backup was verified by matching SHA-256 bytes and archive inventory before applying only pending migration `20261028060000`. Mechanical source/live comparison confirms exactly two P0002-to-PT404 substitutions. Original applied migrations, business rules and function signature remain unchanged. Function OID, owner/ACL, SECURITY DEFINER/search path, RLS/policies/grants, existing records, credentials/MFA, cluster/volume and service identities/bindings match the pre-migration baseline after tests. No reset, restore or Docker recreation occurred. See [full verification](http404-fix-verification.md).
+>
+> **Actual HOME results:** HTTP/security **15/15**, Auth **13/13**, PostgreSQL **20/20**, application **53/53**, workflow **20/20** passed. Formatting, lint, TypeScript, both builds/browser credential scans and schema lint passed. The guarded publication workflow also reruns required application/database checks. These are fresh local executions, not historical school/CI claims.
+>
+> **Verified contract:** missing and other-owner well-formed shipment IDs return indistinguishable HTTP 404 / PT404 / record_unavailable. Cached-request replay after loss of access also returns 404 with no shipment/audit/receipt side effects; successful authorized replay remains idempotent. Malformed UUIDs remain 400; genuine authentication/permission denials are unchanged. RLS, ownership, administrator AAL2 and employee isolation remain enforced.
+>
+> **Preserved scope:** UI/frontend/domain/persistence, dependencies, retained accounts/MFA and Docker resources are unchanged. The HTTP 500 finding is resolved in this local candidate; the older reports below describe historical pre-fix behavior. No connected shipment adapter, production service, deployment or Phase 3C.3 was added. Private backup, fingerprints, keys and raw logs stay ignored/local.
+>
+> **Next gate:** commit/push only reviewed verification/tests/docs to this existing branch, verify its remote hash and update Draft PR #11, then stop for separate merge approval. The final commit cannot embed its own SHA; use the verified PR head/description for the published checkpoint. The local database contains this unmerged forward migration; do not reset it to satisfy older branch assertions. Do not merge PR #11 or start Phase 3C.3 without explicit approval.
+
+---
+
+> **HISTORICAL PHASE 3C.2 CANDIDATE — 28 October 2026. Implemented and locally verified for project-manager review.**
 >
 > Phase 3C.1 PR #9 is approved/merged at verified main `c9c15347d5fc95075ade8438311479b3cb07ac0c`. The clean application checkout safely switched to the existing `feature/phase-3c2-secure-accounts-mfa` branch at PM handoff `4916e30a111d5b61d99fe10a6ada44428e8cb590`; no duplicate branch/PR or discarded work. Existing draft PR #10 remains the review target and must not be merged without separate approval.
 >

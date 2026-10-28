@@ -112,7 +112,7 @@ test('employee A cannot read or edit employee B through tables, RPCs, history or
   )
   await assert.rejects(
     command(actors.a, 'update', { id: ownB.shipment_id, revision: 1, data: fields }),
-    /P0002/,
+    /PT404/,
   )
 })
 
