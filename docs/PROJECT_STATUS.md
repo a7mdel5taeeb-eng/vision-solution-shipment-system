@@ -1,5 +1,13 @@
 # Vision & Solution — project status
 
+> **CURRENT REVIEW GATE — 28 October 2026 (HTTP shipment error mapping)**  
+> **Phase 3C.2 PR #10 was approved by the owner and merged to `main`**. Verified GitHub merge commit `ae60413b427a86ba82bf3812be1791eac20827bd`. The original tests and MFA acceptance are recorded below as historical candidate evidence.  
+> **Targeted bugfix under review, NOT applied or tested locally yet:** branch `fix/shipment-command-not-found-http-404`. A forward-only migration updates only the two `shipment_command` not-found/other-owner error branches from `P0002` (HTTP 500) to `PT404` (HTTP 404) with the exact same generic `record_unavailable` message. Original applied migrations are unchanged, and ownership/execute grants are intended to remain unchanged. Database and signed-HTTP tests now assert the new behavior and verify grants.  
+> **Required validation on existing local stack before merge:** private backup, review pending migration, apply forward-only migration without reset/recreation; test invalid/foreign/nonexistent IDs all return indistinguishable HTTP 404 and do not create shipment/audit/receipt side effects; verify owner/ACL/RLS, run Auth 13 + security 13 + database 20 + application 53 + workflow 20, check/typecheck/build/schema lint and secret scans. This branch is a proposed fix, not evidence those tests passed.  
+> **Do not merge until real local PostgreSQL/PostgREST tests succeed and approval is confirmed.** Do not deploy, change demo, touch live data, or implement Phase 3C.3. Once merged, branch 3C.3 from the verified updated `main`.
+
+---
+
 > **CURRENT PHASE 3C.2 CANDIDATE — 28 October 2026. Implemented and locally verified for project-manager review.**
 >
 > Phase 3C.1 PR #9 is approved/merged at verified main `c9c15347d5fc95075ade8438311479b3cb07ac0c`. The clean application checkout safely switched to the existing `feature/phase-3c2-secure-accounts-mfa` branch at PM handoff `4916e30a111d5b61d99fe10a6ada44428e8cb590`; no duplicate branch/PR or discarded work. Existing draft PR #10 remains the review target and must not be merged without separate approval.
