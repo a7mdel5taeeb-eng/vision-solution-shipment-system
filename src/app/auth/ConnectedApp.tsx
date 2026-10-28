@@ -35,7 +35,10 @@ const router = createBrowserRouter([
   {
     element: <ProtectedAuthRoute />,
     errorElement: <ErrorPage />,
-    children: [{ path: '/workspace', element: <AccountWorkspacePage /> }],
+    children: [
+      { path: '/workspace', element: <AccountWorkspacePage /> },
+      { path: '/shipments/:id', element: <AccountWorkspacePage /> },
+    ],
   },
   { path: '*', element: <Navigate to="/workspace" replace /> },
 ])

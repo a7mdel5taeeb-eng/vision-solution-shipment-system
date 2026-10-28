@@ -1,6 +1,32 @@
 # Vision & Solution — project status
 
-> **CURRENT VERIFIED CANDIDATE — 28 October 2026: shipment-command HTTP 404 fix, PR #11.**
+> **CURRENT VERIFIED CANDIDATE — 28 October 2026: Phase 3C.3 connected shipment reads, Draft PR #12.**
+>
+> Approved main is `eac7bcabda0f08ca099e2c5e395bbf200554c44e` (PR #11 merged after Phase 3C.2). The clean HOME checkout fetched origin and safely switched to existing `feature/phase-3c3-connected-shipment-reads` at PM handoff `6c613941899b54c272ccecec1af68fd17647cd2a`. All earlier checkpoint blocks below are historical. No reset, clean, stash, force-push, duplicate branch or PR was used.
+>
+> **Implemented:** typed read-only Supabase repository; real bounded lists/details/history; server-side literal Unicode search/status/scope/owner filters, pagination and string counts; UUID/TR and bigint-string preservation; backend-clock statuses; separate employee/admin viewing shells with Arabic/English, RTL/LTR, responsive approved components and loading/empty/denied/error/retry states. Admin operations require genuine AAL2; employee ownership remains enforced by existing RLS. Session-scoped resources clear/abort on logout/account changes and ignore stale responses. Exact browser read RPC allowlist still blocks commands/raw tables/storage. Demo provider, storage, domain rules, shipment workflows, dependencies and established styles are unchanged; the shared status badge accepts an optional server result without changing Demo defaults.
+>
+> **Local migration/preservation:** fresh private archive byte/inventory verification preceded only additive migration `20261028120000`. Five migrations are now applied locally; old migrations remain immutable. After actual regression tests and the owner-approved cleanup of two temporary browser accounts/eight shipments, all eight original application-table fingerprints, retained Auth/password/MFA state, command function, RLS/policies/grants, database cluster and container identities/volumes/localhost bindings match the baseline. No database reset/restore, container recreation, retained account recreation or credential/factor change occurred. Docker was started and an existing-container startup-order IP collision resolved without configuration changes.
+>
+> **Actual HOME results:** signed HTTP/security **19/19**, real Auth **13/13**, PostgreSQL **20/20**, application **59/59**, workflow **20/20** passed. Formatting, lint, TypeScript, default/Connected builds and credential scans, and local schema lint passed. Guarded publication reruns required application/database checks. No historical/CI results substitute for local execution. See [implementation and verification report](phase-3c3-connected-shipment-reads.md).
+>
+> **Browser:** retained admin AAL2 sees both test employees; A sees only its own seven rows, paginates, reads details/history/optional fields and receives generic unavailable for B. Logout/account switch shows B's single row without stale A data. Server search/status filters and empty states passed. AR desktop sidebar is on the right; AR/EN mobile/desktop, light/dark, search focus and mobile drawer/card behavior were inspected without document overflow. Private screenshots/logs/fixture material stay ignored. Temporary browser fixtures were explicitly authorized and removed; original accounts/MFA/session are preserved.
+>
+> **Review gate:** publish reviewed source/tests/docs only to the existing feature branch, update Draft PR #12 and verify its remote hash; the PR head is the final published checkpoint because a commit cannot embed its own SHA. Keep Demo `http://127.0.0.1:5173/` and Connected `http://127.0.0.1:5174/workspace` running. PR #12 is not merged. The local database contains this candidate migration; do not reset it for older source. Connected writes/reports/invoice bytes and Phase 3C.4 remain separately gated. No deployment or production services.
+
+---
+
+> **HISTORICAL HANDOFF — 28 OCTOBER 2026: PHASE 3C.3, PLANNING BEFORE IMPLEMENTATION**
+>
+> The owner resumed HOME development and authorized continuing after the verified HTTP error fix. PR #11 **was merged** to main at actual commit `eac7bcabda0f08ca099e2c5e395bbf200554c44e`. Its tested fix maps missing/other-owner shipment commands to uniform HTTP 404; its 15 signed HTTP/security, 13 Auth, 20 PostgreSQL, 53 application, and 20 workflow tests were executed on HOME and documented in `docs/http404-fix-verification.md`. **Do not interpret old PR #11 candidate text further below as current status.**  
+> Existing approved PRs #5/#6/#9/#10/#11 are merged. Current new branch `feature/phase-3c3-connected-shipment-reads` was created from the verified PR #11 main merge. **No 3C.3 code, migration or test has been executed yet on this branch.**  
+> Approved next scope: real Supabase/PostgREST **read-only shipment lists/details/history**, authorized server-side query/filter/search/pagination/counts, typed mapping of UUID vs TR number and bigint strings, no-leak employee A/B vs AAL2 admin scopes, separately gated deleted register, and role-aware bilingual connected dashboards using the approved existing UI components. Preserve the untouched Demo Mode at 5173 and connected auth at 5174.  
+> **Requirements:** inspect HOME `git status`, safely fetch/switch without discarding changes, use existing healthy localhost Docker volumes (no reset/recreate), only forward-only migrations if truly needed, no privileged browser keys, fail closed on AAL1/inactive tokens, clear session-dependent caches, handle offline/loading/empty/denied states, and run real two-account JWT/PostgREST tests plus application/build/DB/QA checks. Keep UI creation/edit/completion/deletion disabled in connected mode (Phase 3C.4). Do not copy demo seed records to DB.  
+> **Never merge the next PR, modify credentials/MFA, deploy, or start Phase 3C.4+ without separate owner approval.** Update checkpoint with actual test results after local work; this handoff is not a claim of completed development.
+
+---
+
+> **HISTORICAL VERIFIED CANDIDATE — 28 October 2026: HTTP 404 fix, subsequently approved/merged through PR #11.**
 >
 > Phase 3C.2 PR #10 is approved/merged into GitHub main at `ae60413b427a86ba82bf3812be1791eac20827bd`. The clean checkout safely switched to existing branch `fix/shipment-command-not-found-http-404` at PM checkpoint `ddbaa44bb6b062321f245fa6144a63b373a70e31`. No local work, ignored data or published history was overwritten.
 >

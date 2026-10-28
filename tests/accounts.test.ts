@@ -42,7 +42,7 @@ test('inactive and unprovisioned responses discard any attached profile/role dat
   for (const state of ['inactive', 'unprovisioned'])
     assert.deepEqual(parseAccount({ ...employee, state }, 'verified-id'), { state })
 })
-test('browser transport permits only local Auth and exact POST self lookup, never shipment endpoints', async () => {
+test('browser transport permits exact read RPCs, never commands, raw tables or GET RPCs', async () => {
   const anon = `${btoa('{}').replaceAll('=', '')}.${btoa(JSON.stringify({ role: 'anon' })).replaceAll('=', '')}.signature`
   const calls: string[] = []
   const selected = createLocalAuthClient(
@@ -59,7 +59,7 @@ test('browser transport permits only local Auth and exact POST self lookup, neve
   assert.equal(me.error, null)
   assert.equal(calls.length, 1)
   for (const request of [
-    () => selected.rpc('get_shipments').retry(false),
+    () => selected.rpc('shipment_command').retry(false),
     () => selected.from('shipments').select('*').retry(false),
     () => selected.rpc('get_my_account', {}, { get: true }).retry(false),
   ]) {
@@ -67,6 +67,9 @@ test('browser transport permits only local Auth and exact POST self lookup, neve
     assert.ok(result.error)
   }
   assert.equal(calls.length, 1)
+  for (const name of ['read_shipment_page', 'get_shipments', 'read_shipment_history_page'])
+    assert.equal((await selected.rpc(name)).error, null)
+  assert.equal(calls.length, 4)
   await selected.auth.stopAutoRefresh()
 })
 test('test-only TOTP generator matches the public RFC 6238 SHA-1 vector', () => {

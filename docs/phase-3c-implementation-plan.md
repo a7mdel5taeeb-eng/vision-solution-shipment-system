@@ -1,5 +1,7 @@
 # Phase 3C — proposed local Auth and database integration
 
+**Current progress — 28 October 2026:** the planning history below is preserved. Milestones 1/2 and the HTTP 404 fix are approved/merged at main `eac7bcabda0f08ca099e2c5e395bbf200554c44e`. The owner approved only milestone 3 implementation in existing Draft PR #12; see [the read-only candidate and actual results](phase-3c3-connected-shipment-reads.md). Milestones 4/5 still require separate approval. Old entry-gate language below is historical, not an instruction to repeat completed infrastructure or PR integration.
+
 **Planning only. Not approved for implementation.** Preserve the Phase 2.9 interface and current demo. Do not merge PR #5/#6, create a Phase 3C implementation branch, connect production services or deploy under this document.
 
 ## Entry gates

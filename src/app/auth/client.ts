@@ -32,14 +32,21 @@ export function createLocalAuthClient(
         const method = (
           init?.method ?? (input instanceof Request ? input.method : 'GET')
         ).toUpperCase()
-        const selfLookup =
-          url.pathname === '/rest/v1/rpc/get_my_account' && method === 'POST' && !url.search
-        // No shipment endpoints or generic Data API access in this milestone.
+        const readLookup =
+          method === 'POST' &&
+          !url.search &&
+          [
+            '/rest/v1/rpc/get_my_account',
+            '/rest/v1/rpc/read_shipment_page',
+            '/rest/v1/rpc/get_shipments',
+            '/rest/v1/rpc/read_shipment_history_page',
+          ].includes(url.pathname)
+        // Explicit read RPCs only. Commands, raw tables, storage and arbitrary RPCs stay blocked.
         if (
           url.origin !== new URL(config.url).origin ||
-          (!url.pathname.startsWith('/auth/v1/') && !selfLookup)
+          (!url.pathname.startsWith('/auth/v1/') && !readLookup)
         ) {
-          return Promise.reject(new Error('Only local Auth and self-account lookup are enabled'))
+          return Promise.reject(new Error('Only local Auth and authorized read APIs are enabled'))
         }
         const timeout = AbortSignal.timeout(10000)
         return transport(input, {

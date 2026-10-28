@@ -409,6 +409,23 @@ test('tampered AAL/admin claims and expired correctly signed tokens fail at the 
     ).status,
     401,
   )
+  for (const [path, args] of [
+    ['rpc/read_shipment_page', {}],
+    ['rpc/read_shipment_history_page', { p_shipment_id: ownA }],
+  ]) {
+    assert.equal((await http(path, forged, 'POST', args)).status, 401)
+    assert.equal(
+      (
+        await http(
+          path,
+          signed({ ...original, exp: Math.floor(Date.now() / 1000) - 120 }),
+          'POST',
+          args,
+        )
+      ).status,
+      401,
+    )
+  }
 })
 test('new self-reader role has no login, bypass, table ownership, writes or PUBLIC execution', async () => {
   assert.equal(
@@ -449,4 +466,157 @@ test('HTTP mapping migration keeps command owner and narrowly granted execute ri
     await sql(`select has_function_privilege('authenticated','${signature}','execute');`),
     't',
   )
+})
+
+test('connected read functions are stable invokers with authenticated-only execution and unchanged RLS', async () => {
+  assert.equal(
+    await sql(
+      "select count(*) from supabase_migrations.schema_migrations where version='20261028120000'",
+    ),
+    '1',
+  )
+  for (const signature of [
+    'public.read_shipment_page(text,text,text,uuid,text,integer,integer)',
+    'public.read_shipment_history_page(uuid,integer,integer)',
+  ]) {
+    assert.equal(
+      await sql(
+        `select not prosecdef and provolatile='s' from pg_proc where oid=${q(signature)}::regprocedure`,
+      ),
+      't',
+    )
+    assert.equal(
+      await sql(
+        `select has_function_privilege('authenticated',${q(signature)},'execute') and not has_function_privilege('anon',${q(signature)},'execute') and not has_function_privilege('service_role',${q(signature)},'execute')`,
+      ),
+      't',
+    )
+  }
+})
+
+const readMarker = `reads-${randomUUID()}`
+let readOwn, readForeign
+const readPage = async (person, args = {}) =>
+  http('rpc/read_shipment_page', await token(person), 'POST', { p_search: readMarker, ...args })
+test('real read pagination/search/counts preserve bigint strings and optional fields without cross-owner leakage', async () => {
+  const huge = '900719925474' + String(Math.floor(Math.random() * 9000) + 1000)
+  readOwn =
+    await sql(`insert into public.shipments (number,owner_id,customer,origin,destination,truck,driver,cargo,driver_phone,invoice_number,notes,started_at,revision) overriding system value values
+    (${huge},${q(people.a.id)},${q(readMarker)},'الرياض','Jeddah','READ-TEST','Fictional driver','Cargo','+966501234567','فاتورة-١','ملاحظات %_ literal',statement_timestamp()-interval '95 hours',9007199254740993) returning id`)
+  // Other rows use normal sequence values; no sequence reset/override is performed.
+  for (const [person, kind] of [
+    [people.a, 'overdue'],
+    [people.a, 'completed'],
+    [people.a, 'deleted'],
+    [people.b, 'pending'],
+  ]) {
+    const result =
+      await sql(`insert into public.shipments(owner_id,customer,origin,destination,truck,driver,cargo,started_at,workflow,completed_at,deleted_at,deleted_by) values
+      (${q(person.id)},${q(readMarker)},'الرياض','Jeddah','READ-TEST','Fictional driver','Cargo',statement_timestamp()-interval '97 hours',${q(kind === 'completed' ? 'completed' : 'pending')},${kind === 'completed' ? "statement_timestamp()-interval '1 hour'" : 'null'},${kind === 'deleted' ? 'statement_timestamp()' : 'null'},${kind === 'deleted' ? q(people.admin.id) : 'null'}) returning id`)
+    if (person === people.b) readForeign = result
+  }
+  await sql(
+    `insert into public.shipment_events(shipment_id,actor_id,action,revision,changed_fields) values (${q(readOwn)},${q(people.a.id)},'created',9007199254740993,'{}')`,
+  )
+  const a = await readPage(people.a, { p_limit: 1, p_sort: 'newest' })
+  assert.equal(a.status, 200)
+  assert.equal(a.body.total, '3')
+  assert.equal(a.body.rows.length, 1)
+  const first = a.body.rows[0]
+  assert.equal(first.id, readOwn)
+  assert.equal(first.number, huge)
+  assert.equal(first.display_id, `TR-${huge}`)
+  assert.equal(first.revision, '9007199254740993')
+  assert.equal(first.driver_phone, '+966501234567')
+  assert.equal(first.invoice_number, 'فاتورة-١')
+  assert.equal(first.notes, 'ملاحظات %_ literal')
+  assert.equal(first.status, 'pending')
+  assert.ok(first.server_now)
+  assert.deepEqual(a.body.counts, { total: '3', pending: '1', completed: '1', overdue: '1' })
+  const second = await readPage(people.a, { p_limit: 1, p_offset: 1 })
+  assert.notEqual(second.body.rows[0].id, first.id)
+  assert.equal((await readPage(people.a, { p_offset: 500 })).body.rows.length, 0)
+  assert.equal((await readPage(people.b)).body.total, '1')
+  assert.equal((await readPage(people.admin)).body.total, '4')
+  assert.equal((await readPage(people.a, { p_owner: people.b.id })).body.total, '0')
+  assert.equal((await readPage(people.admin, { p_owner: people.b.id })).body.total, '1')
+  assert.equal((await readPage(people.a, { p_status: 'overdue' })).body.rows[0].status, 'overdue')
+  assert.equal(
+    (await readPage(people.a, { p_search: 'ملاحظات %_ literal' })).body.rows.some(
+      (r) => r.id === readOwn,
+    ),
+    true,
+  )
+  assert.equal(
+    (await readPage(people.a, { p_search: "%_'; drop table shipments;--" })).body.total,
+    '0',
+  )
+  assert.equal((await readPage(people.a, { p_search: `TR-${huge}` })).body.rows[0].id, readOwn)
+  assert.equal((await readPage(people.a, { p_search: readOwn })).body.rows[0].id, readOwn)
+  assert.equal(
+    (await readPage(people.a, { p_search: 'الرياض' })).body.rows.every(
+      (r) => r.owner_id === people.a.id,
+    ),
+    true,
+  )
+})
+
+test('read history uses paginated lossless revisions and indistinguishable missing/foreign responses', async () => {
+  const history = async (person, id, args = {}) =>
+    http('rpc/read_shipment_history_page', await token(person), 'POST', {
+      p_shipment_id: id,
+      ...args,
+    })
+  const own = await history(people.a, readOwn, { p_limit: 1 })
+  assert.equal(own.status, 200)
+  assert.equal(own.body.total, '1')
+  assert.equal(own.body.rows[0].revision, '9007199254740993')
+  assert.equal((await history(people.a, readOwn, { p_offset: 1 })).body.rows.length, 0)
+  const denied = await history(people.a, readForeign),
+    missing = await history(people.a, randomUUID())
+  assert.equal(denied.status, 404)
+  assert.equal(denied.body.code, 'PT404')
+  assert.deepEqual(denied, missing)
+  assert.deepEqual((await list(people.a, readForeign)).body, [])
+  assert.equal((await history(people.admin, readOwn)).body.total, '1')
+})
+
+test('deleted register, invalid queries and all authentication gates fail closed on new read APIs', async () => {
+  assert.equal((await readPage(people.a, { p_scope: 'deleted' })).status, 403)
+  assert.equal((await readPage(people.admin, { p_scope: 'deleted' })).body.total, '1')
+  for (const args of [
+    { p_limit: 101 },
+    { p_limit: 0 },
+    { p_offset: -1 },
+    { p_offset: 1000001 },
+    { p_search: 'x'.repeat(201) },
+    { p_scope: 'all' },
+    { p_status: 'deleted' },
+    { p_sort: 'unsafe' },
+    { p_limit: null },
+  ])
+    assert.equal((await readPage(people.a, args)).status, 400)
+  const fresh = client()
+  await fresh.auth.signInWithPassword({
+    email: people.admin.email,
+    password: people.admin.password,
+  })
+  for (const person of [people.inactive, people.orphan, { client: fresh }]) {
+    assert.equal((await readPage(person)).status, 403)
+    assert.equal(
+      (
+        await http('rpc/read_shipment_history_page', await token(person), 'POST', {
+          p_shipment_id: readOwn,
+        })
+      ).status,
+      403,
+    )
+  }
+  assert.ok([401, 403].includes((await http('rpc/read_shipment_page', null, 'POST', {})).status))
+  try {
+    await sql(`update app_private.account_access set active=false where user_id=${q(people.a.id)}`)
+    assert.equal((await readPage(people.a)).status, 403)
+  } finally {
+    await sql(`update app_private.account_access set active=true where user_id=${q(people.a.id)}`)
+  }
 })
