@@ -1,4 +1,46 @@
 /* Connected-only layout guards. Approved Demo selectors/styles are untouched. */
+.connected-workspace {
+  --type-meta: 12px;
+  --type-secondary: 14px;
+  font-size: 14px;
+}
+.connected-workspace .connected-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.connected-workspace .connected-mobile-create {
+  display: none;
+}
+@media (max-width: 700px) {
+  .connected-workspace .connected-mobile-create {
+    display: block;
+  }
+}
+.connected-workspace .shipment-form input,
+.connected-workspace .shipment-form textarea {
+  font-size: 16px;
+}
+.connected-workspace .connected-command-feedback {
+  padding: 14px 16px;
+  margin-block-end: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+.connected-workspace .command-success {
+  color: var(--text);
+  border-color: var(--success);
+}
+.connected-workspace .list-empty h2 {
+  font-size: 20px;
+}
+.connected-workspace .list-empty p {
+  max-width: 55ch;
+  margin: 8px auto 16px;
+}
 .connected-workspace .connected-notice {
   margin-block-end: 18px;
   color: var(--text-muted);

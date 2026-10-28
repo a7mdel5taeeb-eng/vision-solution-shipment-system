@@ -1,6 +1,34 @@
 # Vision & Solution — project status
 
-> **CURRENT VERIFIED CANDIDATE — 28 October 2026: Phase 3C.3 connected shipment reads, Draft PR #12.**
+> **CURRENT VERIFIED CANDIDATE — 28 October 2026: Phase 3C.4 connected shipment commands, Draft PR #13.**
+>
+> Approved main is `3497b2fbaa166fa9858712558adc9641f8a8d912` (PR #12 merged). HOME fetched origin, verified the approved ancestry and switched cleanly to existing `feature/phase-3c4-connected-shipment-commands` at PM checkpoint `5ca1545763e1ae41a142ee4221e84ce4305ec077`. No local work, ignored files, other worktrees or published history was overwritten. Earlier blocks below are historical.
+>
+> **Implemented:** real create/edit/manual Riyadh completion/time-edit/reopen/admin-only soft-delete/restore through existing `shipment_command`; string-int64 expected revisions; frozen per-intent idempotency key/payload; reload-safe same-request recovery; explicit conflict review preserving drafts; authorized list/detail/history refresh. Employee ownership and real administrator AAL2 remain backend enforced. Bilingual accessible dialogs/feedback and small connected-only readability/mobile-create/empty-state refinements preserve approved branding/layout. Demo code/storage, authentication/MFA policy, dependencies and all applied migrations are unchanged. See [the implementation and verification runbook](phase-3c4-connected-shipment-commands.md).
+>
+> **Actual HOME results:** HTTP/security **25/25**, Auth **13/13**, PostgreSQL **20/20**, application **70/70**, workflow **20/20** passed with no failures/skips. Formatting, lint, TypeScript, default/Connected builds, credential scans and local schema lint passed. New real HTTP cases verify lifecycle/audit, ownership/AAL2/inactive/forged-field denial, concurrency, idempotency, post-commit response loss/retry and bigint revisions. Browser AR/EN desktop/mobile verified create/edit/reload/conflict, exact manual time, complete/reopen/delete/restore, account switching and cross-owner denial. Guarded publication reruns the required application/database checks.
+>
+> **Preservation:** verified private backups; no migration, database reset/restore, container recreation, volume deletion, account recreation or credential/MFA change. After explicit owner approval, narrowly scoped cleanup removed exactly three identified browser QA shipments, their 13 test events and 13 test receipts in one checked transaction. The original eight-table row fingerprints now match without exclusions; security policies/grants/function, Auth/MFA fingerprints, cluster and service/mount/binding identities also match the original baseline. Automated test fixtures are cleaned. Sequence advances are intentional and were never reset. Private data/logs/backups/runtime files are ignored and excluded from Git.
+>
+> **Cleanup follow-up:** implementation checkpoint `a436640d77fad8ece269eb6fd14d37fcf6e2166b` was already verified on GitHub. The subsequent owner-approved fixture cleanup changes documentation only; application code and previous test evidence are unchanged. Guarded documentation publication reruns application/static/build and PostgreSQL checks. PR #13 remains Draft and unmerged.
+>
+> **Review gate:** commit/push only reviewed source/tests/docs to the existing branch and update Draft PR #13; its verified head is the final checkpoint. PR #13 is not merged. Demo `http://127.0.0.1:5173/` and opt-in Connected `http://127.0.0.1:5174/workspace` remain running. Request/draft recovery is tab/account-local and clears on logout/tab closure; service restart was not tested. Invoice uploads, connected reports, production services/deployment and Phase 3C.5 remain unapproved. Stop for project-manager review.
+
+---
+
+> **HISTORICAL — PHASE 3C.4 HANDOFF (28 OCTOBER 2026)**
+>
+> User has explicitly approved Phase 3C.3; **PR #12 merged into `main`** at verified GitHub merge commit `3497b2fbaa166fa9858712558adc9641f8a8d912`. The approved local read-only foundation includes verified signed HTTP/RLS 19/19, Auth 13/13, database 20/20, application 59/59, and workflow 20/20 tests (as reported in PR #12; these are Codex's HOME runs, not new CI results). The owner's read-only dashboard acceptance showed an empty list (zero retained shipment rows), which is expected after temporary fixtures were cleaned up.  
+> New development branch **`feature/phase-3c4-connected-shipment-commands`** was created from that exact merge commit for Phase 3C.4. **Planning/handoff only at this checkpoint**; connected write code, local migration changes and new test results do not exist yet. PR #13 will be the dedicated draft review target.  
+> Scope: enable _real connected_ shipment create, edit, complete/time-edit, reopen, administrator-only soft-delete and restore using existing `public.shipment_command` only. Trusted server must generate owner/UUID/TR number/start and audit history. Use expected revision and one idempotency UUID per user intent, reuse same key+payload for uncertain retry, re-fetch after success; reject stale edits without overwrites. Preserve Riyadh completion time, strict 96-hour status, optional phone/invoice number/notes/Unicode, accessible bilingual feedback/confirmation, employee-own/admin-AAL2 permission boundaries, and read/UI cache isolation.
+>
+> Include **small, localized readability/empty-state polish** requested after viewing 3C.3 on desktop (legible label/font size and informative empty state), with no redesign or changes to approved branding/layout architecture.  
+> No connected invoice binary upload, user lifecycle/recovery, email/scheduler, reporting, hosted database, production/DNS or deployment. Demo at port 5173 stays unchanged and separate from connected port 5174. Never touch retained accounts/MFA; never reset PostgreSQL, recreate Docker volumes/containers or edit applied migrations. Only additive forward-only SQL if strictly required and independently reviewed.  
+> Start locally by safely inspecting current git status/fetch/upstream and existing local database; do not assume GitHub branch creation changed the HOME checkout. Verify actual signed employee A/B and administrator AAL1/AAL2 HTTP denial/command/audit/idempotency/concurrency, real browser actions, AR/EN, mobile/desktop and all previous tests; back up before any DB migration. Update PR/status with actual outcomes, push only reviewed source to feature branch, **stop before merging or Phase 3C.5**.
+
+---
+
+> **HISTORICAL VERIFIED CANDIDATE — 28 October 2026: Phase 3C.3 connected shipment reads, subsequently approved/merged in PR #12.**
 >
 > Approved main is `eac7bcabda0f08ca099e2c5e395bbf200554c44e` (PR #11 merged after Phase 3C.2). The clean HOME checkout fetched origin and safely switched to existing `feature/phase-3c3-connected-shipment-reads` at PM handoff `6c613941899b54c272ccecec1af68fd17647cd2a`. All earlier checkpoint blocks below are historical. No reset, clean, stash, force-push, duplicate branch or PR was used.
 >

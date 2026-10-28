@@ -5,6 +5,20 @@ import { createClient } from '@supabase/supabase-js'
 import { localAuthContext, localSigningKey } from '../auth/local-context.ts'
 import { requireLocalDatabase, sql as runSql, quote as q } from '../database/local-postgres.mjs'
 import { totp } from './totp.ts'
+import { createLocalAuthClient } from '../../src/app/auth/client.ts'
+import { connectedCommandRepository } from '../../src/features/connected/command-repository.ts'
+import { connectedShipmentRepository } from '../../src/features/connected/repository.ts'
+import {
+  commandArgs,
+  fieldsForCommand,
+  completionFromInput,
+} from '../../src/features/connected/command-model.ts'
+import {
+  CommandSession,
+  COMMAND_STORAGE_KEY,
+} from '../../src/features/connected/command-session.ts'
+import { EMPTY_FIELDS } from '../../src/features/shipments/model.ts'
+import { dateTimeInput } from '../../src/shared/lib/dates.ts'
 
 let context
 const people = {}
@@ -411,6 +425,10 @@ test('tampered AAL/admin claims and expired correctly signed tokens fail at the 
   )
   for (const [path, args] of [
     ['rpc/read_shipment_page', {}],
+    [
+      'rpc/shipment_command',
+      { p_operation: 'create', p_request_id: randomUUID(), p_fields: fields },
+    ],
     ['rpc/read_shipment_history_page', { p_shipment_id: ownA }],
   ]) {
     assert.equal((await http(path, forged, 'POST', args)).status, 401)
@@ -619,4 +637,379 @@ test('deleted register, invalid queries and all authentication gates fail closed
   } finally {
     await sql(`update app_private.account_access set active=true where user_id=${q(people.a.id)}`)
   }
+})
+
+const commandFields = () =>
+  fieldsForCommand({
+    ...EMPTY_FIELDS,
+    ...fields,
+    driverPhone: '+966501234567',
+    invoice: 'فاتورة-اختبار',
+    notes: 'سطر أول\nsecond line',
+  })
+const signal = () => new AbortController().signal
+const executeCommand = (person, input, key = randomUUID()) =>
+  connectedCommandRepository(person.client).execute(commandArgs(input, key), signal())
+let lifecycleId
+test('real signed command adapter persists create/edit/Riyadh completion/time edit/reopen/admin delete/restore with an intact audit chain', async () => {
+  const create = await executeCommand(people.a, { operation: 'create', fields: commandFields() })
+  lifecycleId = create.shipment_id
+  const reads = connectedShipmentRepository(people.a.client),
+    adminReads = connectedShipmentRepository(people.admin.client)
+  let row = await reads.detail(lifecycleId, signal())
+  const started = row.started_at,
+    number = row.number
+  assert.equal(row.owner_id, people.a.id)
+  assert.equal(row.revision, '1')
+  assert.equal(row.status, 'pending')
+  assert.equal(row.notes, 'سطر أول\nsecond line')
+  assert.equal(row.invoice_number, 'فاتورة-اختبار')
+  assert.equal(row.driver_phone, '+966501234567')
+  assert.equal(create.started_at, started)
+  const update = await executeCommand(people.a, {
+    operation: 'update',
+    id: row.id,
+    revision: row.revision,
+    fields: { ...commandFields(), customer: 'HTTP command edited' },
+  })
+  assert.equal(update.action, 'updated')
+  row = await reads.detail(row.id, signal())
+  assert.equal(row.revision, '2')
+  const manual = completionFromInput(dateTimeInput(started), started, Date.parse(row.server_now))
+  assert.ok(manual)
+  const complete = await executeCommand(people.a, {
+    operation: 'complete',
+    id: row.id,
+    revision: row.revision,
+    completedAt: manual,
+  })
+  assert.equal(complete.action, 'completed')
+  row = await reads.detail(row.id, signal())
+  assert.equal(row.status, 'completed')
+  const editedTime = completionFromInput(
+    dateTimeInput(row.server_now),
+    started,
+    Date.parse(row.server_now),
+  )
+  assert.equal(
+    (
+      await executeCommand(people.a, {
+        operation: 'complete',
+        id: row.id,
+        revision: row.revision,
+        completedAt: editedTime,
+      })
+    ).action,
+    'completionEdited',
+  )
+  row = await reads.detail(row.id, signal())
+  await executeCommand(people.a, { operation: 'reopen', id: row.id, revision: row.revision })
+  row = await reads.detail(row.id, signal())
+  assert.equal(row.workflow, 'pending')
+  assert.equal(row.completed_at, null)
+  await executeCommand(people.admin, { operation: 'delete', id: row.id, revision: row.revision })
+  await assert.rejects(reads.detail(row.id, signal()), { problem: 'unavailable' })
+  row = await adminReads.detail(row.id, signal())
+  assert.ok(row.deleted_at)
+  assert.equal(row.deleted_by, people.admin.id)
+  await executeCommand(people.admin, { operation: 'restore', id: row.id, revision: row.revision })
+  // A separately constructed repository/session reads the same PostgreSQL record.
+  row = await connectedShipmentRepository(people.a.client).detail(row.id, signal())
+  assert.equal(row.deleted_at, null)
+  assert.equal(row.started_at, started)
+  assert.equal(row.number, number)
+  assert.equal(row.owner_id, people.a.id)
+  const history = await reads.history(row.id, 0, signal())
+  assert.deepEqual(
+    history.rows.map((e) => e.action),
+    ['created', 'updated', 'completed', 'completionEdited', 'reopened', 'deleted', 'restored'],
+  )
+  assert.deepEqual(
+    history.rows.map((e) => e.revision),
+    ['1', '2', '3', '4', '5', '6', '7'],
+  )
+  assert.equal(history.rows[5].actor_id, people.admin.id)
+  assert.equal(history.rows[6].actor_id, people.admin.id)
+  assert.ok(history.rows.slice(0, 5).every((e) => e.actor_id === people.a.id))
+  for (let i = 1; i < history.rows.length; i++)
+    assert.ok(
+      Date.parse(history.rows[i].occurred_at) >= Date.parse(history.rows[i - 1].occurred_at),
+    )
+  assert.equal(
+    await sql(`select count(*) from app_private.command_receipts where shipment_id=${q(row.id)}`),
+    '7',
+  )
+})
+
+test('the browser command transport recovers an actual lost success response with the same persisted intent and re-fetches a newer row', async () => {
+  const memory = new Map(),
+    bodies = []
+  let lose = true,
+    captured
+  const transport = async (input, init) => {
+    const response = await fetch(input, init)
+    if (String(input).endsWith('/rpc/shipment_command')) {
+      bodies.push(init.body)
+      if (lose) {
+        lose = false
+        captured = await response.json()
+        throw new TypeError('Simulated lost acknowledgement after real commit')
+      }
+    }
+    return response
+  }
+  const selected = createLocalAuthClient(
+    { url: context.url, publicKey: context.publicKey },
+    {
+      getItem: (k) => memory.get(k) ?? null,
+      setItem: (k, v) => {
+        memory.set(k, v)
+      },
+      removeItem: (k) => {
+        memory.delete(k)
+      },
+    },
+    transport,
+  )
+  clients.push(selected)
+  const existing = (await people.a.client.auth.getSession()).data.session
+  const restored = await selected.auth.setSession({
+    access_token: existing.access_token,
+    refresh_token: existing.refresh_token,
+  })
+  assert.equal(restored.error, null)
+  const recovery = new Map(),
+    storage = {
+      getItem: (k) => recovery.get(k) ?? null,
+      setItem: (k, v) => {
+        recovery.set(k, v)
+      },
+      removeItem: (k) => {
+        recovery.delete(k)
+      },
+    }
+  const repo = connectedShipmentRepository(selected)
+  let refreshed
+  const tracking = {
+    ...repo,
+    detail: async (...args) => {
+      refreshed = await repo.detail(...args)
+      return refreshed
+    },
+  }
+  const first = new CommandSession(
+    people.a.id,
+    connectedCommandRepository(selected),
+    tracking,
+    storage,
+  )
+  await first.start({ operation: 'create', fields: commandFields() })
+  assert.equal(first.getSnapshot().status, 'uncertain')
+  assert.equal(bodies.length, 1)
+  const pending = storage.getItem(COMMAND_STORAGE_KEY)
+  assert.ok(pending)
+  await executeCommand(people.a, {
+    operation: 'update',
+    id: captured.shipment_id,
+    revision: captured.revision,
+    fields: { ...commandFields(), customer: 'Newer saved version' },
+  })
+  first.dispose()
+  const afterReload = new CommandSession(
+    people.a.id,
+    connectedCommandRepository(selected),
+    tracking,
+    storage,
+  )
+  const repeated = await afterReload.retry()
+  assert.equal(bodies.length, 2)
+  assert.equal(bodies[0], bodies[1])
+  assert.deepEqual(repeated, captured)
+  assert.equal(repeated.revision, '1')
+  assert.equal(refreshed.revision, '2')
+  assert.equal(refreshed.customer, 'Newer saved version')
+  assert.equal(storage.getItem(COMMAND_STORAGE_KEY), null)
+  assert.equal(
+    await sql(
+      `select count(*) from public.shipment_events where shipment_id=${q(captured.shipment_id)} and action='created'`,
+    ),
+    '1',
+  )
+  assert.equal(
+    await sql(
+      `select count(*) from app_private.command_receipts where shipment_id=${q(captured.shipment_id)}`,
+    ),
+    '2',
+  )
+})
+
+test('real HTTP concurrent creates are unique; stale edits and key/payload reuse are reported without lost updates or audit artifacts', async () => {
+  const created = await Promise.all([
+    executeCommand(people.a, { operation: 'create', fields: commandFields() }),
+    executeCommand(people.a, { operation: 'create', fields: commandFields() }),
+  ])
+  assert.notEqual(created[0].shipment_id, created[1].shipment_id)
+  assert.notEqual(created[0].number, created[1].number)
+  const input = {
+    operation: 'update',
+    id: created[0].shipment_id,
+    revision: '1',
+    fields: commandFields(),
+  }
+  const outcomes = await Promise.allSettled([
+    executeCommand(people.a, { ...input, fields: { ...input.fields, customer: 'Candidate one' } }),
+    executeCommand(people.a, { ...input, fields: { ...input.fields, customer: 'Candidate two' } }),
+  ])
+  assert.equal(outcomes.filter((r) => r.status === 'fulfilled').length, 1)
+  assert.equal(outcomes.find((r) => r.status === 'rejected').reason.problem, 'conflict')
+  assert.equal(
+    await sql(`select count(*) from public.shipment_events where shipment_id=${q(input.id)}`),
+    '2',
+  )
+  const key = randomUUID(),
+    fresh = { operation: 'create', fields: commandFields() }
+  const once = await executeCommand(people.a, fresh, key),
+    again = await executeCommand(people.a, fresh, key)
+  assert.deepEqual(again, once)
+  await assert.rejects(
+    executeCommand(
+      people.a,
+      { ...fresh, fields: { ...fresh.fields, customer: 'Different payload' } },
+      key,
+    ),
+    { problem: 'idempotency' },
+  )
+  assert.equal(
+    await sql(
+      `select count(*) from public.shipment_events where shipment_id=${q(once.shipment_id)}`,
+    ),
+    '1',
+  )
+})
+
+test('connected adapter updates a revision above JS safe integer range without rounding', async () => {
+  const before = (await list(people.a, readOwn)).body[0]
+  assert.equal(before.revision, '9007199254740993')
+  const result = await executeCommand(people.a, {
+    operation: 'update',
+    id: readOwn,
+    revision: before.revision,
+    fields: commandFields(),
+  })
+  assert.equal(result.revision, '9007199254740994')
+  assert.equal((await list(people.a, readOwn)).body[0].revision, '9007199254740994')
+})
+
+test('all connected command permissions, immutable fields and invalid chronology are enforced with no denied audit/receipt changes', async () => {
+  const fresh = client()
+  assert.equal(
+    (
+      await fresh.auth.signInWithPassword({
+        email: people.admin.email,
+        password: people.admin.password,
+      })
+    ).error,
+    null,
+  )
+  const row = await connectedShipmentRepository(people.a.client).detail(lifecycleId, signal())
+  const fingerprint = () =>
+    sql(
+      `select md5(jsonb_build_object('row',(select to_jsonb(s) from public.shipments s where id=${q(row.id)}),'events',(select jsonb_agg(to_jsonb(e) order by revision) from public.shipment_events e where shipment_id=${q(row.id)}),'receipts',(select jsonb_agg(to_jsonb(r) order by id) from app_private.command_receipts r where shipment_id=${q(row.id)}))::text)`,
+    )
+  const before = await fingerprint()
+  for (const person of [people.inactive, people.orphan, { client: fresh }]) {
+    await assert.rejects(executeCommand(person, { operation: 'create', fields: commandFields() }), {
+      problem: 'denied',
+    })
+    await assert.rejects(
+      executeCommand(person, {
+        operation: 'update',
+        id: row.id,
+        revision: row.revision,
+        fields: commandFields(),
+      }),
+      { problem: 'denied' },
+    )
+  }
+  await assert.rejects(
+    executeCommand(people.b, {
+      operation: 'update',
+      id: row.id,
+      revision: row.revision,
+      fields: commandFields(),
+    }),
+    { problem: 'unavailable' },
+  )
+  for (const operation of ['delete', 'restore'])
+    await assert.rejects(
+      executeCommand(people.a, { operation, id: row.id, revision: row.revision }),
+      { problem: 'denied' },
+    )
+  for (const completedAt of ['1900-01-01T00:00:00Z', '2099-01-01T00:00:00Z'])
+    await assert.rejects(
+      executeCommand(people.a, {
+        operation: 'complete',
+        id: row.id,
+        revision: row.revision,
+        completedAt,
+      }),
+      { problem: 'validation' },
+    )
+  for (const [key, value] of [
+    ['owner_id', people.b.id],
+    ['started_at', '1900-01-01'],
+    ['number', '1'],
+    ['invoice_image', 'forbidden'],
+  ]) {
+    const denied = await command(people.a, 'update', row.id, row.revision, {
+      ...fields,
+      [key]: value,
+    })
+    assert.equal(denied.status, 400)
+  }
+  assert.equal(await fingerprint(), before)
+})
+
+test('genuine AAL2 administrator creates owned records and edits/completes/reopens another employee record without changing its identity', async () => {
+  const created = await executeCommand(people.admin, {
+    operation: 'create',
+    fields: commandFields(),
+  })
+  const reads = connectedShipmentRepository(people.admin.client)
+  assert.equal((await reads.detail(created.shipment_id, signal())).owner_id, people.admin.id)
+  await assert.rejects(
+    connectedShipmentRepository(people.a.client).detail(created.shipment_id, signal()),
+    { problem: 'unavailable' },
+  )
+  let row = await reads.detail(ownB, signal()),
+    start = row.started_at,
+    number = row.number
+  await executeCommand(people.admin, {
+    operation: 'update',
+    id: row.id,
+    revision: row.revision,
+    fields: { ...commandFields(), customer: 'AAL2 administrator edit' },
+  })
+  row = await reads.detail(row.id, signal())
+  const completedAt = completionFromInput(
+    dateTimeInput(row.started_at),
+    row.started_at,
+    Date.parse(row.server_now),
+  )
+  await executeCommand(people.admin, {
+    operation: 'complete',
+    id: row.id,
+    revision: row.revision,
+    completedAt,
+  })
+  row = await reads.detail(row.id, signal())
+  assert.equal(row.workflow, 'completed')
+  await executeCommand(people.admin, { operation: 'reopen', id: row.id, revision: row.revision })
+  row = await connectedShipmentRepository(people.b.client).detail(row.id, signal())
+  assert.equal(row.workflow, 'pending')
+  assert.equal(row.owner_id, people.b.id)
+  assert.equal(row.started_at, start)
+  assert.equal(row.number, number)
+  const history = await reads.history(row.id, 0, signal())
+  assert.ok(history.rows.slice(-3).every((e) => e.actor_id === people.admin.id))
 })

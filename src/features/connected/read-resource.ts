@@ -31,9 +31,11 @@ export class ReadResource<T> {
     this.controller?.abort()
     this.publish({ status: 'loading', data: null, problem: null })
   }
-  load = async () => {
-    this.clear()
-    const generation = this.generation
+  load = async (background = false) => {
+    this.controller?.abort()
+    const generation = ++this.generation
+    if (!background || this.state.status !== 'ready')
+      this.publish({ status: 'loading', data: null, problem: null })
     const controller = new AbortController()
     this.controller = controller
     try {

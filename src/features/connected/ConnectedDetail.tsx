@@ -7,18 +7,23 @@ import { DriverPhone } from '../shipments/DriverPhone'
 import { ReadFeedback, ReadPagination, ReadStatus } from './ReadComponents'
 import { useRead } from './use-read'
 import type { ShipmentReadRepository } from './repository'
+import { ConnectedActions } from './ConnectedActions'
+import { useCommands } from './command-context'
 
 export function ConnectedDetail({
   id,
   repository,
+  admin,
 }: {
   id: string
   repository: ShipmentReadRepository
+  admin: boolean
 }) {
   const { t, locale } = useLocale(),
     m = connectedMessages[locale]
   const load = useCallback((signal: AbortSignal) => repository.detail(id, signal), [repository, id])
-  const result = useRead(load),
+  const { state } = useCommands()
+  const result = useRead(load, state.version),
     row = result.data
   return (
     <div className="page-stack">
@@ -39,6 +44,7 @@ export function ConnectedDetail({
               </div>
               <ReadStatus row={row} />
             </div>
+            <ConnectedActions row={row} admin={admin} repository={repository} />
             <div className="detail-layout">
               <div className="detail-main">
                 <section className="panel detail-panel">
@@ -112,7 +118,8 @@ function ConnectedHistory({ id, repository }: { id: string; repository: Shipment
     (signal: AbortSignal) => repository.history(id, offset, signal),
     [repository, id, offset],
   )
-  const result = useRead(load),
+  const { state } = useCommands()
+  const result = useRead(load, state.version),
     page = result.data
   return (
     <section className="panel detail-panel">
