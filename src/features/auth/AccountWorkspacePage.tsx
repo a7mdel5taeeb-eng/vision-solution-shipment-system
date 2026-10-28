@@ -5,12 +5,20 @@ import { Button } from '../../shared/ui/Primitives'
 import { AuthFrame } from './AuthPages'
 import { useAccount } from './use-account'
 import { AdminMfa } from './AdminMfa'
+import { ConnectedWorkspace } from '../connected/ConnectedWorkspace'
 
 export function AccountWorkspacePage() {
   const { state, store } = useAuth()
   const { t, locale } = useLocale()
   const lookup = useAccount()
   const account = lookup.account
+  if (lookup.status === 'ready' && account?.state === 'active' && account.can_operate)
+    return (
+      <ConnectedWorkspace
+        key={`${account.user_id}:${account.role}:${account.aal}:${state.expiresAt}`}
+        account={account}
+      />
+    )
   return (
     <AuthFrame>
       {lookup.status === 'loading' ? (

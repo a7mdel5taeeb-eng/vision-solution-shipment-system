@@ -1,0 +1,43 @@
+/* Connected-only layout guards. Approved Demo selectors/styles are untouched. */
+.connected-workspace .connected-notice {
+  margin-block-end: 18px;
+  color: var(--text-muted);
+}
+.connected-workspace .detail-grid dd,
+.connected-workspace .history-list p,
+.connected-workspace .load-driver span,
+.connected-workspace .shipment-load-card h3 {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.connected-workspace .register-tools-main input {
+  min-width: 0;
+}
+.connected-workspace .metric-card {
+  text-align: start;
+  font: inherit;
+  color: inherit;
+}
+.connected-workspace .metric-value {
+  display: block;
+}
+.connected-workspace .register-tools-secondary {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.connected-workspace .journey-panel .detail-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (max-width: 640px) {
+  .connected-workspace .workspace-header-inner {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .connected-workspace .workspace-header-actions {
+    margin-inline-start: auto;
+  }
+  .connected-workspace .pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}

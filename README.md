@@ -8,7 +8,13 @@ A bilingual, responsive shipment operations workspace built on the existing Phas
 
 The application is a separate project from the company's public marketing website. The future product address is `system.vsolutions.co`; it has not been deployed.
 
-For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow, Phase 3B and Phase 3C.1 are approved and merged through PRs #6, #5 and #9. The current Phase 3C.2 candidate is isolated in existing draft PR #10.
+For the current approved phase, pending PRs, computer readiness and verified checkpoints, read [PROJECT_STATUS.md](docs/PROJECT_STATUS.md). Follow the [HOME/SCHOOL workflow](docs/cross-computer-workflow.md) before and after every approved session. The HOME/SCHOOL workflow, Phase 3B, Phase 3C.1/3C.2 and HTTP 404 fix are approved/merged at main `eac7bcabda0f08ca099e2c5e395bbf200554c44e`. The current Phase 3C.3 read-only candidate is isolated in existing Draft PR #12.
+
+## Current local connected candidate
+
+Phase 3C.3 adds real **read-only** shipment lists, details, history, server-side search/filtering/pagination/counts and protected employee/AAL2 administrator views. Default Demo Mode and its browser records/workflows remain separate and unchanged. See [the local read-only runbook and actual test results](docs/phase-3c3-connected-shipment-reads.md); older prototype descriptions below describe Demo Mode.
+
+Run `npm run dev` for Demo at `http://127.0.0.1:5173/` and, with the existing approved local Supabase stack/public-client configuration, `npm run dev:connected` for `http://127.0.0.1:5174/workspace`. Never put service credentials in Vite variables. The read-only candidate uses new forward migration `20261028120000`; preserve/verify a private backup before applying pending local migrations, never reset a populated database. Connected mutations, production services, deployment and merging PR #12 are outside this milestone.
 
 ## Phase 3C.1 local authentication checkpoint
 

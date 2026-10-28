@@ -1,18 +1,21 @@
 import { CheckCircle2, Clock3, TriangleAlert, Trash2 } from 'lucide-react'
 import { useLocale } from '../../shared/i18n/locale-context'
-import { isLateCompletion, statusOf, type Shipment } from './model'
+import { isLateCompletion, statusOf, type Shipment, type ShipmentStatus } from './model'
 
 export function StatusBadge({
   shipment,
   now,
   showLate = false,
+  resolvedStatus,
 }: {
   shipment: Shipment
   now: number
   showLate?: boolean
+  /** Connected reads use the authoritative server result, including sub-millisecond boundaries. */
+  resolvedStatus?: ShipmentStatus
 }) {
   const { t } = useLocale()
-  const status = shipment.deletedAt ? 'deleted' : statusOf(shipment, now)
+  const status = shipment.deletedAt ? 'deleted' : (resolvedStatus ?? statusOf(shipment, now))
   const Icon =
     status === 'completed'
       ? CheckCircle2
