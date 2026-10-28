@@ -1,5 +1,14 @@
 # Vision & Solution — project status
 
+> **CURRENT — 28 OCTOBER 2026: PHASE 3C.3 — CONNECTED SHIPMENT READS, PLANNING / HANDOFF ONLY**  
+> The owner resumed HOME development and authorized continuing after the verified HTTP error fix. PR #11 **was merged** to main at actual commit `eac7bcabda0f08ca099e2c5e395bbf200554c44e`. Its tested fix maps missing/other-owner shipment commands to uniform HTTP 404; its 15 signed HTTP/security, 13 Auth, 20 PostgreSQL, 53 application, and 20 workflow tests were executed on HOME and documented in `docs/http404-fix-verification.md`. **Do not interpret old PR #11 candidate text further below as current status.**  
+> Existing approved PRs #5/#6/#9/#10/#11 are merged. Current new branch `feature/phase-3c3-connected-shipment-reads` was created from the verified PR #11 main merge. **No 3C.3 code, migration or test has been executed yet on this branch.**  
+> Approved next scope: real Supabase/PostgREST **read-only shipment lists/details/history**, authorized server-side query/filter/search/pagination/counts, typed mapping of UUID vs TR number and bigint strings, no-leak employee A/B vs AAL2 admin scopes, separately gated deleted register, and role-aware bilingual connected dashboards using the approved existing UI components. Preserve the untouched Demo Mode at 5173 and connected auth at 5174.  
+> **Requirements:** inspect HOME `git status`, safely fetch/switch without discarding changes, use existing healthy localhost Docker volumes (no reset/recreate), only forward-only migrations if truly needed, no privileged browser keys, fail closed on AAL1/inactive tokens, clear session-dependent caches, handle offline/loading/empty/denied states, and run real two-account JWT/PostgREST tests plus application/build/DB/QA checks. Keep UI creation/edit/completion/deletion disabled in connected mode (Phase 3C.4). Do not copy demo seed records to DB.  
+> **Never merge the next PR, modify credentials/MFA, deploy, or start Phase 3C.4+ without separate owner approval.** Update checkpoint with actual test results after local work; this handoff is not a claim of completed development.
+
+---
+
 > **CURRENT VERIFIED CANDIDATE — 28 October 2026: shipment-command HTTP 404 fix, PR #11.**
 >
 > Phase 3C.2 PR #10 is approved/merged into GitHub main at `ae60413b427a86ba82bf3812be1791eac20827bd`. The clean checkout safely switched to existing branch `fix/shipment-command-not-found-http-404` at PM checkpoint `ddbaa44bb6b062321f245fa6144a63b373a70e31`. No local work, ignored data or published history was overwritten.
