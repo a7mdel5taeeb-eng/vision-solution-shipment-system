@@ -16,5 +16,5 @@ export function AuthProvider({
   const [store] = useState(() => new AuthSessionStore(client.auth, () => clearAuthStorage(storage)))
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot)
   useEffect(() => store.start(), [store])
-  return <AuthContext.Provider value={{ state, store }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ state, store, client }}>{children}</AuthContext.Provider>
 }

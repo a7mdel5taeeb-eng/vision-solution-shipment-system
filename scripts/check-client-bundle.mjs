@@ -3,11 +3,21 @@ import { join } from 'node:path'
 
 const root = process.argv[2] ?? 'dist'
 if (!existsSync(root)) throw new Error('Build directory does not exist; build before scanning.')
-let fixturePassword = ''
-if (existsSync('local-data/auth-preview-account.local.json'))
-  fixturePassword = JSON.parse(
-    readFileSync('local-data/auth-preview-account.local.json', 'utf8'),
-  ).password
+const privateValues = []
+function collect(value) {
+  if (!value || typeof value !== 'object') return
+  for (const [key, entry] of Object.entries(value)) {
+    if (/password|secret/i.test(key) && typeof entry === 'string' && entry.length >= 6)
+      privateValues.push(entry)
+    else collect(entry)
+  }
+}
+if (existsSync('local-data')) {
+  for (const file of readdirSync('local-data', { withFileTypes: true })) {
+    if (file.isFile() && file.name.endsWith('.json'))
+      collect(JSON.parse(readFileSync(join('local-data', file.name), 'utf8')))
+  }
+}
 let count = 0
 function scan(path) {
   for (const entry of readdirSync(path, { withFileTypes: true })) {
@@ -23,7 +33,7 @@ function scan(path) {
       /sb_secret_[A-Za-z0-9_-]{12,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(
         value,
       ) ||
-      (fixturePassword && value.includes(fixturePassword))
+      privateValues.some((secret) => value.includes(secret))
     )
       throw new Error(`Private credential marker found in ${file}; values suppressed.`)
     for (const match of value.matchAll(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g)) {
@@ -39,5 +49,5 @@ function scan(path) {
 }
 scan(root)
 console.log(
-  `Browser credential scan passed: ${count} files in ${root}; no private keys, non-public JWTs or local fixture password.`,
+  `Browser credential scan passed: ${count} files in ${root}; no private keys, non-public JWTs or local fixture credentials.`,
 )

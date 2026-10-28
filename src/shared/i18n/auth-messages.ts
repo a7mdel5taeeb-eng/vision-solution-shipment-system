@@ -1,4 +1,41 @@
 export const authEnglish = {
+  accountChecking: 'Checking your account permissions…',
+  accountUnavailable: 'Account access unavailable',
+  accountLookupError:
+    'Your account permissions could not be verified. Refresh your session to try again.',
+  accountInactive:
+    'This account is inactive. Contact your local operator; signing in does not reactivate an account.',
+  accountUnauthorized:
+    'This identity has no authorized application account. Contact your local operator.',
+  accountAdminTitle: 'Administrator workspace',
+  accountEmployeeTitle: 'Employee workspace',
+  accountName: 'Profile name',
+  accountRole: 'Authorized role',
+  accountAdmin: 'Administrator',
+  accountEmployee: 'Employee',
+  accountEmployeeReady: 'Your employee account is authorized.',
+  accountMfaPassed: 'Administrator account verified with two-factor authentication.',
+  accountScope:
+    'Account security is ready. Connected shipment lists and actions will follow in the next approved milestones. Demo Mode remains available.',
+  accountMfaEnroll: 'Protect your administrator account',
+  accountMfaVerify: 'Verify with your authenticator',
+  accountMfaHelp:
+    'Administrator access requires a current six-digit code from your authenticator app. Password-only sessions cannot access operational data.',
+  accountMfaStart: 'Set up authenticator',
+  accountMfaUnfinished:
+    'An unfinished setup already exists. Complete it in the original tab, or ask the local operator to review it. Existing factors have been preserved.',
+  accountMfaQr: 'Scan this private QR code with your authenticator app',
+  accountMfaManual: 'Manual setup key',
+  accountMfaPrivate:
+    'Keep this setup key private. It is shown only during enrollment and is not saved by this page. Complete setup in this tab; existing factors are never removed automatically.',
+  accountMfaCode: 'Six-digit verification code',
+  accountMfaConfirm: 'Verify code',
+  accountMfaChecking: 'Verifying code…',
+  accountMfaError:
+    'Authenticator setup or verification failed. Check the current code and your device clock, then try again. Refresh the session if setup could not load.',
+  accountMfaFactor: 'Authenticator',
+  accountRecovery:
+    'Lost your authenticator? Contact the trusted local operator. Self-service MFA removal and recovery bypasses are unavailable in this milestone.',
   authMode: 'Local connected mode',
   authLoginTitle: 'Sign in to your account',
   authLoginDescription:
@@ -37,6 +74,40 @@ export const authEnglish = {
     'This milestone verifies sign-in and sessions only. Shipment operations and administrator access are not enabled in Connected Mode. Use Demo Mode for the existing workflows.',
 }
 export const authArabic: { [K in keyof typeof authEnglish]: string } = {
+  accountChecking: 'جارٍ التحقق من صلاحيات حسابك…',
+  accountUnavailable: 'الوصول إلى الحساب غير متاح',
+  accountLookupError: 'تعذّر التحقق من صلاحيات حسابك. حدّث الجلسة للمحاولة مجدداً.',
+  accountInactive: 'هذا الحساب غير نشط. تواصل مع المشغّل المحلي؛ تسجيل الدخول لا يعيد تفعيله.',
+  accountUnauthorized: 'لا يوجد حساب تطبيق مصرّح به لهذه الهوية. تواصل مع المشغّل المحلي.',
+  accountAdminTitle: 'مساحة عمل المدير',
+  accountEmployeeTitle: 'مساحة عمل الموظف',
+  accountName: 'اسم الملف الشخصي',
+  accountRole: 'الدور المصرّح به',
+  accountAdmin: 'مدير',
+  accountEmployee: 'موظف',
+  accountEmployeeReady: 'تم التحقق من صلاحية حساب الموظف.',
+  accountMfaPassed: 'تم التحقق من حساب المدير بالمصادقة الثنائية.',
+  accountScope:
+    'أمان الحساب جاهز. ستُربط قوائم الشحنات وإجراءاتها في المراحل التالية بعد اعتمادها. يبقى الوضع التجريبي متاحاً.',
+  accountMfaEnroll: 'احمِ حساب المدير',
+  accountMfaVerify: 'تحقّق باستخدام تطبيق المصادقة',
+  accountMfaHelp:
+    'يتطلب وصول المدير رمزاً حالياً من ستة أرقام من تطبيق المصادقة. الجلسات المعتمدة على كلمة المرور فقط لا تصل إلى البيانات التشغيلية.',
+  accountMfaStart: 'إعداد تطبيق المصادقة',
+  accountMfaUnfinished:
+    'يوجد إعداد غير مكتمل بالفعل. أكمله في علامة التبويب الأصلية، أو اطلب من المشغّل المحلي مراجعته. تم الاحتفاظ بعوامل المصادقة الحالية.',
+  accountMfaQr: 'امسح رمز الاستجابة السريعة الخاص باستخدام تطبيق المصادقة',
+  accountMfaManual: 'مفتاح الإعداد اليدوي',
+  accountMfaPrivate:
+    'احتفظ بمفتاح الإعداد سرياً. يظهر أثناء التسجيل فقط ولا تحفظه هذه الصفحة. أكمل الإعداد في هذه العلامة؛ لا تُزال عوامل المصادقة الحالية تلقائياً.',
+  accountMfaCode: 'رمز التحقق من ستة أرقام',
+  accountMfaConfirm: 'التحقق من الرمز',
+  accountMfaChecking: 'جارٍ التحقق من الرمز…',
+  accountMfaError:
+    'تعذّر إعداد تطبيق المصادقة أو التحقق. تأكّد من الرمز الحالي وساعة جهازك ثم حاول مجدداً. حدّث الجلسة إذا تعذّر تحميل الإعداد.',
+  accountMfaFactor: 'تطبيق المصادقة',
+  accountRecovery:
+    'فقدت تطبيق المصادقة؟ تواصل مع المشغّل المحلي الموثوق. إزالة المصادقة الذاتية وتجاوز الاسترداد غير متاحين في هذه المرحلة.',
   authMode: 'الوضع المحلي المتصل',
   authLoginTitle: 'تسجيل الدخول إلى حسابك',
   authLoginDescription: 'استخدم حساب الاختبار المحلي الوهمي. تبقى مساحة العمل التجريبية منفصلة.',

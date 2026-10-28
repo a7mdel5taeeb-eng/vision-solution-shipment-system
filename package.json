@@ -19,6 +19,9 @@
     "dev:connected": "vite --mode connected",
     "build:connected": "tsc -b && vite build --mode connected --outDir dist-connected",
     "test:auth": "node --experimental-strip-types --test tests/auth/local-auth.test.ts",
+    "test:security": "node --experimental-strip-types --test tests/security/accounts.test.mjs",
+    "accounts:local": "node --experimental-strip-types scripts/local-accounts.ts",
+    "auth:rotate-preview": "node --experimental-strip-types scripts/rotate-local-preview.ts",
     "auth:fixture": "node --experimental-strip-types scripts/local-auth-preview.ts",
     "check:bundle": "node scripts/check-client-bundle.mjs"
   },
