@@ -132,101 +132,109 @@ export function ConnectedReports({
         </Button>
       </div>
       {!daily && (
-        <form className="panel report-filters" ref={form} onSubmit={apply} noValidate>
-          <div className="report-filter-grid">
-            <label className="form-field">
-              <span>{t.searchShipments}</span>
-              <input
-                name="search"
-                maxLength={200}
-                value={draft.search}
-                onChange={(e) => setDraft({ ...draft, search: e.target.value })}
-              />
-            </label>
-            <label className="form-field">
-              <span>{t.status}</span>
-              <select
-                value={draft.status}
-                onChange={(e) =>
-                  setDraft({ ...draft, status: e.target.value as ReportQuery['status'] })
-                }
-              >
-                {(['', 'pending', 'completed', 'overdue'] as const).map((k) => (
-                  <option key={k} value={k}>
-                    {k ? t[k] : t.allStatuses}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="form-field">
-              <span>{m.dateField}</span>
-              <select
-                value={draft.dateField}
-                onChange={(e) =>
-                  setDraft({ ...draft, dateField: e.target.value as ReportQuery['dateField'] })
-                }
-              >
-                <option value="started">{m.started}</option>
-                <option value="completed">{m.completed}</option>
-              </select>
-            </label>
-            <label className="form-field">
-              <span>{t.fromDate}</span>
-              <input
-                name="from"
-                type="date"
-                min="1900-01-01"
-                max="9998-12-31"
-                value={draft.from}
-                onInput={(e) => setDraft({ ...draft, from: e.currentTarget.value })}
-                aria-invalid={invalid}
-              />
-            </label>
-            <label className="form-field">
-              <span>{t.toDate}</span>
-              <input
-                name="to"
-                type="date"
-                min="1900-01-01"
-                max="9998-12-31"
-                value={draft.to}
-                onInput={(e) => setDraft({ ...draft, to: e.currentTarget.value })}
-                aria-invalid={invalid}
-              />
-            </label>
-            {admin && (
+        <details className="panel connected-report-filters connected-filter-disclosure">
+          <summary>
+            {t.filters}
+            {[q.search, q.status, q.owner, q.from, q.to].some(Boolean)
+              ? ` · ${new Intl.NumberFormat(locale).format([q.search, q.status, q.owner, q.from, q.to].filter(Boolean).length)}`
+              : ''}
+          </summary>
+          <form className="panel report-filters" ref={form} onSubmit={apply} noValidate>
+            <div className="report-filter-grid">
               <label className="form-field">
-                <span>{m.owner}</span>
+                <span>{t.searchShipments}</span>
                 <input
-                  name="owner"
-                  dir="ltr"
-                  value={draft.owner}
-                  onChange={(e) => setDraft({ ...draft, owner: e.target.value.trim() })}
-                  aria-describedby="report-owner-help"
+                  name="search"
+                  maxLength={200}
+                  value={draft.search}
+                  onChange={(e) => setDraft({ ...draft, search: e.target.value })}
                 />
-                <small id="report-owner-help">{m.ownerHelp}</small>
               </label>
+              <label className="form-field">
+                <span>{t.status}</span>
+                <select
+                  value={draft.status}
+                  onChange={(e) =>
+                    setDraft({ ...draft, status: e.target.value as ReportQuery['status'] })
+                  }
+                >
+                  {(['', 'pending', 'completed', 'overdue'] as const).map((k) => (
+                    <option key={k} value={k}>
+                      {k ? t[k] : t.allStatuses}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="form-field">
+                <span>{m.dateField}</span>
+                <select
+                  value={draft.dateField}
+                  onChange={(e) =>
+                    setDraft({ ...draft, dateField: e.target.value as ReportQuery['dateField'] })
+                  }
+                >
+                  <option value="started">{m.started}</option>
+                  <option value="completed">{m.completed}</option>
+                </select>
+              </label>
+              <label className="form-field">
+                <span>{t.fromDate}</span>
+                <input
+                  name="from"
+                  type="date"
+                  min="1900-01-01"
+                  max="9998-12-31"
+                  value={draft.from}
+                  onInput={(e) => setDraft({ ...draft, from: e.currentTarget.value })}
+                  aria-invalid={invalid}
+                />
+              </label>
+              <label className="form-field">
+                <span>{t.toDate}</span>
+                <input
+                  name="to"
+                  type="date"
+                  min="1900-01-01"
+                  max="9998-12-31"
+                  value={draft.to}
+                  onInput={(e) => setDraft({ ...draft, to: e.currentTarget.value })}
+                  aria-invalid={invalid}
+                />
+              </label>
+              {admin && (
+                <label className="form-field">
+                  <span>{m.owner}</span>
+                  <input
+                    name="owner"
+                    dir="ltr"
+                    value={draft.owner}
+                    onChange={(e) => setDraft({ ...draft, owner: e.target.value.trim() })}
+                    aria-describedby="report-owner-help"
+                  />
+                  <small id="report-owner-help">{m.ownerHelp}</small>
+                </label>
+              )}
+            </div>
+            {invalid && (
+              <p role="alert" className="form-error">
+                {m.invalid}
+              </p>
             )}
-          </div>
-          {invalid && (
-            <p role="alert" className="form-error">
-              {m.invalid}
-            </p>
-          )}
-          <div className="auth-actions">
-            <Button type="submit">{m.apply}</Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setDraft({ ...reportDefaults })
-                setQuery({ ...reportDefaults })
-                setInvalid(false)
-              }}
-            >
-              {t.clearFilters}
-            </Button>
-          </div>
-        </form>
+            <div className="auth-actions">
+              <Button type="submit">{m.apply}</Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setDraft({ ...reportDefaults })
+                  setQuery({ ...reportDefaults })
+                  setInvalid(false)
+                }}
+              >
+                {t.clearFilters}
+              </Button>
+            </div>
+          </form>
+        </details>
       )}
       {result.status !== 'ready' ? (
         <ReadFeedback {...result} />
