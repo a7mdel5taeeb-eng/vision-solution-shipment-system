@@ -1,5 +1,7 @@
 # Vision & Solution TMS — Phase 4 release-readiness planning
 
+> **OWNER-APPROVED PHASE 4B POLICY — 29 Oct 2026:** Up to **3 available invoice images per shipment**; **3 MiB (3,145,728 bytes) maximum per image**, JPG/JPEG/PNG/WebP only, PDF and HEIC/HEIF unsupported. Employees upload/replace ONLY their own images, admin AAL2 may logically detach. This updates the SCHOOL planning assumptions in [the reviewed attachment design](phase-4b-secure-invoice-attachments-plan.md). The original schema supports only ONE 750 KiB image, so code must not be assumed ready and will require a forward-only reviewed security/storage migration. **Planning approval only; no database, implementation, migration, deployment or PR merge authorized.**
+
 **Status: PLANNING / SCHOOL-SAFE HANDOFF ONLY — 29 October 2026.**
 Owner explicitly approved merging mobile-first Connected UI PR #15. Verified `main` merge SHA: `ee23364be40236c37e37d6cd73e92014fbddd7d4`. The new planning branch is based on that exact merge; **no Phase 4 application code, migrations, tests or deployment are authorized by this planning artifact**. Owner is moving from the HOME Windows computer to SCHOOL and may shut HOME down. The approved connected app remains a HOME local instance until separate hosting decisions are made.
 
