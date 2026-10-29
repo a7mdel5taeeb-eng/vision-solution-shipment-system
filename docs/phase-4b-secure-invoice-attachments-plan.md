@@ -29,7 +29,7 @@ Source inspection, not a live database query, establishes:
 | Deleted shipments   | Admin may inspect metadata/history; no image bytes until shipment restoration                               | Decide whether a separate forensic preview is needed                                                        |
 | Recovery            | Separate encrypted object backups plus database metadata recovery                                           | Approve region, retention, quotas, RPO/RTO and who operates recovery                                        |
 
-These are recommendations, not newly approved business requirements. Sign off a small acceptance checklist and the open decisions below before authorizing 4B code. No accounting, OCR, payments, email attachments or general document-management system is proposed.
+**Approved business requirements are now fixed for quantity (3), size (3 MiB/image), JPEG/PNG/WebP formats, own-employee upload/replace and administrator AAL2-only detach.** The remaining table rows and pending architecture/retention decisions are recommendations requiring separate sign-off before authorizing 4B code. No accounting, OCR, payments, email attachments or general document-management system is proposed.
 
 ## Supabase Storage and API architecture
 
