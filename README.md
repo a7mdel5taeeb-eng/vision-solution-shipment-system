@@ -1,61 +1,164 @@
 <div align="center">
 
-![VISION & SOLUTION · TMS branded repository banner](docs/brand-banner.svg)
+![Vision & Solution — TMS project banner](docs/brand-banner.svg)
 
-# VISION & SOLUTION · TMS
+# VISION & SOLUTION
+### TRANSPORT MANAGEMENT SYSTEM | نظام إدارة الشحنات والنقل
 
-**Bilingual shipment operations management**
+**A bilingual operational platform for shipment registration, monitoring, authorization and reporting.**
 
-![Repository](https://img.shields.io/badge/Repository-Private-243d50?style=flat-square) ![Docs](https://img.shields.io/badge/Documentation-Updated-158caa?style=flat-square) ![Source](https://img.shields.io/badge/Source-GitHub-3b5366?style=flat-square)
+[![Product](https://img.shields.io/badge/Product-TMS-00bde7?style=for-the-badge)](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system)
+[![State](https://img.shields.io/badge/Status-Active_Development-f4ba4b?style=for-the-badge)](docs/PROJECT_STATUS.md)
+[![Demo](https://img.shields.io/badge/Online-Demo_Only-56bb92?style=for-the-badge)](https://vision-solution-tms-demo.vercel.app/)
+[![Languages](https://img.shields.io/badge/Locales-AR_%7C_EN-4f83bd?style=for-the-badge)](#-product-capabilities)
 
-[**Repository overview ↗**](https://github.com/a7mdel5taeeb-eng/vision-solution-shipment-system) · [**Architecture ↓**](#-architecture-at-a-glance) · [**Project notes ↓**](#-original-project-documentation)
+### [🚀 Open browser demo](https://vision-solution-tms-demo.vercel.app/) &nbsp; | &nbsp; [🗺️ Full architecture atlas](docs/architecture-atlas.md) &nbsp; | &nbsp; [📍 Latest project checkpoint](docs/PROJECT_STATUS.md)
+
+**⚠️ Public preview = Demo Mode only.** The local Connected Mode is not publicly deployed, and the production system is not complete.
 
 </div>
 
 ---
 
-## ✨ Overview · نبذة عن المشروع
+## ✨ The platform at a glance | نظرة عامة
 
-**Private work-in-progress system**
+The system supports the operations of a trucking and logistics company: registering shipments once, tracking their operational status, separating employee and administrator responsibilities, and surfacing overdue work and reports. The current project deliberately excludes full ERP/accounting, real-time vehicle GPS tracking and production financial processing.
 
-Production deployment is NOT configured in the documented baseline. Demo Mode is browser-local; Connected Mode is opt-in against local Supabase. Refer to docs/PROJECT_STATUS.md for authoritative implementation state, verified steps and pending work.
+**The product is more than a dashboard:** it has a defined shipment lifecycle, bilingual role-aware workflows, distinct persistence modes, locally tested backend authorization and an evolving mobile experience.
 
-| | Focus area |
-|:--:|:--|
-| 🧭 | Admin/employee roles |
-| 🧩 | Shipment workflows |
-| 🌐 | Demo Mode |
-| ⚙️ | Connected Mode |
+### 🧩 Product capabilities
 
-**Core stack:** React · TypeScript · Vite · Local Supabase
+| 🚛 Shipment operations | 🔐 Identity and permissions | 📊 Operational intelligence | 🌍 Experience |
+|---|---|---|---|
+| Automatic shipment number | Admin and employee separation | Status dashboards | Arabic and English |
+| Automatic start timestamp | Local Connected Auth/session | Overdue alerts at **>96h** | RTL/LTR layouts |
+| Create, edit, complete, reopen | Admin MFA / AAL2 checks | RLS-scoped reports | Responsive desktop/mobile |
+| Revision / audit history | Employee ownership isolation | CSV export (bounded) | Light and dark themes |
+| Admin soft delete/restore | Backend authorization in Connected Mode | Daily report **preview** | Cairo and Montserrat fonts |
 
-## 🧠 Architecture at a glance
+> **Capability caveat:** Demo features are browser-local. Secure connected capabilities are implemented/tested in the *local* Supabase environment. Invoice image uploads, scheduled report email, cloud database and production release are **not** complete. See the [status ledger](docs/PROJECT_STATUS.md).
+
+## 🧠 01 — Architecture at a glance
+
+```mermaid
+flowchart TB
+  USER["👥 Administrator / Employee"] --> UI["React + TypeScript + Vite"]
+  UI --> LANG["AR/EN · RTL/LTR · Responsive UI"]
+  UI --> MODE{"Runtime mode"}
+  MODE -->|Public Demo| DEMO["DemoProvider"]
+  DEMO --> BROWSER["Browser localStorage · fictional data"]
+  MODE -->|Local Connected| AUTH["Supabase Auth + sessions"]
+  AUTH --> MFA["Admin MFA / AAL2"]
+  AUTH --> RPC["Scoped RPCs / shipment commands"]
+  RPC --> PG["Local PostgreSQL + RLS"]
+  PG --> SHIP["Shipments + audit history"]
+  PG --> REP["Dashboard + reports + CSV"]
+  classDef demo fill:#145244,color:#fff,stroke:#63d6a9;
+  classDef secured fill:#254b68,color:#fff,stroke:#75cdec;
+  class DEMO,BROWSER demo;
+  class AUTH,MFA,RPC,PG,SHIP,REP secured;
+```
+
+**Deployment boundary:** the [Vercel preview](https://vision-solution-tms-demo.vercel.app/) serves the **Demo** branch of this diagram. The secure Connected branch uses local infrastructure and is **not** connected to the public URL.
+
+## 🔁 02 — Shipment lifecycle | دورة الشحنة
 
 ```mermaid
 flowchart LR
-    P0["Authorized users"]
-    P1["React workspace"]
-    P2["Local Supabase"]
-    P3["RLS-scoped reports"]
-    P0 --> P1
-    P1 --> P2
-    P2 --> P3
-    style P0 fill:#153f57,color:#fff,stroke:#4bcce9,stroke-width:2px
+  CREATE["Create shipment"] --> NUMBER["Auto ID + start time"]
+  NUMBER --> PENDING["🟡 Pending"]
+  PENDING -->|More than 96h open| LATE["🔴 Overdue"]
+  PENDING -->|Manual completion| DONE["🟢 Completed"]
+  LATE -->|Manual completion| DONE
+  DONE -->|Reopen: keep start time| PENDING
+  PENDING -->|Edit| HISTORY["Revision / audit history"]
+  LATE -->|Edit| HISTORY
+  DONE -->|Admin only| SOFT["Soft delete / restore"]
+  classDef yellow fill:#64531e,color:#fff,stroke:#eaca55;
+  classDef red fill:#672a33,color:#fff,stroke:#e88a9a;
+  classDef green fill:#18583d,color:#fff,stroke:#80d4aa;
+  class PENDING yellow;
+  class LATE red;
+  class DONE green;
 ```
 
-*Conceptual project map — not a claim of production deployment or complete infrastructure.*
+**Business rule:** overdue is **strictly after 96 hours** from the original start timestamp, using `Asia/Riyadh`. Completing a shipment requires manual completion time; reopening never resets its start.
 
-## 📂 Repository map
+## 🛡️ 03 — Role and security boundaries
 
-`src/` · `supabase/` · `tests/` · `docs/PROJECT_STATUS.md` · `AGENTS.md`
+```mermaid
+flowchart TD
+  LOGIN["Connected Auth + session"] --> ROLE{"Validated role"}
+  ROLE -->|Employee| EMP["Employee dashboard"]
+  ROLE -->|Admin| ADM["Administrator dashboard"]
+  EMP --> OWN["Own shipments: create / edit / complete"]
+  ADM --> MFA["MFA / AAL2 privileged gates"]
+  MFA --> ALL["All permitted shipments + soft delete"]
+  MFA --> REPORT["Reports + daily preview"]
+  OWN --> RLS["RLS + allowlisted SQL RPCs"]
+  ALL --> RLS
+  REPORT --> RLS
+  classDef lock fill:#1c4760,color:#fff,stroke:#6acbed;
+  class MFA,RLS lock;
+```
 
-## 🛡️ Working principles
+**Security distinction:** these authorization boundaries describe locally tested **Connected Mode**, not the publicly accessible demo's simulated role selection.
 
-- Preserve existing working functionality and keep application changes separate from documentation updates.
-- Run the relevant project checks before merging application changes.
-- Do not commit credentials, private customer/school data, or local environment files.
-- Validate bilingual layouts, accessibility and mobile behavior where applicable.
-- Never assume the app has been deployed: follow the checkpoint in `docs/PROJECT_STATUS.md`.
+## 📈 04 — Reports and operational visibility
+
+| Feature | What is available in the local Connected baseline |
+|---|---|
+| Dashboard | Server-authoritative operational counts and overdue views |
+| Search & filters | Shipment status, ownership and Riyadh date ranges |
+| CSV | Formula-safe text export, maximum **1,000 matching rows** |
+| Daily consolidated report | Admin-only preview of prior Riyadh day and open overdue |
+| Email scheduling | **Not implemented** — 08:00 Riyadh is a planned delivery time, not an active job |
+| Audit & recovery | Revision-aware writes, conflict review and session-bound draft/retry behavior |
+
+## 🧭 05 — Project delivery roadmap
+
+```mermaid
+flowchart LR
+  A["✅ Phase 1–2.9\nUI and Demo baseline"] --> B["✅ 3A–3B\nConnected foundations"]
+  B --> C["✅ 3C.1–3C.5\nLocal auth, RLS, commands, reports"]
+  C --> D["🟠 PR #15\nMobile-first candidate review"]
+  D -. "Only after approval" .-> E["⬜ Production readiness\nCloud, security, deployment"]
+  classDef done fill:#18553e,color:#fff,stroke:#70d7a6;
+  classDef review fill:#674b20,color:#fff,stroke:#e6c36c;
+  classDef later fill:#343d4d,color:#fff,stroke:#9eafc2;
+  class A,B,C done;
+  class D review;
+  class E later;
+```
+
+**Checkpoint:** Phase 3C.5 is merged in the stable baseline. The mobile readability candidate in **Draft PR #15** is documented as awaiting owner visual approval and must not be represented as merged. The [full architecture atlas](docs/architecture-atlas.md) expands these diagrams with data flow and verification boundaries.
+
+### 🧪 Recorded verification (local checkpoint: 29 Oct 2026)
+
+| Application | Security | Auth | Database | Workflow |
+|:--:|:--:|:--:|:--:|:--:|
+| **74 / 74** | **30 / 30** | **13 / 13** | **20 / 20** | **20 / 20** |
+
+*These are previously recorded local candidate-test results, not live CI status or production certification.*
+
+## ⚙️ Engineering stack and safe collaboration
+
+`React 19` · `TypeScript 6` · `Vite 8` · `Tailwind CSS 4` · `React Router 7` · `Supabase (local Connected)` · `PostgreSQL / RLS` · `Node test runner` · `Oxlint` · `Prettier`
+
+| Path | Purpose |
+|---|---|
+| `src/app/demo/` | Browser-local Demo Mode |
+| `src/features/shipments/` | Shipment domain logic |
+| `src/features/connected/` | Connected workflow contracts and adapters |
+| `src/shared/i18n/` | Arabic/English catalog |
+| `supabase/migrations/` | Forward-only database changes |
+| `tests/` | Automated tests |
+| [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md) | Definitive approval and milestone history |
+| [`docs/architecture-atlas.md`](docs/architecture-atlas.md) | Expanded technical diagrams |
+| [`PRODUCT.md`](PRODUCT.md) | Product scope |
+| [`AGENTS.md`](AGENTS.md) | Safe development/branch rules |
+
+**No executable app files, production DNS, business records or database migrations were modified for this documentation update.**
 
 ---
 
