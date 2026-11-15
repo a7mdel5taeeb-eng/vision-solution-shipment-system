@@ -1,5 +1,15 @@
 # Vision & Solution — project status
 
+> **29 OCT 2026 — 4B REQUIREMENTS APPROVED / SCHOOL → HOME HANDOFF**: Owner approved **up to 3 available images per shipment at 3 MiB (3,145,728 bytes) per image**, JPEG/PNG/WebP only (not PDF/HEIC). Employee own upload/replace, admin AAL2-only logical detach; unresolved retention, codec/runtime, quotas, provider region and backup choices remain gated. The full reviewed plan is now published on this **existing** planning PR #16 branch: `docs/phase-4b-secure-invoice-attachments-plan.md`. **No Phase 4 code, tests, database/storage actions or merge have occurred.** A previous SCHOOL Codex draft of three docs is still **uncommitted locally**; GitHub updates will appear as remote-ahead. Never force-pull/reset/clean: reconcile local edits against published GitHub text manually if returning to SCHOOL. HOME is powered off; at HOME start inspect worktrees/Git, safely fetch, and do not touch retained TR-0548/0549/0550, MFA, PostgreSQL volumes or secrets. PR #16 stays Draft/unmerged; no code implementation until separate review/authorization.  
+
+> **CURRENT — PR #15 MERGED; PHASE 4 PLANNING ON SCHOOL (29 OCTOBER 2026)**  
+> The owner explicitly approved and we verified **mobile-first UI PR #15 merged** into `main` at GitHub commit `ee23364be40236c37e37d6cd73e92014fbddd7d4`. This delivered readable Connected typography, responsive shipment/report layout and mobile navigation; final live-device and production gates remain future work.  
+> **The user is moving to the SCHOOL computer and may shut HOME down.** GitHub syncs source code only, not HOME's Supabase/PostgreSQL volume, retained review records `TR-0548`, `TR-0549`, `TR-0550`, user accounts, MFA, backups or browser state. Preserve all existing HOME data/containers/volumes; do not reset, move or delete them. SCHOOL code work may proceed safely after inspecting its separate checkout; never assume its DB is provisioned or identical.  
+> Created `feature/phase-4-release-readiness-planning` from this verified merge with **documentation-only** next-phase proposal at `docs/phase-4-release-readiness-plan.md`. Priorities awaiting explicit owner scope approval: invoice image attachments, automatic daily email delivery, user administration/recovery and cloud staging/production security/deployment. **No Phase 4 product changes, databases, migrations, scheduled email, accounts, production hosting or domain changes are authorized.**  
+> For SCHOOL start: inspect Git status/worktrees, fetch safely; preserve uncommitted and ignored files, do not force-sync or wipe branches. `main` contains approved PR #15. New planning PR is Draft/unmerged until later decision.
+
+---
+
 > **CURRENT VERIFIED UI CANDIDATE — 29 October 2026: mobile-first Connected readability, Draft PR #15.**
 >
 > Stable main is `ed4b8f0649b7e05e7c9f69865ee740529f85094d` (Phase 3C.5 approved/merged). HOME preserved both worktrees, fetched origin and safely switched to the existing `feature/mobile-first-connected-ui-readability` at PM handoff `6b4c6dac38002791125833a4a090c7535352af9c`; the branch remained synchronized. No reset, stash, discard, duplicate branch or PR.
