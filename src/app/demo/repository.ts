@@ -116,6 +116,11 @@ export function loadDemo(now: number): {
       }
     }
     const parsed: unknown = JSON.parse(raw)
+    if (isDemoState(parsed)) {
+      const admin = parsed.users.find((user) => user.id === 'admin')
+      if (admin?.name === 'Noura Al Salem') admin.name = 'Khalid Rashid'
+      if (admin?.nameAr === 'نورة السالم') admin.nameAr = 'خالد راشد'
+    }
     return isDemoState(parsed)
       ? { state: parsed, issue: null }
       : { state: createSeed(now), issue: 'corruptData' }

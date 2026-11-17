@@ -9,8 +9,8 @@ import { previousDayRange } from '../../shared/lib/dates.ts'
 export const DEMO_USERS: DemoUser[] = [
   {
     id: 'admin',
-    name: 'Noura Al Salem',
-    nameAr: 'نورة السالم',
+    name: 'Khalid Rashid',
+    nameAr: 'خالد راشد',
     email: 'noura@vision-demo.example',
     role: 'admin',
     active: true,
